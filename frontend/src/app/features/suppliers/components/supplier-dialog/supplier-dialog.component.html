@@ -1,0 +1,63 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Supplier' : 'Add New Supplier' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="supplierForm" class="dialog-content">
+    <mat-form-field appearance="outline">
+      <mat-label>Supplier Name</mat-label>
+      <input matInput formControlName="name" placeholder="e.g. TechSupply Global">
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Contact Person</mat-label>
+        <input matInput formControlName="contactPerson">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+          <mat-option value="Electronics">Electronics</mat-option>
+          <mat-option value="Accessories">Accessories</mat-option>
+          <mat-option value="Furniture">Furniture</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Address</mat-label>
+      <textarea matInput formControlName="address" rows="2"></textarea>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Rating (1-5)</mat-label>
+        <input matInput formControlName="rating" type="number" step="0.1" min="1" max="5">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="Active">Active</mat-option>
+          <mat-option value="Inactive">Inactive</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="supplierForm.invalid" (click)="onSubmit()">
+    {{ isEdit ? 'Save Changes' : 'Add Supplier' }}
+  </button>
+</mat-dialog-actions>

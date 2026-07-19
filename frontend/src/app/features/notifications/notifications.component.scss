@@ -1,0 +1,71 @@
+.notif-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 { font-size: 24px; font-weight: 700; margin: 0; color: #0f172a; }
+  .subtitle { margin: 4px 0 0 0; color: #64748b; font-size: 14px; }
+}
+
+.filter-pills {
+  display: flex;
+  gap: 8px;
+}
+
+.notif-list {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s ease;
+
+  &.unread {
+    background: #f8fafc;
+    border-left: 4px solid #2563eb;
+  }
+
+  .type-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.stock { background: #fee2e2; color: #dc2626; }
+    &.order { background: #dbeafe; color: #2563eb; }
+    &.price { background: #fef3c7; color: #d97706; }
+    &.system { background: #f1f5f9; color: #475569; }
+  }
+
+  .notif-content {
+    flex: 1;
+    .notif-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      h4 { margin: 0; font-size: 15px; font-weight: 600; color: #0f172a; }
+      .timestamp { font-size: 12px; color: #94a3b8; }
+    }
+    .message { margin: 4px 0 0 0; font-size: 13px; color: #475569; }
+  }
+}
+
+.empty-padding {
+  padding: 24px;
+}

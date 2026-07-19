@@ -1,0 +1,123 @@
+.warehouse-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 { font-size: 24px; font-weight: 700; margin: 0; color: #0f172a; }
+  .subtitle { margin: 4px 0 0 0; color: #64748b; font-size: 14px; }
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.warehouse-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+.wh-card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.wh-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  .wh-code {
+    font-size: 11px;
+    font-weight: 700;
+    color: #2563eb;
+    background: #dbeafe;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  h3 {
+    margin: 4px 0 0 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+  }
+}
+
+.wh-body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #64748b;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: #94a3b8;
+    }
+  }
+
+  .capacity-section {
+    margin-top: 4px;
+    .cap-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+    mat-progress-bar {
+      height: 8px;
+      border-radius: 4px;
+    }
+  }
+
+  .stats-mini-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 6px;
+
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+      .stat-lbl { font-size: 11px; color: #64748b; font-weight: 500; }
+      .stat-val { font-size: 14px; color: #0f172a; font-weight: 700; }
+    }
+  }
+}
+
+.wh-footer {
+  padding: 12px 20px;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: flex-end;
+}

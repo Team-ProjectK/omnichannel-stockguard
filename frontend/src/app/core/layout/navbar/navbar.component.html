@@ -1,54 +1,36 @@
 <header class="navbar">
 
     <div class="left-section">
-
-        <h2>Dashboard</h2>
-
+        <h2>Omnichannel StockGuard</h2>
         <p>{{ today | date:'EEEE, dd MMMM yyyy' }}</p>
-
     </div>
 
     <div class="right-section">
 
         <div class="search-box">
-
             <mat-icon>search</mat-icon>
-
             <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search products, orders, inventory..."
             >
-
         </div>
 
-        <button mat-icon-button>
-
-            <mat-icon>notifications</mat-icon>
-
+        <button mat-icon-button (click)="goToNotifications()" matTooltip="Notifications">
+            <mat-icon [matBadge]="unreadCount" matBadgeColor="warn" [matBadgeHidden]="unreadCount === 0">notifications</mat-icon>
         </button>
 
-        <button mat-icon-button>
-
+        <button mat-icon-button matTooltip="Toggle Dark Mode">
             <mat-icon>dark_mode</mat-icon>
-
         </button>
 
-        <div class="profile">
-
+        <div class="profile" (click)="goToProfile()" style="cursor: pointer;" matTooltip="View Profile">
             <div class="avatar">
-
                 V
-
             </div>
-
             <div>
-
                 <h4>Vinay</h4>
-
                 <small>Administrator</small>
-
             </div>
-
         </div>
 
     </div>

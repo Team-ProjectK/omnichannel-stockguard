@@ -1,0 +1,49 @@
+<div class="notif-container">
+  <div class="header-section">
+    <div>
+      <h2>Notification Center</h2>
+      <p class="subtitle">System alerts, inventory threshold notifications, PO updates, and AI suggestions.</p>
+    </div>
+    <button mat-stroked-button color="primary" (click)="markAllAsRead()">
+      <mat-icon>done_all</mat-icon> Mark All as Read
+    </button>
+  </div>
+
+  <div class="filter-pills">
+    <button mat-flat-button [color]="filterType === 'all' ? 'primary' : ''" (click)="filterType = 'all'">All</button>
+    <button mat-flat-button [color]="filterType === 'unread' ? 'primary' : ''" (click)="filterType = 'unread'">Unread Only</button>
+    <button mat-flat-button [color]="filterType === 'stock' ? 'primary' : ''" (click)="filterType = 'stock'">Stock Alerts</button>
+    <button mat-flat-button [color]="filterType === 'order' ? 'primary' : ''" (click)="filterType = 'order'">Orders</button>
+    <button mat-flat-button [color]="filterType === 'price' ? 'primary' : ''" (click)="filterType = 'price'">Pricing</button>
+  </div>
+
+  <div class="notif-list mat-elevation-z1">
+    <div
+      *ngFor="let item of filteredNotifications"
+      class="notif-item"
+      [ngClass]="{ 'unread': !item.read }">
+      <div class="type-icon" [ngClass]="item.type">
+        <mat-icon *ngIf="item.type === 'stock'">warning</mat-icon>
+        <mat-icon *ngIf="item.type === 'order'">shopping_cart</mat-icon>
+        <mat-icon *ngIf="item.type === 'price'">sell</mat-icon>
+        <mat-icon *ngIf="item.type === 'system'">dns</mat-icon>
+      </div>
+
+      <div class="notif-content">
+        <div class="notif-title">
+          <h4>{{ item.title }}</h4>
+          <span class="timestamp">{{ item.timestamp }}</span>
+        </div>
+        <p class="message">{{ item.message }}</p>
+      </div>
+
+      <button mat-icon-button *ngIf="!item.read" (click)="markAsRead(item)" matTooltip="Mark as Read">
+        <mat-icon>check_circle_outline</mat-icon>
+      </button>
+    </div>
+
+    <div *ngIf="filteredNotifications.length === 0" class="empty-padding">
+      <app-empty-state icon="notifications_off" title="No Notifications" description="You have no notifications matching this filter."></app-empty-state>
+    </div>
+  </div>
+</div>

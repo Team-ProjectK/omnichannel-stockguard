@@ -1,0 +1,116 @@
+<div class="profile-container">
+  <div class="header-section">
+    <h2>User Profile & Settings</h2>
+    <p class="subtitle">Manage account info, security settings, notification rules, and visual theme preferences.</p>
+  </div>
+
+  <div class="profile-layout">
+    <!-- Left Sidebar Card -->
+    <div class="user-card mat-elevation-z1">
+      <div class="avatar-circle">
+        {{ userProfile.fullName[0] }}
+      </div>
+      <h3>{{ userProfile.fullName }}</h3>
+      <span class="role-badge">{{ userProfile.role }}</span>
+      <p class="email">{{ userProfile.email }}</p>
+      <small class="dept">{{ userProfile.department }}</small>
+    </div>
+
+    <!-- Main Settings Tabs / Panels -->
+    <div class="settings-panels">
+      <mat-tab-group animationDuration="200ms" color="primary">
+
+        <!-- Personal Details -->
+        <mat-tab label="Personal Details">
+          <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="tab-panel mat-elevation-z1">
+            <h3>Account Information</h3>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Full Name</mat-label>
+                <input matInput formControlName="fullName">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Email Address</mat-label>
+                <input matInput formControlName="email" type="email">
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Phone Number</mat-label>
+                <input matInput formControlName="phone">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Role</mat-label>
+                <input matInput formControlName="role" readonly>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Department</mat-label>
+              <input matInput formControlName="department">
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">
+              Save Personal Details
+            </button>
+          </form>
+        </mat-tab>
+
+        <!-- Security & Password -->
+        <mat-tab label="Security">
+          <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="tab-panel mat-elevation-z1">
+            <h3>Change Password</h3>
+            <mat-form-field appearance="outline">
+              <mat-label>Current Password</mat-label>
+              <input matInput formControlName="currentPassword" type="password">
+            </mat-form-field>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>New Password</mat-label>
+                <input matInput formControlName="newPassword" type="password">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Confirm New Password</mat-label>
+                <input matInput formControlName="confirmPassword" type="password">
+              </mat-form-field>
+            </div>
+
+            <button mat-raised-button color="warn" type="submit" [disabled]="passwordForm.invalid">
+              Update Password
+            </button>
+          </form>
+        </mat-tab>
+
+        <!-- Preferences -->
+        <mat-tab label="Preferences">
+          <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="tab-panel mat-elevation-z1">
+            <h3>Notification Preferences</h3>
+            <div class="toggle-list">
+              <mat-slide-toggle formControlName="emailNotifications">Email Notifications</mat-slide-toggle>
+              <mat-slide-toggle formControlName="lowStockAlerts">Critical Low Stock Alerts</mat-slide-toggle>
+              <mat-slide-toggle formControlName="orderUpdates">Purchase & Sales Order Status Updates</mat-slide-toggle>
+              <mat-slide-toggle formControlName="weeklySummary">Weekly Inventory Analytics Summary</mat-slide-toggle>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <h3>Theme Preferences</h3>
+            <div class="toggle-list">
+              <mat-slide-toggle formControlName="compactMode">Compact Data Density</mat-slide-toggle>
+            </div>
+
+            <button mat-raised-button color="primary" type="submit">
+              Save Preferences
+            </button>
+          </form>
+        </mat-tab>
+
+      </mat-tab-group>
+    </div>
+  </div>
+</div>

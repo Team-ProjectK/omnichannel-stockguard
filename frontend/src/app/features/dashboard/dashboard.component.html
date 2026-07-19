@@ -2,49 +2,38 @@
 
   <!-- KPI Cards -->
   <div class="cards">
-
     <div
       class="card"
       *ngFor="let card of dashboardCards"
       [ngClass]="card.color">
-
       <div class="card-header">
-
         <div>
           <h3>{{ card.title }}</h3>
           <h1>{{ card.value }}</h1>
           <span>{{ card.description }}</span>
         </div>
-
         <mat-icon>{{ card.icon }}</mat-icon>
-
       </div>
-
     </div>
-
   </div>
+
+  <!-- Quick Actions Toolbar -->
   <div class="quick-actions">
+    <button
+      mat-raised-button
+      *ngFor="let action of quickActions"
+      [color]="action.color"
+      (click)="handleAction(action)">
+      <mat-icon>{{ action.icon }}</mat-icon>
+      {{ action.title }}
+    </button>
+  </div>
 
-  <button
-    mat-raised-button
-    *ngFor="let action of quickActions"
-    [color]="action.color">
-
-    <mat-icon>{{ action.icon }}</mat-icon>
-
-    {{ action.title }}
-
-  </button>
-
-</div>
-
-  <!-- Charts -->
+  <!-- Main Charts Grid -->
   <div class="dashboard-grid">
-
     <!-- Inventory Trend -->
     <div class="panel">
       <h2>Inventory Trend</h2>
-
       <canvas
         baseChart
         [data]="lineChartData"
@@ -54,30 +43,79 @@
 
     <!-- Product Categories -->
     <div class="panel">
-
       <h2>Product Categories</h2>
-
       <canvas
         baseChart
         [data]="pieChartData"
         [type]="pieChartType">
       </canvas>
+    </div>
+  </div>
 
+  <!-- Secondary Widgets Grid -->
+  <div class="dashboard-grid">
+
+    <!-- Recent Orders -->
+    <div class="panel table-panel">
+      <div class="panel-header">
+        <h2>Recent Orders</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Order No</th>
+            <th>Customer / Supplier</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of recentOrders">
+            <td class="font-mono">{{ order.orderNo }}</td>
+            <td>{{ order.customerOrSupplier }}</td>
+            <td class="font-bold">{{ order.amount | currency:'INR':'symbol':'1.0-0' }}</td>
+            <td>
+              <app-status-badge [status]="order.status"></app-status-badge>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Top Selling Products -->
+    <div class="panel table-panel">
+      <div class="panel-header">
+        <h2>Top Selling Products</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>SKU</th>
+            <th>Sales</th>
+            <th>Revenue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let prod of topSellingProducts">
+            <td>{{ prod.name }}</td>
+            <td>{{ prod.sku }}</td>
+            <td>{{ prod.salesCount }} units</td>
+            <td class="font-bold">{{ prod.revenue | currency:'INR':'symbol':'1.0-0' }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
   </div>
 
-  <!-- Low Stock Products -->
+  <!-- Low Stock Products Table -->
   <div class="panel table-panel">
-
     <div class="panel-header">
-      <h2>Low Stock Products</h2>
+      <h2>Low Stock Products Alert</h2>
     </div>
-
     <table>
-
       <thead>
-
         <tr>
           <th>Product</th>
           <th>SKU</th>
@@ -86,20 +124,14 @@
           <th>Status</th>
           <th>Action</th>
         </tr>
-
       </thead>
-
       <tbody>
-
         <tr *ngFor="let product of lowStockProducts">
-
           <td>{{ product.name }}</td>
           <td>{{ product.sku }}</td>
           <td>{{ product.stock }}</td>
           <td>{{ product.reorderLevel }}</td>
-
           <td>
-
             <span
               class="status"
               [ngClass]="{
@@ -107,68 +139,31 @@
                 'low': product.status === 'Low',
                 'normal': product.status === 'Normal'
               }">
-
               {{ product.status }}
-
             </span>
-
           </td>
-
           <td>
-
-            <button mat-raised-button color="primary">
+            <button mat-raised-button color="primary" routerLink="/inventory">
               View
             </button>
-
           </td>
-
         </tr>
-
       </tbody>
-
     </table>
-
   </div>
 
-  <!-- Recent Products -->
-  <div class="panel table-panel">
-
-    <div class="panel-header">
-      <h2>Recent Products</h2>
+  <!-- Recent Activity Feed -->
+  <div class="panel">
+    <h2>Recent Activities</h2>
+    <div class="activity-feed">
+      <div class="activity-item" *ngFor="let act of recentActivities">
+        <mat-icon class="act-icon">{{ act.icon }}</mat-icon>
+        <div class="act-details">
+          <p>{{ act.title }}</p>
+          <small>{{ act.time }}</small>
+        </div>
+      </div>
     </div>
-
-    <table>
-
-      <thead>
-
-        <tr>
-          <th>Product</th>
-          <th>Stock</th>
-        </tr>
-
-      </thead>
-
-      <tbody>
-
-        <tr>
-          <td>Laptop</td>
-          <td>120</td>
-        </tr>
-
-        <tr>
-          <td>Keyboard</td>
-          <td>85</td>
-        </tr>
-
-        <tr>
-          <td>Mouse</td>
-          <td>200</td>
-        </tr>
-
-      </tbody>
-
-    </table>
-
   </div>
 
 </div>

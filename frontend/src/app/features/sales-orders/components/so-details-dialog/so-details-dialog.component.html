@@ -1,0 +1,60 @@
+<h2 mat-dialog-title>Sales Order {{ so.soNumber }}</h2>
+<mat-dialog-content>
+  <div class="detail-grid">
+    <div>
+      <span class="label">Customer Name</span>
+      <div class="value">{{ so.customerName }}</div>
+    </div>
+    <div>
+      <span class="label">Status</span>
+      <div class="value">
+        <app-status-badge [status]="so.status"></app-status-badge>
+      </div>
+    </div>
+    <div>
+      <span class="label">Customer Email</span>
+      <div class="value">{{ so.customerEmail }}</div>
+    </div>
+    <div>
+      <span class="label">Phone</span>
+      <div class="value">{{ so.customerPhone }}</div>
+    </div>
+    <div>
+      <span class="label">Order Date</span>
+      <div class="value">{{ so.orderDate }}</div>
+    </div>
+    <div>
+      <span class="label">Total Amount</span>
+      <div class="value">{{ so.totalAmount | currency:'INR':'symbol':'1.0-0' }}</div>
+    </div>
+    <div style="grid-column: span 2;">
+      <span class="label">Shipping Address</span>
+      <div class="value">{{ so.shippingAddress }}</div>
+    </div>
+  </div>
+
+  <h3>Ordered Products</h3>
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>SKU</th>
+        <th>Qty</th>
+        <th>Unit Price</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of so.items">
+        <td>{{ item.productName }}</td>
+        <td>{{ item.sku }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.unitPrice | currency:'INR':'symbol':'1.0-0' }}</td>
+        <td>{{ item.total | currency:'INR':'symbol':'1.0-0' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" (click)="close()">Close</button>
+</mat-dialog-actions>

@@ -1,0 +1,122 @@
+<div class="reports-container">
+  <div class="header-section">
+    <div>
+      <h2>Analytics & Executive Reports</h2>
+      <p class="subtitle">Comprehensive analysis across sales, stock valuation, channel revenue, and category performance.</p>
+    </div>
+    <div class="actions">
+      <button mat-stroked-button (click)="exportExcel()">
+        <mat-icon>table_chart</mat-icon> Export Excel
+      </button>
+      <button mat-raised-button color="primary" (click)="exportPdf()">
+        <mat-icon>picture_as_pdf</mat-icon> Export PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Summary Cards -->
+  <div class="cards-grid">
+    <div class="card mat-elevation-z1" *ngFor="let card of summaryCards">
+      <div class="card-top">
+        <span class="title">{{ card.title }}</span>
+        <mat-icon>{{ card.icon }}</mat-icon>
+      </div>
+      <h3>{{ card.value }}</h3>
+      <span class="trend" [ngClass]="{ 'pos': card.isPositive, 'neg': !card.isPositive }">
+        {{ card.trend }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Report Tabs -->
+  <mat-tab-group animationDuration="200ms" color="primary">
+
+    <!-- TAB 1: Sales Report -->
+    <mat-tab label="Sales & Revenue Report">
+      <div class="tab-content">
+        <div class="chart-panel mat-elevation-z1">
+          <h3>Monthly Sales Revenue Growth</h3>
+          <canvas baseChart [data]="revenueChartData" [type]="revenueChartType"></canvas>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- TAB 2: Category Breakdown Report -->
+    <mat-tab label="Category Analysis">
+      <div class="tab-content grid-split">
+        <div class="chart-panel mat-elevation-z1">
+          <h3>Category Revenue Share</h3>
+          <canvas baseChart [data]="categoryChartData" [type]="categoryChartType"></canvas>
+        </div>
+
+        <div class="table-card mat-elevation-z1">
+          <h3>Category Summary Table</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Products</th>
+                <th>Units</th>
+                <th>Total Revenue</th>
+                <th>Share %</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let cat of categoryData">
+                <td class="font-bold">{{ cat.category }}</td>
+                <td>{{ cat.totalProducts }}</td>
+                <td>{{ cat.totalStock }}</td>
+                <td>{{ cat.totalRevenue | currency:'INR':'symbol':'1.0-0' }}</td>
+                <td class="font-semibold">{{ cat.sharePercentage }}%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- TAB 3: Inventory Valuation -->
+    <mat-tab label="Inventory Valuation">
+      <div class="tab-content">
+        <div class="table-card mat-elevation-z1">
+          <h3>Current Stock Valuation Breakdown</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Warehouse Node</th>
+                <th>Total SKU Count</th>
+                <th>Units Stored</th>
+                <th>Total Valuation (Cost)</th>
+                <th>Total Retail Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-bold">Central Warehouse (WH-A)</td>
+                <td>450 SKUs</td>
+                <td>5,420 units</td>
+                <td>₹7,850,000</td>
+                <td>₹9,420,000</td>
+              </tr>
+              <tr>
+                <td class="font-bold">West Coast Depot (WH-B)</td>
+                <td>280 SKUs</td>
+                <td>3,100 units</td>
+                <td>₹3,120,000</td>
+                <td>₹3,850,000</td>
+              </tr>
+              <tr>
+                <td class="font-bold">East Hub (WH-C)</td>
+                <td>310 SKUs</td>
+                <td>2,400 units</td>
+                <td>₹1,480,000</td>
+                <td>₹1,950,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

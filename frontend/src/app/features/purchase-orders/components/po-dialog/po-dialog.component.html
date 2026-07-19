@@ -1,0 +1,65 @@
+<h2 mat-dialog-title>Create Purchase Order</h2>
+<mat-dialog-content>
+  <form [formGroup]="poForm" class="dialog-content">
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>PO Number</mat-label>
+        <input matInput formControlName="poNumber" readonly>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Supplier</mat-label>
+        <mat-select formControlName="supplierName">
+          <mat-option *ngFor="let s of suppliers" [value]="s">{{ s }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Order Date</mat-label>
+        <input matInput formControlName="orderDate" type="date">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Expected Delivery</mat-label>
+        <input matInput formControlName="expectedDelivery" type="date">
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Product Name</mat-label>
+        <input matInput formControlName="productName">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>SKU</mat-label>
+        <input matInput formControlName="sku">
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Quantity</mat-label>
+        <input matInput formControlName="quantity" type="number" min="1">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Unit Price (₹)</mat-label>
+        <input matInput formControlName="unitPrice" type="number" min="1">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Notes / Remarks</mat-label>
+      <textarea matInput formControlName="notes" rows="2"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="poForm.invalid" (click)="onSubmit()">
+    Create Purchase Order
+  </button>
+</mat-dialog-actions>

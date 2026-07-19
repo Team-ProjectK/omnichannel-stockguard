@@ -1,0 +1,40 @@
+.customers-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 { font-size: 24px; font-weight: 700; margin: 0; color: #0f172a; }
+  .subtitle { margin: 4px 0 0 0; color: #64748b; font-size: 14px; }
+}
+
+.filter-card {
+  background: #ffffff;
+  padding: 16px 20px 4px 20px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+
+  .filter-row {
+    display: flex;
+    gap: 16px;
+    .search-field { flex: 1; }
+  }
+}
+
+.table-card {
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+
+  table { width: 100%; }
+  th { font-weight: 600; color: #475569; background-color: #f8fafc; }
+  .font-bold { font-weight: 600; color: #1e293b; }
+  .font-semibold { font-weight: 600; }
+}

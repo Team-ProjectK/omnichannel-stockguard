@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>Customer Profile</h2>
+<mat-dialog-content>
+  <div class="detail-grid">
+    <div>
+      <span class="label">Customer Name</span>
+      <div class="value">{{ customer.name }}</div>
+    </div>
+    <div>
+      <span class="label">Company</span>
+      <div class="value">{{ customer.company }}</div>
+    </div>
+    <div>
+      <span class="label">Email Address</span>
+      <div class="value">{{ customer.email }}</div>
+    </div>
+    <div>
+      <span class="label">Phone</span>
+      <div class="value">{{ customer.phone }}</div>
+    </div>
+    <div>
+      <span class="label">Total Orders</span>
+      <div class="value">{{ customer.totalOrders }}</div>
+    </div>
+    <div>
+      <span class="label">Lifetime Spend</span>
+      <div class="value">{{ customer.lifetimeValue | currency:'INR':'symbol':'1.0-0' }}</div>
+    </div>
+    <div>
+      <span class="label">Status</span>
+      <div class="value">
+        <app-status-badge [status]="customer.status"></app-status-badge>
+      </div>
+    </div>
+    <div>
+      <span class="label">Customer Since</span>
+      <div class="value">{{ customer.createdAt }}</div>
+    </div>
+    <div style="grid-column: span 2;">
+      <span class="label">Address</span>
+      <div class="value">{{ customer.address }}</div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" (click)="close()">Close</button>
+</mat-dialog-actions>

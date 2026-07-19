@@ -1,0 +1,77 @@
+<div class="warehouse-container">
+  <div class="header-section">
+    <div>
+      <h2>Warehouse Management</h2>
+      <p class="subtitle">Monitor distribution center capacities, current inventory counts, and space utilization.</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="openAddDialog()">
+      <mat-icon>add</mat-icon>
+      Add Warehouse
+    </button>
+  </div>
+
+  <!-- Summary KPI Cards -->
+  <div class="cards-grid">
+    <app-summary-card title="Total Facilities" [value]="warehouses.length" subtitle="Active distribution nodes" icon="warehouse" color="blue"></app-summary-card>
+    <app-summary-card title="Total Capacity" [value]="totalCapacity | number" subtitle="Units total space" icon="aspect_ratio" color="purple"></app-summary-card>
+    <app-summary-card title="Used Capacity" [value]="totalUsedSpace | number" subtitle="Occupied units" icon="pie_chart" color="orange"></app-summary-card>
+    <app-summary-card title="Total Stock Items" [value]="totalCurrentStock | number" subtitle="Items stored" icon="inventory_2" color="green"></app-summary-card>
+  </div>
+
+  <!-- Warehouse Cards Grid -->
+  <div class="warehouse-grid">
+    <div class="wh-card mat-elevation-z1" *ngFor="let w of warehouses">
+      <div class="wh-header">
+        <div class="wh-title">
+          <span class="wh-code">{{ w.code }}</span>
+          <h3>{{ w.name }}</h3>
+        </div>
+        <app-status-badge [status]="w.status"></app-status-badge>
+      </div>
+
+      <div class="wh-body">
+        <div class="info-row">
+          <mat-icon>location_on</mat-icon>
+          <span>{{ w.location }}</span>
+        </div>
+        <div class="info-row">
+          <mat-icon>person</mat-icon>
+          <span>Manager: {{ w.manager }} ({{ w.phone }})</span>
+        </div>
+
+        <div class="capacity-section">
+          <div class="cap-labels">
+            <span>Occupancy Ratio</span>
+            <span class="cap-pct">{{ getOccupancyPct(w) }}%</span>
+          </div>
+          <mat-progress-bar mode="determinate" [value]="getOccupancyPct(w)"></mat-progress-bar>
+        </div>
+
+        <div class="stats-mini-grid">
+          <div class="stat-box">
+            <span class="stat-lbl">Capacity</span>
+            <span class="stat-val">{{ w.totalCapacity | number }}</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-lbl">Used Space</span>
+            <span class="stat-val">{{ w.usedSpace | number }}</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-lbl">Available</span>
+            <span class="stat-val">{{ (w.totalCapacity - w.usedSpace) | number }}</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-lbl">Stock Count</span>
+            <span class="stat-val">{{ w.currentStock | number }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wh-footer">
+        <button mat-stroked-button color="primary" (click)="editWarehouse(w)">
+          <mat-icon>edit</mat-icon> Edit Facility
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
