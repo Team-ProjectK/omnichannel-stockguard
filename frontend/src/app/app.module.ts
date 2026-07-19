@@ -29,6 +29,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormsModule } from '@angular/forms';
+import { StatCardComponent } from './shared/components/stat-card/stat-card.component';
+import { NgChartsModule } from 'ng2-charts';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +52,8 @@ import { FormsModule } from '@angular/forms';
     LoadingSpinnerComponent,
     ConfirmationDialogComponent,
     SearchBarComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    StatCardComponent
   ],
   imports: [
   BrowserModule,
@@ -61,7 +65,8 @@ FormsModule,
   MatIconModule,
   MatButtonModule,
   MatListModule,
-  MatDividerModule
+  MatDividerModule,
+  NgChartsModule
 ],
   providers: [],
   bootstrap: [AppComponent]

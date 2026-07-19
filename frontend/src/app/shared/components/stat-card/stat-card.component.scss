@@ -1,0 +1,57 @@
+.stat-card{
+    padding:24px;
+    border-radius:16px;
+    color:white;
+    transition:.3s;
+    cursor:pointer;
+}
+
+.stat-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 12px 25px rgba(0,0,0,.15);
+}
+
+.card-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+.card-content h3{
+    margin:0;
+    font-size:15px;
+    opacity:.9;
+}
+
+.card-content h1{
+    margin:15px 0;
+    font-size:36px;
+}
+
+.card-content p{
+    margin:0;
+    font-size:13px;
+    opacity:.85;
+}
+
+mat-icon{
+    font-size:44px;
+    width:44px;
+    height:44px;
+}
+
+.blue{
+    background:#2563eb;
+}
+
+.green{
+    background:#16a34a;
+}
+
+.orange{
+    background:#ea580c;
+}
+
+.red{
+    background:#dc2626;
+}

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ChartConfiguration, ChartType } from 'chart.js';
 
 interface DashboardCard {
   title: string;
@@ -51,4 +52,34 @@ export class DashboardComponent {
 
   ];
 
+  // Inventory Trend Chart
+  public lineChartData: ChartConfiguration<'line'>['data'] = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [
+      {
+        data: [120, 145, 138, 170, 185, 210],
+        label: 'Inventory',
+        fill: true,
+        tension: 0.4
+      }
+    ]
+  };
+
+  public lineChartType: ChartType = 'line';
+// Product Category Pie Chart
+public pieChartType: ChartType = 'pie';
+
+public pieChartData: ChartConfiguration<'pie'>['data'] = {
+  labels: [
+    'Electronics',
+    'Furniture',
+    'Groceries',
+    'Clothing'
+  ],
+  datasets: [
+    {
+      data: [45, 25, 18, 12]
+    }
+  ]
+};
 }

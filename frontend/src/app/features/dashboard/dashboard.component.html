@@ -1,30 +1,80 @@
-<div class="cards">
+<div class="dashboard">
+
+  <!-- KPI Cards -->
+  <div class="cards">
 
     <div
-        class="card"
-        *ngFor="let card of dashboardCards"
-        [ngClass]="card.color">
+      class="card"
+      *ngFor="let card of dashboardCards"
+      [ngClass]="card.color">
 
-        <div class="card-header">
+      <div class="card-header">
 
-            <div>
-
-                <h3>{{card.title}}</h3>
-
-                <h1>{{card.value}}</h1>
-
-                <span>{{card.description}}</span>
-
-            </div>
-
-            <mat-icon>
-
-                {{card.icon}}
-
-            </mat-icon>
-
+        <div>
+          <h3>{{ card.title }}</h3>
+          <h1>{{ card.value }}</h1>
+          <span>{{ card.description }}</span>
         </div>
 
+        <mat-icon>{{ card.icon }}</mat-icon>
+
+      </div>
+
     </div>
+
+  </div>
+
+  <!-- Charts Section -->
+  <div class="dashboard-grid">
+
+    <div class="panel">
+      <h2>Inventory Trend</h2>
+
+      <canvas
+        baseChart
+        [data]="lineChartData"
+        [type]="lineChartType">
+      </canvas>
+    </div>
+   <div class="panel">
+
+  <h2>Product Categories</h2>
+
+  <canvas
+      baseChart
+      [data]="pieChartData"
+      [type]="pieChartType">
+  </canvas>
+
+</div> 
+
+    <div class="panel">
+      <h2>Recent Products</h2>
+
+      <table>
+        <tr>
+          <th>Product</th>
+          <th>Stock</th>
+        </tr>
+
+        <tr>
+          <td>Laptop</td>
+          <td>120</td>
+        </tr>
+
+        <tr>
+          <td>Keyboard</td>
+          <td>85</td>
+        </tr>
+
+        <tr>
+          <td>Mouse</td>
+          <td>200</td>
+        </tr>
+
+      </table>
+    </div>
+
+  </div>
 
 </div>
