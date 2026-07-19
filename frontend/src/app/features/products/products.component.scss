@@ -1,77 +1,83 @@
-.products-container{
-    padding:24px;
+.products-container {
+  padding: 24px;
 }
 
-.page-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:24px;
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    background:#fff;
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
+.table-container {
+  overflow: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-thead{
-    background:#f5f7fa;
+table {
+  width: 100%;
+  min-width: 900px;
 }
 
-th,
-td{
-    padding:16px;
-    text-align:left;
-    border-bottom:1px solid #e5e7eb;
+.mat-mdc-header-row {
+  background: #f5f7fa;
 }
 
-tbody tr:hover{
-    background:#f9fafb;
+.mat-mdc-header-cell {
+  font-weight: 600;
 }
 
-.status{
-    padding:6px 12px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:600;
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.in-stock{
-    background:#dcfce7;
-    color:#166534;
+.in-stock {
+  background: #dcfce7;
+  color: #166534;
 }
 
-.low-stock{
-    background:#fef3c7;
-    color:#b45309;
+.low-stock {
+  background: #fef3c7;
+  color: #b45309;
 }
 
-.out-stock{
-    background:#fee2e2;
-    color:#b91c1c;
-}
-.filters {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
+.out-stock {
+  background: #fee2e2;
+  color: #b91c1c;
 }
 
-.filters input,
-.filters select {
-    padding: 10px 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    min-width: 220px;
-    font-size: 14px;
+@media (max-width: 768px) {
+
+  .products-container {
+    padding: 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+}
+.search-box{
+
+    width:350px;
+
+    margin-bottom:20px;
+
 }
 
-.filters input:focus,
-.filters select:focus {
-    outline: none;
-    border-color: #2563eb;
+@media(max-width:768px){
+
+.search-box{
+
+width:100%;
+
+}
+
 }

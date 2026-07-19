@@ -32,6 +32,10 @@ import { FormsModule } from '@angular/forms';
 import { StatCardComponent } from './shared/components/stat-card/stat-card.component';
 import { NgChartsModule } from 'ng2-charts';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -68,6 +72,10 @@ FormsModule,
   MatListModule,
   MatDividerModule,
   MatTableModule,
+  MatPaginatorModule,
+MatSortModule,
+MatFormFieldModule,
+MatInputModule,
   NgChartsModule
 ],
   providers: [],

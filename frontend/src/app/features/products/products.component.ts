@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+
 import { ProductService } from '../../core/services/product.service';
 import { Product } from '../../shared/models/product';
 
@@ -7,55 +11,55 @@ import { Product } from '../../shared/models/product';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss']
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent implements OnInit, AfterViewInit {
 
-  products: Product[] = [];
-  filteredProducts: Product[] = [];
-
-  searchText = '';
-  selectedCategory = 'All';
-  selectedStatus = 'All';
-
-  categories = [
-    'All',
-    'Electronics',
-    'Accessories'
+  displayedColumns: string[] = [
+    'name',
+    'sku',
+    'category',
+    'price',
+    'stock',
+    'status',
+    'actions'
   ];
 
-  statuses = [
-    'All',
-    'In Stock',
-    'Low Stock',
-    'Out of Stock'
-  ];
+  dataSource = new MatTableDataSource<Product>();
+
+  @ViewChild(MatPaginator)
+  paginator!: MatPaginator;
+
+  @ViewChild(MatSort)
+  sort!: MatSort;
 
   constructor(private productService: ProductService) {}
 
-  ngOnInit(): void {
-    this.products = this.productService.getProducts();
-    this.filteredProducts = [...this.products];
+ ngOnInit(): void {
+
+  this.dataSource.data = this.productService.getProducts();
+
+  this.dataSource.filterPredicate = (product: Product, filter: string) => {
+
+    const value = filter.trim().toLowerCase();
+
+    return (
+      product.name.toLowerCase().includes(value) ||
+      product.sku.toLowerCase().includes(value)
+    );
+
+  };
+
+}
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
+  applyFilter(event: Event): void {
 
-  applyFilters(): void {
+  const filterValue = (event.target as HTMLInputElement).value;
 
-    this.filteredProducts = this.products.filter(product => {
+  this.dataSource.filter = filterValue.trim().toLowerCase();
 
-      const matchesSearch =
-        product.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        product.sku.toLowerCase().includes(this.searchText.toLowerCase());
-
-      const matchesCategory =
-        this.selectedCategory === 'All' ||
-        product.category === this.selectedCategory;
-
-      const matchesStatus =
-        this.selectedStatus === 'All' ||
-        product.status === this.selectedStatus;
-
-      return matchesSearch && matchesCategory && matchesStatus;
-
-    });
-
-  }
+}
 
 }
