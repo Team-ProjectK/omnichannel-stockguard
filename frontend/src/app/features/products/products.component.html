@@ -11,6 +11,40 @@
 
   </div>
 
+  <!-- Filters -->
+
+  <div class="filters">
+
+    <input
+      type="text"
+      placeholder="Search by Product or SKU..."
+      [(ngModel)]="searchText"
+      (input)="applyFilters()">
+
+    <select
+      [(ngModel)]="selectedCategory"
+      (change)="applyFilters()">
+
+      <option *ngFor="let category of categories">
+        {{ category }}
+      </option>
+
+    </select>
+
+    <select
+      [(ngModel)]="selectedStatus"
+      (change)="applyFilters()">
+
+      <option *ngFor="let status of statuses">
+        {{ status }}
+      </option>
+
+    </select>
+
+  </div>
+
+  <!-- Product Table -->
+
   <table>
 
     <thead>
@@ -29,7 +63,7 @@
 
     <tbody>
 
-      <tr *ngFor="let product of products">
+      <tr *ngFor="let product of filteredProducts">
 
         <td>{{ product.name }}</td>
 

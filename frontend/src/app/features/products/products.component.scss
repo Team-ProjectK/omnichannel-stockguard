@@ -54,3 +54,24 @@ tbody tr:hover{
     background:#fee2e2;
     color:#b91c1c;
 }
+.filters {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.filters input,
+.filters select {
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    min-width: 220px;
+    font-size: 14px;
+}
+
+.filters input:focus,
+.filters select:focus {
+    outline: none;
+    border-color: #2563eb;
+}
