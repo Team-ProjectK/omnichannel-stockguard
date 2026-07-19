@@ -6,49 +6,59 @@ import { Product } from '../../shared/models/product';
 })
 export class ProductService {
 
-  constructor() {}
+  private storageKey = 'products';
+
+  private defaultProducts: Product[] = [
+
+    {
+      id: 1,
+      name: 'Laptop',
+      sku: 'ELE001',
+      category: 'Electronics',
+      supplier: 'Dell',
+      price: 65000,
+      stock: 25,
+      reorderLevel: 5,
+      status: 'In Stock'
+    },
+
+    {
+      id: 2,
+      name: 'Wireless Mouse',
+      sku: 'ACC001',
+      category: 'Accessories',
+      supplier: 'Logitech',
+      price: 1200,
+      stock: 8,
+      reorderLevel: 5,
+      status: 'Low Stock'
+    }
+
+  ];
 
   getProducts(): Product[] {
 
-    return [
+    const data = localStorage.getItem(this.storageKey);
 
-      {
-        id: 1,
-        name: 'Dell Laptop',
-        sku: 'LP001',
-        category: 'Electronics',
-        price: 65000,
-        stock: 8,
-        reorderLevel: 20,
-        supplier: 'Dell',
-        status: 'Low Stock'
-      },
+    if (data) {
+      return JSON.parse(data) as Product[];
+    }
 
-      {
-        id: 2,
-        name: 'Mechanical Keyboard',
-        sku: 'KB102',
-        category: 'Accessories',
-        price: 4500,
-        stock: 45,
-        reorderLevel: 20,
-        supplier: 'Logitech',
-        status: 'In Stock'
-      },
+    localStorage.setItem(
+      this.storageKey,
+      JSON.stringify(this.defaultProducts)
+    );
 
-      {
-        id: 3,
-        name: 'Wireless Mouse',
-        sku: 'MS220',
-        category: 'Accessories',
-        price: 1200,
-        stock: 0,
-        reorderLevel: 15,
-        supplier: 'HP',
-        status: 'Out of Stock'
-      }
+    return [...this.defaultProducts];
 
-    ];
+  }
+
+  saveProducts(products: Product[]): void {
+
+    localStorage.setItem(
+      this.storageKey,
+      JSON.stringify(products)
+    );
 
   }
 

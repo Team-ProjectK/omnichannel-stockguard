@@ -10,7 +10,6 @@ import { FooterComponent } from './core/layout/footer/footer.component';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ProductsComponent } from './features/products/products.component';
-import { InventoryComponent } from './features/inventory/inventory.component';
 import { PricingComponent } from './features/pricing/pricing.component';
 import { ReorderComponent } from './features/reorder/reorder.component';
 import { AlertsComponent } from './features/alerts/alerts.component';
@@ -36,6 +35,14 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
+import { ProductDialogComponent } from './features/products/components/product-dialog/product-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ProductDetailsDialogComponent } from './features/products/components/product-details-dialog/product-details-dialog.component';
+import { InventoryComponent } from './features/inventory/inventory/inventory.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +65,9 @@ import { MatInputModule } from '@angular/material/input';
     ConfirmationDialogComponent,
     SearchBarComponent,
     NotFoundComponent,
-    StatCardComponent
+    StatCardComponent,
+    ProductDialogComponent,
+    ProductDetailsDialogComponent
   ],
   imports: [
   BrowserModule,
@@ -76,6 +85,12 @@ FormsModule,
 MatSortModule,
 MatFormFieldModule,
 MatInputModule,
+MatSelectModule,
+MatCardModule,
+ReactiveFormsModule,
+
+MatDialogModule,
+MatSnackBarModule,
   NgChartsModule
 ],
   providers: [],

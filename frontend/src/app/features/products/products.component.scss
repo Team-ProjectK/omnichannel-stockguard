@@ -1,6 +1,12 @@
 .products-container {
   padding: 24px;
+  background: #f5f7fb;
+  min-height: 100vh;
 }
+
+/* ===============================
+   Page Header
+================================= */
 
 .page-header {
   display: flex;
@@ -8,6 +14,63 @@
   align-items: center;
   margin-bottom: 24px;
 }
+
+.page-header h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+/* ===============================
+   Toolbar
+================================= */
+
+.toolbar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 300px;
+}
+
+.toolbar mat-form-field {
+  width: 220px;
+}
+
+/* ===============================
+   Summary Card
+================================= */
+
+.summary-row {
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  width: 220px;
+  padding: 20px;
+}
+
+.summary-card h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.summary-card h2 {
+  margin: 10px 0 0;
+  font-size: 30px;
+  color: #1976d2;
+}
+
+/* ===============================
+   Material Table
+================================= */
 
 .table-container {
   overflow: auto;
@@ -22,16 +85,27 @@ table {
 }
 
 .mat-mdc-header-row {
-  background: #f5f7fa;
+  background: #f3f4f6;
 }
 
 .mat-mdc-header-cell {
   font-weight: 600;
+  color: #374151;
 }
 
+.mat-mdc-cell,
+.mat-mdc-header-cell {
+  padding: 16px;
+}
+
+/* ===============================
+   Status Chips
+================================= */
+
 .status {
+  display: inline-block;
   padding: 6px 12px;
-  border-radius: 20px;
+  border-radius: 999px;
   font-size: 13px;
   font-weight: 600;
 }
@@ -51,33 +125,30 @@ table {
   color: #b91c1c;
 }
 
+/* ===============================
+   Responsive
+================================= */
+
 @media (max-width: 768px) {
 
   .products-container {
-    padding: 12px;
+    padding: 16px;
   }
 
   .page-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 16px;
   }
 
-}
-.search-box{
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-    width:350px;
-
-    margin-bottom:20px;
-
-}
-
-@media(max-width:768px){
-
-.search-box{
-
-width:100%;
-
-}
-
+  .search-field,
+  .toolbar mat-form-field,
+  .summary-card {
+    width: 100%;
+  }
 }
