@@ -1,1 +1,30 @@
-<p>dashboard works!</p>
+<div class="cards">
+
+    <div
+        class="card"
+        *ngFor="let card of dashboardCards"
+        [ngClass]="card.color">
+
+        <div class="card-header">
+
+            <div>
+
+                <h3>{{card.title}}</h3>
+
+                <h1>{{card.value}}</h1>
+
+                <span>{{card.description}}</span>
+
+            </div>
+
+            <mat-icon>
+
+                {{card.icon}}
+
+            </mat-icon>
+
+        </div>
+
+    </div>
+
+</div>
