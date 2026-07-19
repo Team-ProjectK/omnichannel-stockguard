@@ -17,7 +17,18 @@ import { AlertsComponent } from './features/alerts/alerts.component';
 import { AnalyticsComponent } from './features/analytics/analytics.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { SettingsComponent } from './features/settings/settings.component';
-
+import { PageHeaderComponent } from './shared/components/page-header/page-header.component';
+import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
+import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
+import { SearchBarComponent } from './shared/components/search-bar/search-bar.component';
+import { NotFoundComponent } from './shared/components/not-found/not-found.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDividerModule } from '@angular/material/divider';
+import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,13 +44,25 @@ import { SettingsComponent } from './features/settings/settings.component';
     AlertsComponent,
     AnalyticsComponent,
     LoginComponent,
-    SettingsComponent
+    SettingsComponent,
+    PageHeaderComponent,
+    LoadingSpinnerComponent,
+    ConfirmationDialogComponent,
+    SearchBarComponent,
+    NotFoundComponent
   ],
   imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule
-  ],
+  BrowserModule,
+  AppRoutingModule,
+  BrowserAnimationsModule,
+FormsModule,
+  MatToolbarModule,
+  MatSidenavModule,
+  MatIconModule,
+  MatButtonModule,
+  MatListModule,
+  MatDividerModule
+],
   providers: [],
   bootstrap: [AppComponent]
 })

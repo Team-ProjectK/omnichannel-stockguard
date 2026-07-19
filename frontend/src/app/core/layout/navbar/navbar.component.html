@@ -1,1 +1,56 @@
-<p>navbar works!</p>
+<header class="navbar">
+
+    <div class="left-section">
+
+        <h2>Dashboard</h2>
+
+        <p>{{ today | date:'EEEE, dd MMMM yyyy' }}</p>
+
+    </div>
+
+    <div class="right-section">
+
+        <div class="search-box">
+
+            <mat-icon>search</mat-icon>
+
+            <input
+                type="text"
+                placeholder="Search products..."
+            >
+
+        </div>
+
+        <button mat-icon-button>
+
+            <mat-icon>notifications</mat-icon>
+
+        </button>
+
+        <button mat-icon-button>
+
+            <mat-icon>dark_mode</mat-icon>
+
+        </button>
+
+        <div class="profile">
+
+            <div class="avatar">
+
+                V
+
+            </div>
+
+            <div>
+
+                <h4>Vinay</h4>
+
+                <small>Administrator</small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
