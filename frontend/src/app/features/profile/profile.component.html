@@ -1,4 +1,4 @@
-<div class="profile-container">
+<div class="profile-container animate-fade-in">
   <div class="header-section">
     <h2>User Profile & Settings</h2>
     <p class="subtitle">Manage account info, security settings, notification rules, and visual theme preferences.</p>
@@ -6,7 +6,7 @@
 
   <div class="profile-layout">
     <!-- Left Sidebar Card -->
-    <div class="user-card mat-elevation-z1">
+    <div class="user-card mat-elevation-z1 glass-panel">
       <div class="avatar-circle">
         {{ userProfile.fullName[0] }}
       </div>
@@ -101,6 +101,9 @@
 
             <h3>Theme Preferences</h3>
             <div class="toggle-list">
+              <mat-slide-toggle [checked]="isDark" (change)="toggleDarkTheme($event.checked)">
+                Dark Mode Interface
+              </mat-slide-toggle>
               <mat-slide-toggle formControlName="compactMode">Compact Data Density</mat-slide-toggle>
             </div>
 

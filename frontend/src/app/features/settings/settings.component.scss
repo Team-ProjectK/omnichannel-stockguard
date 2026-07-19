@@ -1,0 +1,45 @@
+.settings-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header-section {
+  h2 { font-size: 24px; font-weight: 700; margin: 0; color: #0f172a; }
+  .subtitle { margin: 4px 0 0 0; color: #64748b; font-size: 14px; }
+}
+
+.tab-panel {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  h3 { margin: 0; font-size: 16px; color: #0f172a; font-weight: 700; }
+  .description { font-size: 13px; color: #64748b; margin: -10px 0 6px 0; }
+
+  .form-row {
+    display: flex;
+    gap: 16px;
+    mat-form-field { flex: 1; }
+  }
+
+  .toggle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    mat-slide-toggle {
+      font-size: 14px;
+      font-weight: 500;
+      color: #334155;
+    }
+  }
+
+  button[type="submit"] { align-self: flex-start; font-weight: 700; height: 44px; padding: 0 24px; }
+}

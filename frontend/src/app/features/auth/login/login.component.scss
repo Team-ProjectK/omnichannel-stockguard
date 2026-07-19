@@ -1,0 +1,120 @@
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  padding: 24px;
+
+  &.dark-theme {
+    background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+  }
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 36px 32px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 24px;
+
+  .brand-icon {
+    font-size: 44px;
+    width: 44px;
+    height: 44px;
+    color: #2563eb;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+    color: #0f172a;
+  }
+
+  p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 4px 0 0 0;
+  }
+}
+
+.auth-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 24px;
+
+  .tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &.active {
+      background: #ffffff;
+      color: #2563eb;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+  }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    margin: -4px 0 8px 0;
+
+    .forgot-link {
+      color: #2563eb;
+      cursor: pointer;
+      font-weight: 500;
+    }
+  }
+
+  .submit-btn {
+    height: 48px;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 8px;
+    margin-top: 6px;
+  }
+}
+
+.demo-box {
+  margin-top: 24px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #475569;
+}

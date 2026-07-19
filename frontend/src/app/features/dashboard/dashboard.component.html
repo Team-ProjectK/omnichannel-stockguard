@@ -1,9 +1,24 @@
-<div class="dashboard">
+<div class="dashboard animate-fade-in">
+
+  <!-- Welcome Banner -->
+  <div class="welcome-banner glass-panel animate-slide-up">
+    <div class="banner-text">
+      <div class="banner-tag">
+        <span class="greeting">{{ greetingMessage }}</span> &bull; {{ todayDate | date:'EEEE, dd MMMM yyyy' }}
+      </div>
+      <h2>Welcome back, Admin 👋</h2>
+      <p>Monitor inventory, pricing, warehouses, suppliers and AI insights from one intelligent dashboard.</p>
+    </div>
+    <div class="banner-badge">
+      <mat-icon>shield</mat-icon>
+      <span>Enterprise Hub Active</span>
+    </div>
+  </div>
 
   <!-- KPI Cards -->
-  <div class="cards">
+  <div class="cards-wrapper">
     <div
-      class="card"
+      class="card mat-elevation-z1"
       *ngFor="let card of dashboardCards"
       [ngClass]="card.color">
       <div class="card-header">
@@ -23,40 +38,31 @@
       mat-raised-button
       *ngFor="let action of quickActions"
       [color]="action.color"
-      (click)="handleAction(action)">
+      (click)="handleAction(action)"
+      class="action-btn">
       <mat-icon>{{ action.icon }}</mat-icon>
       {{ action.title }}
     </button>
   </div>
 
-  <!-- Main Charts Grid -->
-  <div class="dashboard-grid">
-    <!-- Inventory Trend -->
-    <div class="panel">
-      <h2>Inventory Trend</h2>
-      <canvas
-        baseChart
-        [data]="lineChartData"
-        [type]="lineChartType">
-      </canvas>
+  <!-- Inventory Trend Chart (Full Width) -->
+  <div class="panel main-chart-panel mat-elevation-z1">
+    <div class="panel-header">
+      <h2>Inventory Trend Analysis</h2>
+      <span class="chip">Real-time Movement</span>
     </div>
-
-    <!-- Product Categories -->
-    <div class="panel">
-      <h2>Product Categories</h2>
-      <canvas
-        baseChart
-        [data]="pieChartData"
-        [type]="pieChartType">
-      </canvas>
-    </div>
+    <canvas
+      baseChart
+      [data]="lineChartData"
+      [type]="lineChartType">
+    </canvas>
   </div>
 
-  <!-- Secondary Widgets Grid -->
+  <!-- Orders & Top Selling Grid -->
   <div class="dashboard-grid">
 
     <!-- Recent Orders -->
-    <div class="panel table-panel">
+    <div class="panel table-panel mat-elevation-z1">
       <div class="panel-header">
         <h2>Recent Orders</h2>
       </div>
@@ -83,7 +89,7 @@
     </div>
 
     <!-- Top Selling Products -->
-    <div class="panel table-panel">
+    <div class="panel table-panel mat-elevation-z1">
       <div class="panel-header">
         <h2>Top Selling Products</h2>
       </div>
@@ -109,60 +115,78 @@
 
   </div>
 
-  <!-- Low Stock Products Table -->
-  <div class="panel table-panel">
-    <div class="panel-header">
-      <h2>Low Stock Products Alert</h2>
+  <!-- Low Stock Alerts & Recent Activities -->
+  <div class="dashboard-grid">
+    <!-- Low Stock Products Table -->
+    <div class="panel table-panel mat-elevation-z1">
+      <div class="panel-header">
+        <h2>Low Stock Alerts</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>SKU</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of lowStockProducts">
+            <td>{{ product.name }}</td>
+            <td>{{ product.sku }}</td>
+            <td>{{ product.stock }}</td>
+            <td>
+              <span
+                class="status"
+                [ngClass]="{
+                  'critical': product.status === 'Critical',
+                  'low': product.status === 'Low',
+                  'normal': product.status === 'Normal'
+                }">
+                {{ product.status }}
+              </span>
+            </td>
+            <td>
+              <button mat-raised-button color="primary" class="btn-sm" routerLink="/inventory">
+                View
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>SKU</th>
-          <th>Stock</th>
-          <th>Reorder Level</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let product of lowStockProducts">
-          <td>{{ product.name }}</td>
-          <td>{{ product.sku }}</td>
-          <td>{{ product.stock }}</td>
-          <td>{{ product.reorderLevel }}</td>
-          <td>
-            <span
-              class="status"
-              [ngClass]="{
-                'critical': product.status === 'Critical',
-                'low': product.status === 'Low',
-                'normal': product.status === 'Normal'
-              }">
-              {{ product.status }}
-            </span>
-          </td>
-          <td>
-            <button mat-raised-button color="primary" routerLink="/inventory">
-              View
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 
-  <!-- Recent Activity Feed -->
-  <div class="panel">
-    <h2>Recent Activities</h2>
-    <div class="activity-feed">
-      <div class="activity-item" *ngFor="let act of recentActivities">
-        <mat-icon class="act-icon">{{ act.icon }}</mat-icon>
-        <div class="act-details">
-          <p>{{ act.title }}</p>
-          <small>{{ act.time }}</small>
+    <!-- Recent Activity Feed -->
+    <div class="panel mat-elevation-z1">
+      <div class="panel-header">
+        <h2>Recent System Activities</h2>
+      </div>
+      <div class="activity-feed">
+        <div class="activity-item" *ngFor="let act of recentActivities">
+          <mat-icon class="act-icon">{{ act.icon }}</mat-icon>
+          <div class="act-details">
+            <p>{{ act.title }}</p>
+            <small>{{ act.time }}</small>
+          </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Product Categories Pie Chart (Placed Below Main Dashboard Widgets) -->
+  <div class="panel pie-chart-panel mat-elevation-z1">
+    <div class="panel-header">
+      <h2>Product Category Distribution</h2>
+      <span class="chip">Inventory Breakdown</span>
+    </div>
+    <div class="pie-container">
+      <canvas
+        baseChart
+        [data]="pieChartData"
+        [type]="pieChartType">
+      </canvas>
     </div>
   </div>
 

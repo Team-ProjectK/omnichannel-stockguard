@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { Router } from '@angular/router';
 
@@ -51,8 +51,26 @@ interface ActivityItem {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  greetingMessage = 'Good Day';
+  todayDate: Date = new Date();
+
   constructor(private router: Router) {}
+
+  ngOnInit(): void {
+    this.setGreeting();
+  }
+
+  private setGreeting(): void {
+    const hours = new Date().getHours();
+    if (hours < 12) {
+      this.greetingMessage = 'Good Morning';
+    } else if (hours < 18) {
+      this.greetingMessage = 'Good Afternoon';
+    } else {
+      this.greetingMessage = 'Good Evening';
+    }
+  }
 
   // =========================
   // Dashboard KPI Cards

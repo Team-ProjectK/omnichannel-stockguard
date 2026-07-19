@@ -3,12 +3,16 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .header-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
 
   h2 { font-size: 24px; font-weight: 700; margin: 0; color: #0f172a; }
   .subtitle { margin: 4px 0 0 0; color: #64748b; font-size: 14px; }
@@ -19,19 +23,29 @@
   padding: 16px 20px 4px 20px;
   border-radius: 8px;
   border: 1px solid #e2e8f0;
+  width: 100%;
+  box-sizing: border-box;
 
   .filter-row {
     display: flex;
     gap: 16px;
-    .search-field { flex: 1; }
+    width: 100%;
+    
+    .search-field {
+      width: 100%;
+      max-width: 100%;
+      flex: 1 1 100%;
+    }
   }
 }
 
 .table-card {
   background: #ffffff;
   border-radius: 8px;
-  overflow: hidden;
+  overflow-x: auto;
   border: 1px solid #e2e8f0;
+  width: 100%;
+  box-sizing: border-box;
 
   table { width: 100%; }
   th { font-weight: 600; color: #475569; background-color: #f8fafc; }

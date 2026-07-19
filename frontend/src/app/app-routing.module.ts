@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { HomeComponent } from './features/home/home.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ProductsComponent } from './features/products/products.component';
 import { InventoryComponent } from './features/inventory/inventory/inventory.component';
@@ -21,7 +22,9 @@ import { SettingsComponent } from './features/settings/settings.component';
 import { LoginComponent } from './features/auth/login/login.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
+  { path: 'login', component: LoginComponent },
 
   { path: 'dashboard', component: DashboardComponent },
   { path: 'products', component: ProductsComponent },
@@ -41,9 +44,8 @@ const routes: Routes = [
   { path: 'notifications', component: NotificationsComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'settings', component: SettingsComponent },
-  { path: 'login', component: LoginComponent },
 
-  { path: '**', redirectTo: 'dashboard' }
+  { path: '**', redirectTo: 'home' }
 ];
 
 @NgModule({

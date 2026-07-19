@@ -1,1 +1,60 @@
-<p>analytics works!</p>
+<div class="analytics-container animate-fade-in">
+  <div class="header-section">
+    <div>
+      <h2>Advanced Inventory Analytics</h2>
+      <p class="subtitle">Deep dive into sales velocity, stock turnover ratios, margin profitability, and node efficiency.</p>
+    </div>
+    <div class="actions">
+      <mat-form-field appearance="outline" class="period-select">
+        <mat-label>Time Period</mat-label>
+        <mat-select [(ngModel)]="selectedPeriod">
+          <mat-option value="7days">Last 7 Days</mat-option>
+          <mat-option value="30days">Last 30 Days</mat-option>
+          <mat-option value="90days">Quarter to Date</mat-option>
+          <mat-option value="1year">Year to Date</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- KPI Summary Grid -->
+  <div class="cards-grid">
+    <app-summary-card title="Sales Velocity" [value]="summary.salesVelocity" subtitle="+12.4% vs last period" icon="trending_up" color="blue"></app-summary-card>
+    <app-summary-card title="Stock Turnover Ratio" [value]="summary.stockTurnoverRatio + 'x'" subtitle="Annualized rate" icon="loop" color="purple"></app-summary-card>
+    <app-summary-card title="Gross Margin" [value]="summary.grossMarginPct + '%'" subtitle="Optimized via AI" icon="percent" color="green"></app-summary-card>
+    <app-summary-card title="Fulfillment Accuracy" [value]="summary.fulfillmentAccuracyPct + '%'" subtitle="On-time deliveries" icon="verified" color="orange"></app-summary-card>
+  </div>
+
+  <!-- Main Charts Grid -->
+  <div class="charts-grid">
+
+    <!-- Chart 1: Sales Velocity Trend -->
+    <div class="chart-panel mat-elevation-z1">
+      <div class="panel-header">
+        <h3>Sales Velocity Trend</h3>
+        <span class="chip font-mono">Daily Unit Rate</span>
+      </div>
+      <canvas baseChart [data]="velocityChartData" [type]="velocityChartType"></canvas>
+    </div>
+
+    <!-- Chart 2: Warehouse Turnover Ratios -->
+    <div class="chart-panel mat-elevation-z1">
+      <div class="panel-header">
+        <h3>Stock Turnover by Facility</h3>
+        <span class="chip font-mono">Turnover Rate</span>
+      </div>
+      <canvas baseChart [data]="turnoverChartData" [type]="turnoverChartType"></canvas>
+    </div>
+
+  </div>
+
+  <!-- Revenue & Margin Comparison Chart -->
+  <div class="chart-panel mat-elevation-z1 full-width-panel">
+    <div class="panel-header">
+      <h3>Revenue vs Gross Margin Comparison</h3>
+      <span class="chip font-mono">Monthly Growth</span>
+    </div>
+    <canvas baseChart [data]="marginChartData" [type]="marginChartType"></canvas>
+  </div>
+
+</div>

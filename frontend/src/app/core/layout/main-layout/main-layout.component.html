@@ -1,19 +1,16 @@
-<div class="layout">
+<ng-container *ngIf="isStandalonePage; else appLayout">
+  <router-outlet></router-outlet>
+</ng-container>
 
+<ng-template #appLayout>
+  <div class="layout">
     <app-sidebar></app-sidebar>
-
     <div class="main-content">
-
-        <app-navbar></app-navbar>
-
-        <div class="page-content">
-
-            <router-outlet></router-outlet>
-
-        </div>
-
-        <app-footer></app-footer>
-
+      <app-navbar></app-navbar>
+      <div class="page-content">
+        <router-outlet></router-outlet>
+      </div>
+      <app-footer></app-footer>
     </div>
-
-</div>
+  </div>
+</ng-template>

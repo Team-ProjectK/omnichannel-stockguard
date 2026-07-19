@@ -1,1 +1,76 @@
-<p>alerts works!</p>
+<div class="alerts-container animate-fade-in">
+  <div class="header-section">
+    <div>
+      <h2>Alerts & Risk Monitoring Hub</h2>
+      <p class="subtitle">Real-time critical inventory warnings, pricing anomaly notifications, and operational reminders.</p>
+    </div>
+  </div>
+
+  <!-- KPI Summary Badges -->
+  <div class="summary-pills">
+    <div class="pill-card pill-critical">
+      <mat-icon>error</mat-icon>
+      <div>
+        <strong>{{ criticalCount }} Critical Alerts</strong>
+        <small>Immediate action required</small>
+      </div>
+    </div>
+    <div class="pill-card pill-warning">
+      <mat-icon>warning</mat-icon>
+      <div>
+        <strong>{{ warningCount }} Warnings</strong>
+        <small>Threshold notices</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Pills Bar -->
+  <div class="filter-bar">
+    <button mat-flat-button [color]="activeTab === 'All' ? 'primary' : ''" (click)="activeTab = 'All'">All Alerts</button>
+    <button mat-flat-button [color]="activeTab === 'Critical' ? 'warn' : ''" (click)="activeTab = 'Critical'">Critical Only</button>
+    <button mat-flat-button [color]="activeTab === 'Stock' ? 'primary' : ''" (click)="activeTab = 'Stock'">Stock Alerts</button>
+    <button mat-flat-button [color]="activeTab === 'Pricing' ? 'primary' : ''" (click)="activeTab = 'Pricing'">Pricing Alerts</button>
+    <button mat-flat-button [color]="activeTab === 'System' ? 'primary' : ''" (click)="activeTab = 'System'">System Reminders</button>
+  </div>
+
+  <!-- Alert Cards Stack -->
+  <div class="alerts-list">
+    <div
+      *ngFor="let alert of filteredAlerts"
+      class="alert-card mat-elevation-z1"
+      [ngClass]="'severity-' + alert.severity.toLowerCase()">
+
+      <div class="alert-icon-box">
+        <mat-icon *ngIf="alert.severity === 'Critical'">error</mat-icon>
+        <mat-icon *ngIf="alert.severity === 'Warning'">warning</mat-icon>
+        <mat-icon *ngIf="alert.severity === 'Info'">info</mat-icon>
+      </div>
+
+      <div class="alert-body">
+        <div class="alert-header">
+          <div class="title-group">
+            <h3>{{ alert.title }}</h3>
+            <span class="severity-badge">{{ alert.severity }}</span>
+            <span class="item-chip">{{ alert.affectedItem }}</span>
+          </div>
+          <span class="time">{{ alert.timestamp }}</span>
+        </div>
+
+        <p class="message">{{ alert.message }}</p>
+
+        <div class="alert-actions">
+          <button mat-raised-button color="primary" class="action-btn" (click)="handleAlertAction(alert)">
+            {{ alert.actionLabel }}
+          </button>
+          <button mat-stroked-button (click)="dismissAlert(alert)">
+            Dismiss Alert
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="filteredAlerts.length === 0" class="empty-padding">
+      <app-empty-state icon="check_circle" title="No Active Alerts" description="All stock levels and system metrics are operating within normal parameters."></app-empty-state>
+    </div>
+  </div>
+</div>

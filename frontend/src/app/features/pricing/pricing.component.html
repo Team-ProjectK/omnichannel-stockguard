@@ -1,1 +1,73 @@
-<p>pricing works!</p>
+<div class="pricing-container animate-fade-in">
+  <div class="header-section">
+    <div>
+      <h2>Intelligent Pricing & Margin Engine</h2>
+      <p class="subtitle">AI-driven dynamic pricing, competitor parity benchmarking, and real-time margin optimization.</p>
+    </div>
+  </div>
+
+  <!-- KPI Summary Grid -->
+  <div class="cards-grid">
+    <app-summary-card title="Avg. Gross Margin" value="34.2%" subtitle="+3.8% via AI repricing" icon="percent" color="green"></app-summary-card>
+    <app-summary-card title="Optimized SKUs" value="114 / 125" subtitle="Dynamic rules active" icon="auto_graph" color="blue"></app-summary-card>
+    <app-summary-card title="Price Parity Index" value="98.4" subtitle="Competitive alignment" icon="balance" color="purple"></app-summary-card>
+  </div>
+
+  <!-- Filter Pills Bar -->
+  <div class="filter-bar">
+    <button mat-flat-button [color]="activeFilter === 'All' ? 'primary' : ''" (click)="activeFilter = 'All'">All Pricing Rules</button>
+    <button mat-flat-button [color]="activeFilter === 'Demand Based' ? 'primary' : ''" (click)="activeFilter = 'Demand Based'">Demand Based</button>
+    <button mat-flat-button [color]="activeFilter === 'Competitor Match' ? 'primary' : ''" (click)="activeFilter = 'Competitor Match'">Competitor Match</button>
+    <button mat-flat-button [color]="activeFilter === 'Premium' ? 'primary' : ''" (click)="activeFilter = 'Premium'">Premium Strategy</button>
+  </div>
+
+  <!-- Pricing Rules Table -->
+  <div class="table-card mat-elevation-z1">
+    <table>
+      <thead>
+        <tr>
+          <th>SKU</th>
+          <th>Product Name</th>
+          <th>Current Price</th>
+          <th>AI Suggested Price</th>
+          <th>Margin %</th>
+          <th>Strategy</th>
+          <th>Auto Reprice</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rule of filteredRules">
+          <td class="font-mono">{{ rule.sku }}</td>
+          <td class="font-bold">{{ rule.productName }}</td>
+          <td class="font-bold">{{ rule.currentPrice | currency:'INR':'symbol':'1.0-0' }}</td>
+          <td class="text-blue font-bold">{{ rule.aiSuggestedPrice | currency:'INR':'symbol':'1.0-0' }}</td>
+          <td>{{ rule.marginPct }}%</td>
+          <td>
+            <span class="strategy-badge">{{ rule.strategy }}</span>
+          </td>
+          <td>
+            <mat-slide-toggle [(ngModel)]="rule.autoReprice" (change)="toggleAutoReprice(rule)"></mat-slide-toggle>
+          </td>
+          <td>
+            <span
+              class="status-chip"
+              [ngClass]="{
+                'opt': rule.status === 'Optimized',
+                'review': rule.status === 'Pending Review',
+                'action': rule.status === 'Action Needed'
+              }">
+              {{ rule.status }}
+            </span>
+          </td>
+          <td>
+            <button mat-raised-button color="primary" class="btn-sm" (click)="applySuggestedPrice(rule)" [disabled]="rule.currentPrice === rule.aiSuggestedPrice">
+              Apply AI Price
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

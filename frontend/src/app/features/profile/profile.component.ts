@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { UserProfileService } from '../../core/services/user-profile.service';
+import { ThemeService } from '../../core/services/theme.service';
 import { UserProfile } from '../../shared/models/user';
 
 @Component({
@@ -14,15 +15,22 @@ export class ProfileComponent implements OnInit {
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
   userProfile!: UserProfile;
+  isDark = false;
 
   constructor(
     private fb: FormBuilder,
     private profileService: UserProfileService,
+    private themeService: ThemeService,
     private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.userProfile = this.profileService.getProfile();
+    this.isDark = this.themeService.currentThemeValue;
+
+    this.themeService.isDarkTheme().subscribe(dark => {
+      this.isDark = dark;
+    });
 
     this.profileForm = this.fb.group({
       fullName: [this.userProfile.fullName, Validators.required],
@@ -34,22 +42,21 @@ export class ProfileComponent implements OnInit {
       lowStockAlerts: [this.userProfile.lowStockAlerts],
       orderUpdates: [this.userProfile.orderUpdates],
       weeklySummary: [this.userProfile.weeklySummary],
-      theme: [this.userProfile.theme],
+      darkThemeToggle: [this.isDark],
       compactMode: [this.userProfile.compactMode]
     });
+  }
 
-    this.passwordForm = this.fb.group({
-      currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
-    });
+  toggleDarkTheme(isDark: boolean): void {
+    this.themeService.setDarkTheme(isDark);
   }
 
   saveProfile(): void {
     if (this.profileForm.valid) {
       const updated: UserProfile = {
         ...this.userProfile,
-        ...this.profileForm.value
+        ...this.profileForm.value,
+        theme: this.isDark ? 'dark' : 'light'
       };
       this.userProfile = updated;
       this.profileService.saveProfile(updated);

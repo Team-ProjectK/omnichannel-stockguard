@@ -19,19 +19,55 @@
             <mat-icon [matBadge]="unreadCount" matBadgeColor="warn" [matBadgeHidden]="unreadCount === 0">notifications</mat-icon>
         </button>
 
-        <button mat-icon-button matTooltip="Toggle Dark Mode">
-            <mat-icon>dark_mode</mat-icon>
+        <button mat-icon-button (click)="toggleTheme()" matTooltip="Toggle Dark Mode">
+            <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
         </button>
 
-        <div class="profile" (click)="goToProfile()" style="cursor: pointer;" matTooltip="View Profile">
-            <div class="avatar">
-                V
-            </div>
-            <div>
+        <!-- Professional Profile Dropdown Trigger -->
+        <div class="profile-trigger" [matMenuTriggerFor]="profileMenu" matTooltip="User Account">
+            <div class="avatar">V</div>
+            <div class="profile-info">
                 <h4>Vinay</h4>
                 <small>Administrator</small>
             </div>
+            <mat-icon class="chevron">expand_more</mat-icon>
         </div>
+
+        <!-- Material Profile Menu -->
+        <mat-menu #profileMenu="matMenu" xPosition="before" class="profile-dropdown-panel">
+            <div class="dropdown-header">
+                <div class="avatar-lg">V</div>
+                <div class="user-details">
+                    <strong>Vinay Administrator</strong>
+                    <small>vinay.admin@stockguard.com</small>
+                    <span class="role-chip">System Admin</span>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item (click)="goToProfile()">
+                <mat-icon color="primary">account_circle</mat-icon>
+                <span>View User Profile</span>
+            </button>
+
+            <button mat-menu-item (click)="goToSettings()">
+                <mat-icon color="primary">settings</mat-icon>
+                <span>Account Settings</span>
+            </button>
+
+            <button mat-menu-item (click)="toggleTheme()">
+                <mat-icon color="primary">{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
+                <span>Switch to {{ isDark ? 'Light' : 'Dark' }} Mode</span>
+            </button>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item (click)="logout()">
+                <mat-icon color="warn">logout</mat-icon>
+                <span class="text-warn">Sign Out</span>
+            </button>
+        </mat-menu>
 
     </div>
 

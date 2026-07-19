@@ -1,0 +1,138 @@
+.alerts-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header-section {
+  h2 { font-size: 24px; font-weight: 700; margin: 0; color: #0f172a; }
+  .subtitle { margin: 4px 0 0 0; color: #64748b; font-size: 14px; }
+}
+
+.summary-pills {
+  display: flex;
+  gap: 16px;
+
+  .pill-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+
+    mat-icon { font-size: 28px; width: 28px; height: 28px; }
+    strong { font-size: 15px; font-weight: 700; display: block; }
+    small { font-size: 12px; font-weight: 500; }
+
+    &.pill-critical {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #991b1b;
+      mat-icon { color: #dc2626; }
+    }
+
+    &.pill-warning {
+      background: #fef3c7;
+      border-color: #fcd34d;
+      color: #92400e;
+      mat-icon { color: #d97706; }
+    }
+  }
+}
+
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.alert-card {
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+
+  &.severity-critical {
+    border-left: 5px solid #dc2626;
+    .alert-icon-box { background: #fee2e2; color: #dc2626; }
+    .severity-badge { background: #fee2e2; color: #991b1b; }
+  }
+
+  &.severity-warning {
+    border-left: 5px solid #d97706;
+    .alert-icon-box { background: #fef3c7; color: #d97706; }
+    .severity-badge { background: #fef3c7; color: #92400e; }
+  }
+
+  &.severity-info {
+    border-left: 5px solid #2563eb;
+    .alert-icon-box { background: #dbeafe; color: #2563eb; }
+    .severity-badge { background: #dbeafe; color: #1e40af; }
+  }
+
+  .alert-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    mat-icon { font-size: 24px; width: 24px; height: 24px; }
+  }
+
+  .alert-body {
+    flex: 1;
+
+    .alert-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+
+      .title-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+
+        h3 { margin: 0; font-size: 16px; font-weight: 700; color: #0f172a; }
+        .severity-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
+        .item-chip { font-size: 11px; font-weight: 600; color: #475569; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-family: monospace; }
+      }
+
+      .time { font-size: 12px; color: #64748b; font-weight: 500; }
+    }
+
+    .message {
+      font-size: 14px;
+      color: #334155;
+      margin: 0 0 16px 0;
+      line-height: 1.5;
+    }
+
+    .alert-actions {
+      display: flex;
+      gap: 12px;
+      .action-btn { font-weight: 600; }
+    }
+  }
+}
+
+.empty-padding {
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}

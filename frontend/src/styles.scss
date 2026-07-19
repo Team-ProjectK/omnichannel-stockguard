@@ -1,4 +1,222 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global Styles & Animations for Omnichannel StockGuard */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+}
+
+/* Smooth Enterprise Keyframe Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+.animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+.animate-scale-in { animation: scaleIn 0.4s ease-out forwards; }
+
+/* Enhanced Button Effects & Consistent Dimensions */
+button.mat-mdc-button, button.mat-mdc-raised-button, button.mat-mdc-outlined-button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+/* Glassmorphism Utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Sticky Headers & Rounded Table Containers */
+.table-card, .table-panel {
+  border-radius: 10px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #f8fafc;
+    font-weight: 700;
+    color: #475569;
+  }
+}
+
+/* ====================================================
+   DARK MODE COMPREHENSIVE THEME OVERRIDES
+   ==================================================== */
+body.dark-theme {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+
+  .layout {
+    background-color: #0f172a;
+  }
+
+  /* Sidebar Dark Mode */
+  .sidebar {
+    background-color: #1e293b !important;
+    border-right-color: #334155 !important;
+    color: #f8fafc !important;
+
+    .logo h2 { color: #ffffff !important; }
+    .logo p { color: #94a3b8 !important; }
+
+    nav a {
+      color: #cbd5e1 !important;
+      mat-icon { color: #94a3b8 !important; }
+
+      &:hover {
+        background-color: #334155 !important;
+        color: #38bdf8 !important;
+        mat-icon { color: #38bdf8 !important; }
+      }
+
+      &.active {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+        mat-icon { color: #ffffff !important; }
+      }
+    }
+  }
+
+  /* Navbar Dark Mode */
+  .navbar {
+    background-color: #1e293b !important;
+    border-bottom-color: #334155 !important;
+    color: #f8fafc !important;
+
+    .left-section h2 { color: #f8fafc !important; }
+    .left-section p { color: #94a3b8 !important; }
+
+    .search-box {
+      background-color: #0f172a !important;
+      border-color: #334155 !important;
+      mat-icon { color: #94a3b8 !important; }
+      input {
+        color: #f8fafc !important;
+        &::placeholder { color: #64748b !important; }
+      }
+    }
+
+    button mat-icon {
+      color: #cbd5e1 !important;
+    }
+
+    .profile-info h4 { color: #f8fafc !important; }
+    .profile-info small { color: #94a3b8 !important; }
+  }
+
+  /* Card and Panel Dark Mode */
+  .card, .panel, .summary-card, .filter-card, .table-card, .wh-card, .pred-card, .chat-card, .user-card, .tab-panel, .chart-panel {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .glass-panel {
+    background: rgba(30, 41, 59, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #f8fafc !important;
+  }
+
+  .subtitle, .text-subtle, .description, p {
+    color: #94a3b8 !important;
+  }
+
+  /* Tables Dark Mode */
+  table {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+
+    th, thead {
+      background-color: #0f172a !important;
+      color: #cbd5e1 !important;
+    }
+
+    td {
+      border-bottom-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+
+    tbody tr:hover {
+      background-color: #334155 !important;
+    }
+  }
+
+  /* Dialogs, Menus & Form Fields Dark Mode */
+  .mat-mdc-dialog-container, .mat-mdc-menu-panel {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+  }
+
+  .mat-mdc-form-field {
+    .mdc-text-field--outlined {
+      background-color: #0f172a !important;
+    }
+    input, select, textarea {
+      color: #f8fafc !important;
+    }
+    .mdc-floating-label {
+      color: #94a3b8 !important;
+    }
+  }
+
+  .mat-mdc-paginator {
+    background-color: #1e293b !important;
+    color: #cbd5e1 !important;
+  }
+
+  .mat-mdc-tab-header {
+    border-bottom-color: #334155 !important;
+  }
+  .mat-mdc-tab-label-text {
+    color: #94a3b8 !important;
+  }
+  .mdc-tab--active .mat-mdc-tab-label-text {
+    color: #38bdf8 !important;
+  }
+}

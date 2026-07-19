@@ -1,1 +1,103 @@
-<p>settings works!</p>
+<div class="settings-container animate-fade-in">
+  <div class="header-section">
+    <h2>Enterprise System Settings</h2>
+    <p class="subtitle">Configure global inventory parameters, reorder automation thresholds, multi-warehouse routing, and API credentials.</p>
+  </div>
+
+  <mat-tab-group animationDuration="200ms" color="primary">
+
+    <!-- TAB 1: General Settings -->
+    <mat-tab label="General Settings">
+      <form [formGroup]="generalForm" (ngSubmit)="saveGeneral()" class="tab-panel mat-elevation-z1">
+        <h3>Platform Preferences</h3>
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Application Title</mat-label>
+            <input matInput formControlName="appName">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Base Operating Currency</mat-label>
+            <input matInput formControlName="currency">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>System Timezone</mat-label>
+            <input matInput formControlName="timezone">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Language</mat-label>
+            <input matInput formControlName="language">
+          </mat-form-field>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="generalForm.invalid">
+          Save General Preferences
+        </button>
+      </form>
+    </mat-tab>
+
+    <!-- TAB 2: Reorder & Safety Stock Automation -->
+    <mat-tab label="Reorder Automation Rules">
+      <form [formGroup]="reorderRulesForm" (ngSubmit)="saveReorderRules()" class="tab-panel mat-elevation-z1">
+        <h3>Safety Stock & Reorder Thresholds</h3>
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Low Stock Safety Buffer (%)</mat-label>
+            <input matInput formControlName="safetyBufferPct" type="number">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Default Supplier Lead Time (Days)</mat-label>
+            <input matInput formControlName="defaultLeadTimeDays" type="number">
+          </mat-form-field>
+        </div>
+
+        <div class="toggle-list">
+          <mat-slide-toggle formControlName="autoPoTriggerEnabled">Enable Automatic Purchase Order Triggers when stock hits threshold</mat-slide-toggle>
+          <mat-slide-toggle formControlName="notifySupplierEmailOnPo">Automatically send email notification to vendor on PO approval</mat-slide-toggle>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="reorderRulesForm.invalid">
+          Save Automation Rules
+        </button>
+      </form>
+    </mat-tab>
+
+    <!-- TAB 3: API & Webhooks -->
+    <mat-tab label="API & Integrations">
+      <form [formGroup]="apiForm" (ngSubmit)="saveApiSettings()" class="tab-panel mat-elevation-z1">
+        <h3>Spring Boot REST API Credential Manager</h3>
+        <p class="description">Keep your application ready for Spring Boot backend integration using secure token authentication.</p>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Active Enterprise API Token</mat-label>
+          <input matInput [value]="apiKey" readonly>
+          <button mat-icon-button matSuffix (click)="regenerateApiKey()" matTooltip="Regenerate Token" type="button">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-divider></mat-divider>
+
+        <h3>Webhook Subscriptions</h3>
+        <div class="toggle-list">
+          <mat-slide-toggle formControlName="enableWebhooks">Enable Real-Time Webhook Notifications</mat-slide-toggle>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Target Webhook Endpoint URL</mat-label>
+          <input matInput formControlName="webhookUrl">
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">
+          Save Integration Config
+        </button>
+      </form>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

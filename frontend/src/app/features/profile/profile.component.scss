@@ -14,62 +14,79 @@
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 24px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .user-card {
   background: #ffffff;
-  border-radius: 8px;
-  padding: 30px 20px;
+  border-radius: 12px;
+  padding: 32px 24px;
   border: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   height: fit-content;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
 
   .avatar-circle {
-    width: 80px;
-    height: 80px;
+    width: 84px;
+    height: 84px;
     border-radius: 50%;
-    background: #2563eb;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     color: #ffffff;
-    font-size: 36px;
-    font-weight: 700;
+    font-size: 38px;
+    font-weight: 800;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 16px;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
   }
 
-  h3 { margin: 0; font-size: 18px; color: #0f172a; font-weight: 700; }
-  .role-badge { margin-top: 6px; font-size: 12px; background: #dbeafe; color: #1d4ed8; padding: 2px 10px; border-radius: 12px; font-weight: 600; }
-  .email { margin: 12px 0 0 0; font-size: 13px; color: #64748b; }
-  .dept { margin-top: 4px; font-size: 11px; color: #94a3b8; }
+  h3 { margin: 0; font-size: 18px; color: #0f172a; font-weight: 800; }
+  .role-badge { margin-top: 6px; font-size: 12px; background: #dbeafe; color: #1d4ed8; padding: 3px 12px; border-radius: 12px; font-weight: 700; }
+  .email { margin: 14px 0 0 0; font-size: 13px; color: #475569; font-weight: 500; }
+  .dept { margin-top: 4px; font-size: 12px; color: #94a3b8; font-weight: 500; }
 }
 
 .tab-panel {
   background: #ffffff;
-  padding: 24px;
-  border-radius: 8px;
+  padding: 28px;
+  border-radius: 12px;
   border: 1px solid #e2e8f0;
   margin-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
 
-  h3 { margin: 0; font-size: 16px; color: #0f172a; font-weight: 600; }
+  h3 { margin: 0; font-size: 16px; color: #0f172a; font-weight: 700; }
 
   .form-row {
     display: flex;
     gap: 16px;
     mat-form-field { flex: 1; }
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+    }
   }
 
   .toggle-list {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
+
+    mat-slide-toggle {
+      font-size: 14px;
+      font-weight: 500;
+      color: #334155;
+    }
   }
 
-  button { align-self: flex-start; }
+  button { align-self: flex-start; font-weight: 600; height: 44px; padding: 0 24px; }
 }

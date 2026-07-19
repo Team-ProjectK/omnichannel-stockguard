@@ -14,6 +14,7 @@ import { FooterComponent } from './core/layout/footer/footer.component';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component';
 
 // Features
+import { HomeComponent } from './features/home/home.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ProductsComponent } from './features/products/products.component';
 import { InventoryComponent } from './features/inventory/inventory/inventory.component';
@@ -87,6 +88,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     NavbarComponent,
     FooterComponent,
     MainLayoutComponent,
+    HomeComponent,
     DashboardComponent,
     ProductsComponent,
     InventoryComponent,

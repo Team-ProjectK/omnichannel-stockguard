@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,9 +11,11 @@ import { NotificationService } from '../../services/notification.service';
 export class NavbarComponent implements OnInit {
   today: Date = new Date();
   unreadCount = 0;
+  isDark = false;
 
   constructor(
     private notificationService: NotificationService,
+    public themeService: ThemeService,
     private router: Router
   ) {}
 
@@ -20,6 +23,14 @@ export class NavbarComponent implements OnInit {
     this.notificationService.getNotifications().subscribe(items => {
       this.unreadCount = items.filter(n => !n.read).length;
     });
+
+    this.themeService.isDarkTheme().subscribe(dark => {
+      this.isDark = dark;
+    });
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
   }
 
   goToNotifications(): void {
@@ -28,5 +39,13 @@ export class NavbarComponent implements OnInit {
 
   goToProfile(): void {
     this.router.navigate(['/profile']);
+  }
+
+  goToSettings(): void {
+    this.router.navigate(['/settings']);
+  }
+
+  logout(): void {
+    this.router.navigate(['/login']);
   }
 }

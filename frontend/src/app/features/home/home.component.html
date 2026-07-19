@@ -1,0 +1,176 @@
+<div class="landing-page" [ngClass]="{ 'dark-theme': isDark }">
+
+  <!-- Header Navigation Bar -->
+  <header class="landing-header glass-panel animate-fade-in">
+    <div class="header-container">
+      <div class="brand-logo">
+        <mat-icon class="logo-icon">shield</mat-icon>
+        <div class="logo-text">
+          <span class="name">StockGuard</span>
+          <span class="tag">Omnichannel Enterprise</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a (click)="scrollToSection('features')">Features</a>
+        <a (click)="scrollToSection('platform')">Platform</a>
+        <a (click)="scrollToSection('insights')">AI Insights</a>
+      </nav>
+
+      <div class="header-actions">
+        <button mat-icon-button (click)="toggleTheme()" matTooltip="Toggle Light/Dark Theme">
+          <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        </button>
+
+        <button mat-stroked-button color="primary" class="nav-btn" (click)="navigateToLogin()">
+          Login
+        </button>
+
+        <button mat-raised-button color="primary" class="nav-btn pill" (click)="navigateToLogin()">
+          Sign Up Free
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section animate-slide-up">
+    <div class="hero-container">
+      <div class="hero-badge">
+        <mat-icon inline>auto_awesome</mat-icon> Next-Gen Enterprise SaaS Engine
+      </div>
+
+      <h1 class="hero-title">
+        Omnichannel <span class="gradient-text">StockGuard</span>
+      </h1>
+
+      <h2 class="hero-subtitle">
+        AI-Powered Inventory & Pricing Management Platform
+      </h2>
+
+      <p class="hero-description">
+        Monitor inventory, pricing, warehouses, suppliers, reports and AI insights from one intelligent enterprise platform. Optimized for omnichannel efficiency and maximum margin growth.
+      </p>
+
+      <div class="hero-cta">
+        <button mat-raised-button color="primary" class="cta-primary" (click)="navigateToLogin()">
+          <mat-icon>rocket_launch</mat-icon> Launch Enterprise Console
+        </button>
+        <button mat-outlined-button class="cta-secondary" (click)="scrollToSection('features')">
+          <mat-icon>play_circle</mat-icon> Explore Capabilities
+        </button>
+      </div>
+
+      <!-- Hero Dashboard Visual Preview Card -->
+      <div class="preview-card glass-panel animate-scale-in">
+        <div class="preview-header">
+          <div class="dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <span class="preview-title">Omnichannel StockGuard Executive Overview</span>
+        </div>
+        <div class="preview-grid">
+          <div class="preview-stat">
+            <small>Active SKUs</small>
+            <strong>8,420 units</strong>
+            <span class="trend pos">+12.4% vs last mo</span>
+          </div>
+          <div class="preview-stat">
+            <small>Total Valuation</small>
+            <strong>₹12.4M</strong>
+            <span class="trend pos">Optimal Buffer</span>
+          </div>
+          <div class="preview-stat">
+            <small>AI Forecast Accuracy</small>
+            <strong>96.8%</strong>
+            <span class="trend pos">High Confidence</span>
+          </div>
+          <div class="preview-stat">
+            <small>Warehouses Active</small>
+            <strong>4 Facilities</strong>
+            <span class="trend neutral">Chicago / Reno / Hub</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features-section">
+    <div class="section-container">
+      <div class="section-header text-center">
+        <span class="section-tag">Enterprise Capabilities</span>
+        <h2>End-to-End Supply & Pricing Control</h2>
+        <p>Purpose-built for modern retail, e-commerce, and enterprise supply chain teams.</p>
+      </div>
+
+      <div class="features-grid">
+        <div *ngFor="let feat of features" class="feature-card mat-elevation-z1 glass-panel" [ngClass]="feat.color">
+          <div class="card-top">
+            <div class="icon-box">
+              <mat-icon>{{ feat.icon }}</mat-icon>
+            </div>
+            <span class="badge">{{ feat.badge }}</span>
+          </div>
+          <h3>{{ feat.title }}</h3>
+          <p>{{ feat.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform Overview Section -->
+  <section id="platform" class="platform-section">
+    <div class="section-container">
+      <div class="section-header text-center">
+        <span class="section-tag">Platform Architecture</span>
+        <h2>Unified Enterprise Operations</h2>
+        <p>Built on robust modular architecture designed for high availability and rapid scaling.</p>
+      </div>
+
+      <div class="overview-grid">
+        <div *ngFor="let item of overviewItems" class="overview-card mat-elevation-z1">
+          <mat-icon class="ov-icon">{{ item.icon }}</mat-icon>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+          <div class="metric-pill">{{ item.metric }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Insights Preview Section -->
+  <section id="insights" class="insights-section">
+    <div class="section-container">
+      <div class="insights-banner glass-panel">
+        <div class="banner-content">
+          <span class="banner-tag"><mat-icon inline>psychology</mat-icon> Predictive Intelligence</span>
+          <h2>Experience AI-Driven Margin Growth</h2>
+          <p>Automate dynamic price shifts and receive proactive stock reorder guidance before stockouts occur.</p>
+          <button mat-raised-button color="accent" class="cta-btn" (click)="navigateToLogin()">
+            Start AI Demo &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="landing-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <mat-icon class="logo-icon">shield</mat-icon>
+          <span class="name">Omnichannel StockGuard</span>
+        </div>
+        <p>Intelligent Enterprise Inventory & Dynamic Pricing Platform.</p>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 Omnichannel StockGuard Inc. All rights reserved. Prepared for Enterprise Integration.
+      </div>
+    </div>
+  </footer>
+
+</div>
