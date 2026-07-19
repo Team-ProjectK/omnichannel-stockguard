@@ -23,10 +23,25 @@
     </div>
 
   </div>
+  <div class="quick-actions">
 
-  <!-- Charts Section -->
+  <button
+    mat-raised-button
+    *ngFor="let action of quickActions"
+    [color]="action.color">
+
+    <mat-icon>{{ action.icon }}</mat-icon>
+
+    {{ action.title }}
+
+  </button>
+
+</div>
+
+  <!-- Charts -->
   <div class="dashboard-grid">
 
+    <!-- Inventory Trend -->
     <div class="panel">
       <h2>Inventory Trend</h2>
 
@@ -36,26 +51,104 @@
         [type]="lineChartType">
       </canvas>
     </div>
-   <div class="panel">
 
-  <h2>Product Categories</h2>
-
-  <canvas
-      baseChart
-      [data]="pieChartData"
-      [type]="pieChartType">
-  </canvas>
-
-</div> 
-
+    <!-- Product Categories -->
     <div class="panel">
-      <h2>Recent Products</h2>
 
-      <table>
+      <h2>Product Categories</h2>
+
+      <canvas
+        baseChart
+        [data]="pieChartData"
+        [type]="pieChartType">
+      </canvas>
+
+    </div>
+
+  </div>
+
+  <!-- Low Stock Products -->
+  <div class="panel table-panel">
+
+    <div class="panel-header">
+      <h2>Low Stock Products</h2>
+    </div>
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>Product</th>
+          <th>SKU</th>
+          <th>Stock</th>
+          <th>Reorder Level</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let product of lowStockProducts">
+
+          <td>{{ product.name }}</td>
+          <td>{{ product.sku }}</td>
+          <td>{{ product.stock }}</td>
+          <td>{{ product.reorderLevel }}</td>
+
+          <td>
+
+            <span
+              class="status"
+              [ngClass]="{
+                'critical': product.status === 'Critical',
+                'low': product.status === 'Low',
+                'normal': product.status === 'Normal'
+              }">
+
+              {{ product.status }}
+
+            </span>
+
+          </td>
+
+          <td>
+
+            <button mat-raised-button color="primary">
+              View
+            </button>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- Recent Products -->
+  <div class="panel table-panel">
+
+    <div class="panel-header">
+      <h2>Recent Products</h2>
+    </div>
+
+    <table>
+
+      <thead>
+
         <tr>
           <th>Product</th>
           <th>Stock</th>
         </tr>
+
+      </thead>
+
+      <tbody>
 
         <tr>
           <td>Laptop</td>
@@ -72,8 +165,9 @@
           <td>200</td>
         </tr>
 
-      </table>
-    </div>
+      </tbody>
+
+    </table>
 
   </div>
 

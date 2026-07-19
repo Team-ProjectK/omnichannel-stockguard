@@ -31,6 +31,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { FormsModule } from '@angular/forms';
 import { StatCardComponent } from './shared/components/stat-card/stat-card.component';
 import { NgChartsModule } from 'ng2-charts';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ FormsModule,
   MatButtonModule,
   MatListModule,
   MatDividerModule,
+  MatTableModule,
   NgChartsModule
 ],
   providers: [],
