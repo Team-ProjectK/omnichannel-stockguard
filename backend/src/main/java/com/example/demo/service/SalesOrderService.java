@@ -6,6 +6,8 @@ import com.example.demo.model.Inventory;
 import com.example.demo.model.SalesOrder;
 import com.example.demo.repository.InventoryRepository;
 import com.example.demo.repository.SalesOrderRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import java.util.List;
 
 @Service
 public class SalesOrderService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SalesOrderService.class);
 
     private final SalesOrderRepository salesOrderRepo;
     private final InventoryRepository inventoryRepo;
@@ -30,35 +34,60 @@ public class SalesOrderService {
 
     // Get All Sales Orders
     public List<SalesOrder> getAllSalesOrders() {
+
+        logger.info("Fetching all sales orders");
+
         return salesOrderRepo.findAll();
     }
 
     // Pagination
     public Page<SalesOrder> getSalesOrders(Pageable pageable) {
+
+        logger.info("Fetching sales orders with pagination");
+
         return salesOrderRepo.findAll(pageable);
     }
 
     // Get Sales Order
     public SalesOrder getSalesOrder(String salesOrderNo) {
 
+        logger.info("Fetching sales order with Order No: {}", salesOrderNo);
+
         return salesOrderRepo.findBySalesOrderNo(salesOrderNo)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Sales Order not found"));
+                .orElseThrow(() -> {
+                    logger.warn("Sales Order not found. Order No: {}", salesOrderNo);
+                    return new ResourceNotFoundException("Sales Order not found");
+                });
     }
 
     // Create Sales Order
     public SalesOrder createSalesOrder(SalesOrderDto dto) {
 
+        logger.info("Creating sales order with Order No: {}", dto.getSalesOrderNo());
+
         if (salesOrderRepo.existsBySalesOrderNo(dto.getSalesOrderNo())) {
+
+            logger.warn("Sales Order already exists. Order No: {}", dto.getSalesOrderNo());
+
             throw new RuntimeException("Sales Order already exists.");
         }
 
         Inventory inventory = inventoryRepo
                 .findBySkuAndStoreId(dto.getSku(), dto.getStoreId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Inventory not found"));
+                .orElseThrow(() -> {
+                    logger.warn("Inventory not found. SKU: {}, Store: {}",
+                            dto.getSku(), dto.getStoreId());
+                    return new ResourceNotFoundException("Inventory not found");
+                });
 
         if (inventory.getAvailableStock() < dto.getQuantity()) {
+
+            logger.warn(
+                    "Insufficient stock. SKU: {}, Available: {}, Requested: {}",
+                    dto.getSku(),
+                    inventory.getAvailableStock(),
+                    dto.getQuantity());
+
             throw new RuntimeException("Insufficient stock available.");
         }
 
@@ -66,6 +95,9 @@ public class SalesOrderService {
                 inventory.getAvailableStock() - dto.getQuantity());
 
         inventoryRepo.save(inventory);
+
+        logger.info("Inventory updated successfully. Remaining Stock: {}",
+                inventory.getAvailableStock());
 
         SalesOrder order = new SalesOrder();
 
@@ -86,7 +118,12 @@ public class SalesOrderService {
         order.setOrderDate(Instant.now());
         order.setDeliveryDate(dto.getDeliveryDate());
 
-        return salesOrderRepo.save(order);
+        SalesOrder savedOrder = salesOrderRepo.save(order);
+
+        logger.info("Sales Order created successfully. Order No: {}",
+                savedOrder.getSalesOrderNo());
+
+        return savedOrder;
     }
 
     // Update Sales Order
@@ -94,9 +131,14 @@ public class SalesOrderService {
             String salesOrderNo,
             SalesOrderDto dto) {
 
+        logger.info("Updating Sales Order. Order No: {}", salesOrderNo);
+
         SalesOrder order = salesOrderRepo.findBySalesOrderNo(salesOrderNo)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Sales Order not found"));
+                .orElseThrow(() -> {
+                    logger.warn("Sales Order not found for update. Order No: {}",
+                            salesOrderNo);
+                    return new ResourceNotFoundException("Sales Order not found");
+                });
 
         order.setCustomerId(dto.getCustomerId());
         order.setSku(dto.getSku());
@@ -113,37 +155,60 @@ public class SalesOrderService {
         order.setOrderStatus(dto.getOrderStatus());
         order.setDeliveryDate(dto.getDeliveryDate());
 
-        return salesOrderRepo.save(order);
+        SalesOrder updatedOrder = salesOrderRepo.save(order);
+
+        logger.info("Sales Order updated successfully. Order No: {}",
+                updatedOrder.getSalesOrderNo());
+
+        return updatedOrder;
     }
 
     // Delete Sales Order
     public void deleteSalesOrder(String salesOrderNo) {
 
+        logger.info("Deleting Sales Order. Order No: {}", salesOrderNo);
+
         SalesOrder order = salesOrderRepo.findBySalesOrderNo(salesOrderNo)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Sales Order not found"));
+                .orElseThrow(() -> {
+                    logger.warn("Sales Order not found for deletion. Order No: {}",
+                            salesOrderNo);
+                    return new ResourceNotFoundException("Sales Order not found");
+                });
 
         salesOrderRepo.delete(order);
+
+        logger.info("Sales Order deleted successfully. Order No: {}", salesOrderNo);
     }
 
     // Orders by Customer
     public List<SalesOrder> getOrdersByCustomer(String customerId) {
+
+        logger.info("Fetching sales orders for Customer ID: {}", customerId);
+
         return salesOrderRepo.findByCustomerId(customerId);
     }
 
     // Orders by SKU
     public List<SalesOrder> getOrdersBySku(String sku) {
+
+        logger.info("Fetching sales orders for SKU: {}", sku);
+
         return salesOrderRepo.findBySku(sku);
     }
 
     // Orders by Store
     public List<SalesOrder> getOrdersByStore(String storeId) {
+
+        logger.info("Fetching sales orders for Store ID: {}", storeId);
+
         return salesOrderRepo.findByStoreId(storeId);
     }
 
     // Orders by Status
     public List<SalesOrder> getOrdersByStatus(String status) {
+
+        logger.info("Fetching sales orders with Status: {}", status);
+
         return salesOrderRepo.findByOrderStatus(status);
     }
-
 }

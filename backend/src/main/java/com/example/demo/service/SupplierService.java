@@ -4,6 +4,8 @@ import com.example.demo.dto.SupplierDto;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Supplier;
 import com.example.demo.repository.SupplierRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,8 @@ import java.util.List;
 @Service
 public class SupplierService {
 
+    private static final Logger logger = LoggerFactory.getLogger(SupplierService.class);
+
     private final SupplierRepository supplierRepo;
 
     public SupplierService(SupplierRepository supplierRepo) {
@@ -22,30 +26,48 @@ public class SupplierService {
 
     // Get All Suppliers
     public List<Supplier> getAllSuppliers() {
+
+        logger.info("Fetching all suppliers");
+
         return supplierRepo.findAll();
     }
 
     // Pagination & Sorting
     public Page<Supplier> getSuppliers(Pageable pageable) {
+
+        logger.info("Fetching suppliers with pagination");
+
         return supplierRepo.findAll(pageable);
     }
 
     // Get Supplier by Code
     public Supplier getSupplier(String supplierCode) {
 
+        logger.info("Fetching supplier with Code: {}", supplierCode);
+
         return supplierRepo.findBySupplierCode(supplierCode)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Supplier not found"));
+                .orElseThrow(() -> {
+                    logger.warn("Supplier not found. Code: {}", supplierCode);
+                    return new ResourceNotFoundException("Supplier not found");
+                });
     }
 
     // Create Supplier
     public Supplier createSupplier(SupplierDto dto) {
 
+        logger.info("Creating supplier with Code: {}", dto.getSupplierCode());
+
         if (supplierRepo.existsBySupplierCode(dto.getSupplierCode())) {
+
+            logger.warn("Supplier code already exists: {}", dto.getSupplierCode());
+
             throw new RuntimeException("Supplier code already exists.");
         }
 
         if (supplierRepo.existsByEmail(dto.getEmail())) {
+
+            logger.warn("Supplier email already exists: {}", dto.getEmail());
+
             throw new RuntimeException("Email already exists.");
         }
 
@@ -65,7 +87,11 @@ public class SupplierService {
         supplier.setCreatedAt(Instant.now());
         supplier.setUpdatedAt(Instant.now());
 
-        return supplierRepo.save(supplier);
+        Supplier savedSupplier = supplierRepo.save(supplier);
+
+        logger.info("Supplier created successfully. Code: {}", savedSupplier.getSupplierCode());
+
+        return savedSupplier;
     }
 
     // Update Supplier
@@ -73,9 +99,13 @@ public class SupplierService {
             String supplierCode,
             SupplierDto dto) {
 
+        logger.info("Updating supplier with Code: {}", supplierCode);
+
         Supplier supplier = supplierRepo.findBySupplierCode(supplierCode)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Supplier not found"));
+                .orElseThrow(() -> {
+                    logger.warn("Supplier not found for update. Code: {}", supplierCode);
+                    return new ResourceNotFoundException("Supplier not found");
+                });
 
         supplier.setSupplierName(dto.getSupplierName());
         supplier.setContactPerson(dto.getContactPerson());
@@ -89,21 +119,33 @@ public class SupplierService {
 
         supplier.setUpdatedAt(Instant.now());
 
-        return supplierRepo.save(supplier);
+        Supplier updatedSupplier = supplierRepo.save(supplier);
+
+        logger.info("Supplier updated successfully. Code: {}", updatedSupplier.getSupplierCode());
+
+        return updatedSupplier;
     }
 
     // Delete Supplier
     public void deleteSupplier(String supplierCode) {
 
+        logger.info("Deleting supplier with Code: {}", supplierCode);
+
         Supplier supplier = supplierRepo.findBySupplierCode(supplierCode)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Supplier not found"));
+                .orElseThrow(() -> {
+                    logger.warn("Supplier not found for deletion. Code: {}", supplierCode);
+                    return new ResourceNotFoundException("Supplier not found");
+                });
 
         supplierRepo.delete(supplier);
+
+        logger.info("Supplier deleted successfully. Code: {}", supplierCode);
     }
 
     // Search Supplier by Name
     public List<Supplier> searchSuppliers(String keyword) {
+
+        logger.info("Searching suppliers with keyword: {}", keyword);
 
         return supplierRepo.findBySupplierNameContainingIgnoreCase(keyword);
     }
@@ -111,7 +153,8 @@ public class SupplierService {
     // Filter by Status
     public List<Supplier> getSuppliersByStatus(String status) {
 
+        logger.info("Fetching suppliers with status: {}", status);
+
         return supplierRepo.findByStatus(status);
     }
-
 }
