@@ -17,22 +17,16 @@ import { SupplierDetailsDialogComponent } from './components/supplier-details-di
 })
 export class SuppliersComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = [
-    'id',
-    'name',
+    'supplierCode',
+    'supplierName',
     'contactPerson',
     'email',
     'phone',
-    'category',
-    'rating',
     'status',
     'actions'
   ];
 
   dataSource = new MatTableDataSource<Supplier>();
-  searchQuery = '';
-  selectedCategory = 'All';
-
-  categories: string[] = ['All', 'Electronics', 'Accessories', 'Furniture'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -53,28 +47,35 @@ export class SuppliersComponent implements OnInit, AfterViewInit {
   }
 
   loadSuppliers(): void {
-    this.dataSource.data = this.supplierService.getSuppliers();
-    this.dataSource.filterPredicate = (supplier: Supplier, filter: string) => {
-      const search = this.searchQuery.toLowerCase();
-      const matchesSearch =
-        supplier.name.toLowerCase().includes(search) ||
-        supplier.contactPerson.toLowerCase().includes(search) ||
-        supplier.email.toLowerCase().includes(search);
+    this.supplierService.getSuppliers().subscribe({
+      next: (suppliers: Supplier[]) => {
+        this.dataSource.data = suppliers || [];
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        this.setupFilter();
+      },
+      error: (err) => {
+        console.error('Error fetching suppliers', err);
+        this.snackBar.open('Failed to load suppliers from server.', 'Close', { duration: 3000 });
+      }
+    });
+  }
 
-      const matchesCat =
-        this.selectedCategory === 'All' || supplier.category === this.selectedCategory;
-
-      return matchesSearch && matchesCat;
+  setupFilter(): void {
+    this.dataSource.filterPredicate = (supplier: Supplier, filter: string): boolean => {
+      const search = filter.trim().toLowerCase();
+      return !!(
+        (supplier.supplierName && supplier.supplierName.toLowerCase().includes(search)) ||
+        (supplier.supplierCode && supplier.supplierCode.toLowerCase().includes(search)) ||
+        (supplier.contactPerson && supplier.contactPerson.toLowerCase().includes(search)) ||
+        (supplier.email && supplier.email.toLowerCase().includes(search))
+      );
     };
   }
 
   applyFilter(event: Event): void {
-    this.searchQuery = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = Math.random().toString();
-  }
-
-  applyCategoryFilter(): void {
-    this.dataSource.filter = Math.random().toString();
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   openAddDialog(): void {
@@ -84,12 +85,17 @@ export class SuppliersComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe((result: Supplier) => {
-      if (result) {
-        result.id = this.dataSource.data.length + 1;
-        this.dataSource.data = [...this.dataSource.data, result];
-        this.supplierService.saveSuppliers(this.dataSource.data);
-        this.snackBar.open('Supplier added successfully!', 'Close', { duration: 3000 });
-      }
+      if (!result) return;
+      this.supplierService.addSupplier(result).subscribe({
+        next: () => {
+          this.loadSuppliers();
+          this.snackBar.open('Supplier added successfully!', 'Close', { duration: 3000 });
+        },
+        error: (err) => {
+          console.error('Error adding supplier', err);
+          this.snackBar.open('Failed to add supplier.', 'Close', { duration: 3000 });
+        }
+      });
     });
   }
 
@@ -101,23 +107,32 @@ export class SuppliersComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe((result: Supplier) => {
-      if (result) {
-        const index = this.dataSource.data.findIndex(s => s.id === supplier.id);
-        if (index !== -1) {
-          this.dataSource.data[index] = result;
-          this.dataSource.data = [...this.dataSource.data];
-          this.supplierService.saveSuppliers(this.dataSource.data);
+      if (!result) return;
+      this.supplierService.updateSupplier(supplier.supplierCode, result).subscribe({
+        next: () => {
+          this.loadSuppliers();
           this.snackBar.open('Supplier updated successfully!', 'Close', { duration: 3000 });
+        },
+        error: (err) => {
+          console.error('Error updating supplier', err);
+          this.snackBar.open('Failed to update supplier.', 'Close', { duration: 3000 });
         }
-      }
+      });
     });
   }
 
   deleteSupplier(supplier: Supplier): void {
-    if (confirm(`Are you sure you want to delete "${supplier.name}"?`)) {
-      this.dataSource.data = this.dataSource.data.filter(s => s.id !== supplier.id);
-      this.supplierService.saveSuppliers(this.dataSource.data);
-      this.snackBar.open('Supplier deleted successfully!', 'Close', { duration: 3000 });
+    if (confirm(`Are you sure you want to delete supplier "${supplier.supplierName}" (${supplier.supplierCode})?`)) {
+      this.supplierService.deleteSupplier(supplier.supplierCode).subscribe({
+        next: () => {
+          this.loadSuppliers();
+          this.snackBar.open('Supplier deleted successfully!', 'Close', { duration: 3000 });
+        },
+        error: (err) => {
+          console.error('Error deleting supplier', err);
+          this.snackBar.open('Failed to delete supplier.', 'Close', { duration: 3000 });
+        }
+      });
     }
   }
 

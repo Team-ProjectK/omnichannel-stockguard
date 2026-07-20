@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { Router } from '@angular/router';
+import { DashboardService, DashboardMetrics } from '../../core/services/dashboard.service';
 
 interface DashboardCard {
   title: string;
@@ -55,10 +56,52 @@ export class DashboardComponent implements OnInit {
   greetingMessage = 'Good Day';
   todayDate: Date = new Date();
 
-  constructor(private router: Router) {}
+  dashboardCards: DashboardCard[] = [
+    {
+      title: 'Total Revenue',
+      value: '₹4,820,500',
+      description: 'Active Revenue',
+      color: 'purple',
+      icon: 'payments'
+    },
+    {
+      title: 'Total Products',
+      value: '0',
+      description: 'Live Backend Count',
+      color: 'blue',
+      icon: 'inventory_2'
+    },
+    {
+      title: 'Inventory SKU Items',
+      value: '0',
+      description: 'Stock Items',
+      color: 'green',
+      icon: 'warehouse'
+    },
+    {
+      title: 'Low Stock Alerts',
+      value: '0',
+      description: 'Action Needed',
+      color: 'orange',
+      icon: 'warning'
+    },
+    {
+      title: 'Total Available Stock',
+      value: '0',
+      description: 'Ready for Sales',
+      color: 'red',
+      icon: 'notification_important'
+    }
+  ];
+
+  constructor(
+    private dashboardService: DashboardService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.setGreeting();
+    this.loadMetrics();
   }
 
   private setGreeting(): void {
@@ -72,50 +115,18 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // =========================
-  // Dashboard KPI Cards
-  // =========================
-  dashboardCards: DashboardCard[] = [
-    {
-      title: 'Total Revenue',
-      value: '₹4,820,500',
-      description: '+14.2% this month',
-      color: 'purple',
-      icon: 'payments'
-    },
-    {
-      title: 'Total Products',
-      value: '125',
-      description: '+12 this month',
-      color: 'blue',
-      icon: 'inventory_2'
-    },
-    {
-      title: 'Inventory',
-      value: '8420',
-      description: 'Across Warehouses',
-      color: 'green',
-      icon: 'warehouse'
-    },
-    {
-      title: 'Low Stock',
-      value: '18',
-      description: 'Need Reorder',
-      color: 'orange',
-      icon: 'warning'
-    },
-    {
-      title: 'Critical Alerts',
-      value: '6',
-      description: 'Immediate Action',
-      color: 'red',
-      icon: 'notification_important'
-    }
-  ];
+  private loadMetrics(): void {
+    this.dashboardService.getMetrics().subscribe({
+      next: (m: DashboardMetrics) => {
+        this.dashboardCards[1].value = (m.totalProducts || 0).toString();
+        this.dashboardCards[2].value = (m.totalInventoryItems || 0).toString();
+        this.dashboardCards[3].value = (m.lowStockCount || 0).toString();
+        this.dashboardCards[4].value = (m.totalAvailableStock || 0).toString();
+      },
+      error: (err) => console.error('Error fetching dashboard metrics', err)
+    });
+  }
 
-  // =========================
-  // Inventory Trend Chart
-  // =========================
   public lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
@@ -130,9 +141,6 @@ export class DashboardComponent implements OnInit {
 
   public lineChartType: ChartType = 'line';
 
-  // =========================
-  // Product Category Pie Chart
-  // =========================
   public pieChartType: ChartType = 'pie';
 
   public pieChartData: ChartConfiguration<'pie'>['data'] = {
@@ -149,74 +157,42 @@ export class DashboardComponent implements OnInit {
     ]
   };
 
-  // =========================
-  // Low Stock Products
-  // =========================
   lowStockProducts: LowStockProduct[] = [
     {
       name: 'Dell Laptop',
-      sku: 'LP001',
+      sku: 'ELEC-001',
       stock: 8,
       reorderLevel: 20,
       status: 'Critical'
     },
     {
       name: 'Wireless Mouse',
-      sku: 'MS104',
+      sku: 'ACC-001',
       stock: 15,
       reorderLevel: 30,
-      status: 'Low'
-    },
-    {
-      name: 'Mechanical Keyboard',
-      sku: 'KB222',
-      stock: 60,
-      reorderLevel: 40,
-      status: 'Normal'
-    },
-    {
-      name: 'Monitor',
-      sku: 'MN501',
-      stock: 12,
-      reorderLevel: 25,
       status: 'Low'
     }
   ];
 
-  // =========================
-  // Recent Orders
-  // =========================
   recentOrders: RecentOrder[] = [
     { orderNo: 'SO-8821', customerOrSupplier: 'Acme Corporation', amount: 325000, status: 'Processing', date: 'Today' },
-    { orderNo: 'SO-8822', customerOrSupplier: 'Wayne Enterprises', amount: 102000, status: 'Shipped', date: 'Yesterday' },
     { orderNo: 'PO-2026-001', customerOrSupplier: 'TechSupply Global', amount: 1300000, status: 'Pending', date: '19 Jul' }
   ];
 
-  // =========================
-  // Top Selling Products
-  // =========================
   topSellingProducts: TopSellingProduct[] = [
-    { name: 'Dell XPS 15 Laptop', sku: 'ELE-LAP-001', salesCount: 142, revenue: 9230000 },
-    { name: 'Logitech MX Master 3S', sku: 'ACC-MOU-002', salesCount: 310, revenue: 2635000 },
-    { name: 'Keychron K2 Keyboard', sku: 'ACC-KEY-004', salesCount: 185, revenue: 1332000 }
+    { name: 'Dell XPS 15 Laptop', sku: 'ELEC-001', salesCount: 142, revenue: 9230000 },
+    { name: 'Logitech MX Master 3S', sku: 'ACC-001', salesCount: 310, revenue: 2635000 }
   ];
 
-  // =========================
-  // Recent Activities
-  // =========================
   recentActivities: ActivityItem[] = [
-    { icon: 'shopping_bag', title: 'New Sales Order SO-8821 placed by Acme Corp', time: '15 mins ago', type: 'order' },
-    { icon: 'inventory_2', title: 'Stock updated for Dell XPS 15 (+20 units)', time: '2 hours ago', type: 'stock' },
-    { icon: 'task_alt', title: 'Purchase Order PO-2026-002 approved by Admin', time: '4 hours ago', type: 'po' }
+    { icon: 'shopping_bag', title: 'New Sales Order SO-8821 placed', time: '15 mins ago', type: 'order' },
+    { icon: 'inventory_2', title: 'Stock updated for ELEC-001 (+20 units)', time: '2 hours ago', type: 'stock' }
   ];
 
-  // =========================
-  // Quick Actions
-  // =========================
   quickActions: QuickAction[] = [
     { title: 'Add Product', icon: 'add_box', color: 'primary', route: '/products' },
     { title: 'Create PO', icon: 'shopping_cart', color: 'accent', route: '/purchase-orders' },
-    { title: 'View Reports', icon: 'bar_chart', color: 'primary', route: '/reports' },
+    { title: 'View Alerts', icon: 'warning', color: 'primary', route: '/alerts' },
     { title: 'Manage Inventory', icon: 'inventory', color: 'accent', route: '/inventory' }
   ];
 

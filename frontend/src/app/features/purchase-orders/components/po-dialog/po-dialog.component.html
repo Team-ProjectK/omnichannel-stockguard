@@ -1,41 +1,31 @@
-<h2 mat-dialog-title>Create Purchase Order</h2>
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Purchase Order' : 'Create Purchase Order' }}</h2>
 <mat-dialog-content>
   <form [formGroup]="poForm" class="dialog-content">
     <div class="form-row">
       <mat-form-field appearance="outline">
-        <mat-label>PO Number</mat-label>
-        <input matInput formControlName="poNumber" readonly>
+        <mat-label>Purchase Order No</mat-label>
+        <input matInput formControlName="purchaseOrderNo" placeholder="e.g. PO-1001">
+        <mat-error *ngIf="poForm.get('purchaseOrderNo')?.hasError('required')">PO Number is required</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Supplier</mat-label>
-        <mat-select formControlName="supplierName">
-          <mat-option *ngFor="let s of suppliers" [value]="s">{{ s }}</mat-option>
-        </mat-select>
+        <mat-label>Supplier Code</mat-label>
+        <input matInput formControlName="supplierCode" placeholder="e.g. SUP-001">
+        <mat-error *ngIf="poForm.get('supplierCode')?.hasError('required')">Supplier Code is required</mat-error>
       </mat-form-field>
     </div>
 
     <div class="form-row">
-      <mat-form-field appearance="outline">
-        <mat-label>Order Date</mat-label>
-        <input matInput formControlName="orderDate" type="date">
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Expected Delivery</mat-label>
-        <input matInput formControlName="expectedDelivery" type="date">
-      </mat-form-field>
-    </div>
-
-    <div class="form-row">
-      <mat-form-field appearance="outline">
-        <mat-label>Product Name</mat-label>
-        <input matInput formControlName="productName">
-      </mat-form-field>
-
       <mat-form-field appearance="outline">
         <mat-label>SKU</mat-label>
-        <input matInput formControlName="sku">
+        <input matInput formControlName="sku" placeholder="e.g. ELEC-001">
+        <mat-error *ngIf="poForm.get('sku')?.hasError('required')">SKU is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Store ID</mat-label>
+        <input matInput formControlName="storeId" placeholder="e.g. STORE-1">
+        <mat-error *ngIf="poForm.get('storeId')?.hasError('required')">Store ID is required</mat-error>
       </mat-form-field>
     </div>
 
@@ -43,23 +33,32 @@
       <mat-form-field appearance="outline">
         <mat-label>Quantity</mat-label>
         <input matInput formControlName="quantity" type="number" min="1">
+        <mat-error *ngIf="poForm.get('quantity')?.hasError('required')">Quantity is required</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Unit Price (₹)</mat-label>
-        <input matInput formControlName="unitPrice" type="number" min="1">
+        <input matInput formControlName="unitPrice" type="number" min="0.01">
+        <mat-error *ngIf="poForm.get('unitPrice')?.hasError('required')">Unit Price is required</mat-error>
       </mat-form-field>
     </div>
 
     <mat-form-field appearance="outline">
-      <mat-label>Notes / Remarks</mat-label>
-      <textarea matInput formControlName="notes" rows="2"></textarea>
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="CREATED">CREATED</mat-option>
+        <mat-option value="APPROVED">APPROVED</mat-option>
+        <mat-option value="SHIPPED">SHIPPED</mat-option>
+        <mat-option value="RECEIVED">RECEIVED</mat-option>
+        <mat-option value="CANCELLED">CANCELLED</mat-option>
+      </mat-select>
+      <mat-error *ngIf="poForm.get('status')?.hasError('required')">Status is required</mat-error>
     </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" [disabled]="poForm.invalid" (click)="onSubmit()">
-    Create Purchase Order
+  <button mat-raised-button color="primary" (click)="onSubmit()">
+    {{ isEdit ? 'Save Changes' : 'Create Purchase Order' }}
   </button>
 </mat-dialog-actions>

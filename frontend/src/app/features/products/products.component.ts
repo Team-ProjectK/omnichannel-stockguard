@@ -18,29 +18,15 @@ import { ProductDetailsDialogComponent } from './components/product-details-dial
 export class ProductsComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = [
-    'name',
     'sku',
-    'category',
-    'price',
+    'storeId',
+    'productName',
+    'currentPrice',
+    'basePrice',
     'stock',
-    'status',
+    'reorderThreshold',
+    'lastUpdatedBy',
     'actions'
-  ];
-
-  selectedCategory = 'All';
-  selectedStatus = 'All';
-
-  categories = [
-    'All',
-    'Electronics',
-    'Accessories'
-  ];
-
-  statuses = [
-    'All',
-    'In Stock',
-    'Low Stock',
-    'Out of Stock'
   ];
 
   dataSource = new MatTableDataSource<Product>();
@@ -58,106 +44,88 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadProducts();
 
-    this.dataSource.data = this.productService.getProducts();
-
-    this.dataSource.filterPredicate = (product: Product, filter: string) => {
-
+    this.dataSource.filterPredicate = (product: Product, filter: string): boolean => {
       const value = filter.trim().toLowerCase();
-
-      return (
-        product.name.toLowerCase().includes(value) ||
-        product.sku.toLowerCase().includes(value)
+      return !!(
+        (product.productName && product.productName.toLowerCase().includes(value)) ||
+        (product.sku && product.sku.toLowerCase().includes(value)) ||
+        (product.storeId && product.storeId.toLowerCase().includes(value)) ||
+        (product.lastUpdatedBy && product.lastUpdatedBy.toLowerCase().includes(value))
       );
-
     };
-
   }
 
   ngAfterViewInit(): void {
-
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
 
+  loadProducts(): void {
+    this.productService.getProducts().subscribe({
+      next: (products: Product[]) => {
+        this.dataSource.data = products || [];
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      },
+      error: (err) => {
+        console.error('Error loading products', err);
+        this.snackBar.open('Failed to connect to backend server.', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top'
+        });
+      }
+    });
   }
 
   applyFilter(event: Event): void {
-
     const filterValue = (event.target as HTMLInputElement).value;
-
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
-  }
-
-  applyAdvancedFilters(): void {
-
-    this.dataSource.filterPredicate = (product, filter) => {
-
-      const search = filter.toLowerCase();
-
-      const matchesSearch =
-        product.name.toLowerCase().includes(search) ||
-        product.sku.toLowerCase().includes(search);
-
-      const matchesCategory =
-        this.selectedCategory === 'All' ||
-        product.category === this.selectedCategory;
-
-      const matchesStatus =
-        this.selectedStatus === 'All' ||
-        product.status === this.selectedStatus;
-
-      return (
-        matchesSearch &&
-        matchesCategory &&
-        matchesStatus
-      );
-
-    };
-
-    this.dataSource.filter = this.dataSource.filter;
-
   }
 
   openAddDialog(): void {
-
     const dialogRef = this.dialog.open(ProductDialogComponent, {
       width: '700px',
       disableClose: true
     });
 
     dialogRef.afterClosed().subscribe((result: Product) => {
-
       if (!result) {
         return;
       }
 
-      this.dataSource.data = [
-        ...this.dataSource.data,
-        result
-      ];
-
-      this.productService.saveProducts(this.dataSource.data);
-
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-
-      this.snackBar.open(
-        'Product added successfully!',
-        'Close',
-        {
-          duration: 3000,
-          horizontalPosition: 'right',
-          verticalPosition: 'top'
+      this.productService.addProduct(result).subscribe({
+        next: () => {
+          this.loadProducts();
+          this.snackBar.open(
+            'Product added successfully!',
+            'Close',
+            {
+              duration: 3000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
+            }
+          );
+        },
+        error: (err) => {
+          console.error('Error adding product', err);
+          this.snackBar.open(
+            'Failed to add product.',
+            'Close',
+            {
+              duration: 3000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
+            }
+          );
         }
-      );
-
+      });
     });
-
   }
 
   editProduct(product: Product): void {
-
     const dialogRef = this.dialog.open(ProductDialogComponent, {
       width: '700px',
       disableClose: true,
@@ -165,26 +133,53 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe((result: Product) => {
-
       if (!result) {
         return;
       }
 
-      const index = this.dataSource.data.findIndex(
-        p => p.sku === product.sku
-      );
+      this.productService.updateProduct(product.sku, product.storeId, result).subscribe({
+        next: () => {
+          this.loadProducts();
+          this.snackBar.open(
+            'Product updated successfully!',
+            'Close',
+            {
+              duration: 3000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
+            }
+          );
+        },
+        error: (err) => {
+          console.error('Error updating product', err);
+          this.snackBar.open(
+            'Failed to update product.',
+            'Close',
+            {
+              duration: 3000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
+            }
+          );
+        }
+      });
+    });
+  }
 
-      if (index !== -1) {
+  deleteProduct(product: Product): void {
+    const confirmed = confirm(
+      `Are you sure you want to delete "${product.productName}" (SKU: ${product.sku}, Store: ${product.storeId})?`
+    );
 
-        this.dataSource.data[index] = result;
+    if (!confirmed) {
+      return;
+    }
 
-        // Refresh Material Table
-        this.dataSource.data = [...this.dataSource.data];
-
-        this.productService.saveProducts(this.dataSource.data);
-
+    this.productService.deleteProduct(product.sku, product.storeId).subscribe({
+      next: () => {
+        this.loadProducts();
         this.snackBar.open(
-          'Product updated successfully!',
+          'Product deleted successfully!',
           'Close',
           {
             duration: 3000,
@@ -192,57 +187,31 @@ export class ProductsComponent implements OnInit, AfterViewInit {
             verticalPosition: 'top'
           }
         );
-
+      },
+      error: (err) => {
+        console.error('Error deleting product', err);
+        this.snackBar.open(
+          'Failed to delete product.',
+          'Close',
+          {
+            duration: 3000,
+            horizontalPosition: 'right',
+            verticalPosition: 'top'
+          }
+        );
       }
-
     });
-
-  }
-
-  deleteProduct(product: Product): void {
-
-    const confirmed = confirm(
-      `Are you sure you want to delete "${product.name}"?`
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    this.dataSource.data = this.dataSource.data.filter(
-      p => p.sku !== product.sku
-    );
-
-    this.productService.saveProducts(this.dataSource.data);
-
-    this.snackBar.open(
-      'Product deleted successfully!',
-      'Close',
-      {
-        duration: 3000,
-        horizontalPosition: 'right',
-        verticalPosition: 'top'
-      }
-    );
-
   }
 
   viewProduct(product: Product): void {
-
     this.dialog.open(ProductDetailsDialogComponent, {
       width: '500px',
       data: product
     });
-
   }
 
   clearFilters(): void {
-
-    this.selectedCategory = 'All';
-    this.selectedStatus = 'All';
-
     this.dataSource.filter = '';
-
   }
 
 }

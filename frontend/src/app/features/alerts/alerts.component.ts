@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AlertService } from '../../core/services/alert.service';
+import { Product } from '../../shared/models/product';
 
 export interface AlertItem {
   id: number;
@@ -19,63 +21,39 @@ export interface AlertItem {
 })
 export class AlertsComponent implements OnInit {
   activeTab = 'All';
+  alerts: AlertItem[] = [];
 
-  alerts: AlertItem[] = [
-    {
-      id: 1,
-      title: 'Critical Stock Shortage',
-      category: 'Stock',
-      severity: 'Critical',
-      message: 'Dell XPS 15 inventory in Central Warehouse (WH-A) has fallen below minimum safety threshold (8 units remaining).',
-      timestamp: '15 minutes ago',
-      affectedItem: 'SKU: ELE-LAP-001',
-      actionLabel: 'Auto-Create Reorder'
-    },
-    {
-      id: 2,
-      title: 'Out of Stock Alert',
-      category: 'Stock',
-      severity: 'Critical',
-      message: 'Samsung 27" 4K Monitor is currently out of stock. 12 backorders pending fulfillment.',
-      timestamp: '1 hour ago',
-      affectedItem: 'SKU: ELE-MON-003',
-      actionLabel: 'Emergency Restock'
-    },
-    {
-      id: 3,
-      title: 'Dynamic Price Gap Detected',
-      category: 'Pricing',
-      severity: 'Warning',
-      message: 'Competitor average price for Logitech MX Master 3S dropped by 4.2%. Dynamic price adjustment recommended.',
-      timestamp: '3 hours ago',
-      affectedItem: 'SKU: ACC-MOU-002',
-      actionLabel: 'Review AI Price'
-    },
-    {
-      id: 4,
-      title: 'Warehouse Space Threshold Warning',
-      category: 'System',
-      severity: 'Warning',
-      message: 'West Coast Depot (WH-B) space utilization reached 99%. Re-balancing recommended.',
-      timestamp: '5 hours ago',
-      affectedItem: 'Facility: WH-B',
-      actionLabel: 'Rebalance Space'
-    },
-    {
-      id: 5,
-      title: 'Scheduled Audit Reminder',
-      category: 'System',
-      severity: 'Info',
-      message: 'Quarterly inventory audit scheduled for Central Warehouse tomorrow at 09:00 AM.',
-      timestamp: 'Yesterday',
-      affectedItem: 'Facility: WH-A',
-      actionLabel: 'View Schedule'
-    }
-  ];
+  constructor(
+    private alertService: AlertService,
+    private snackBar: MatSnackBar
+  ) {}
 
-  constructor(private snackBar: MatSnackBar) {}
+  ngOnInit(): void {
+    this.loadAlerts();
+  }
 
-  ngOnInit(): void {}
+  loadAlerts(): void {
+    this.alertService.getLowStockAlerts().subscribe({
+      next: (products: Product[]) => {
+        const liveAlerts: AlertItem[] = (products || []).map((p, idx) => ({
+          id: p.id || idx + 1,
+          title: `Low Stock: ${p.productName}`,
+          category: 'Stock',
+          severity: p.stock === 0 ? 'Critical' : 'Warning',
+          message: `Item ${p.productName} (SKU: ${p.sku}, Store: ${p.storeId}) stock level (${p.stock}) is below safety threshold (${p.reorderThreshold}).`,
+          timestamp: p.lastPriceUpdate ? new Date(p.lastPriceUpdate).toLocaleString() : 'Just now',
+          affectedItem: `SKU: ${p.sku}`,
+          actionLabel: 'Reorder Item'
+        }));
+
+        this.alerts = liveAlerts;
+      },
+      error: (err) => {
+        console.error('Error fetching alerts', err);
+        this.snackBar.open('Failed to load live alerts from server.', 'Close', { duration: 3000 });
+      }
+    });
+  }
 
   get filteredAlerts(): AlertItem[] {
     if (this.activeTab === 'All') return this.alerts;

@@ -1,7 +1,5 @@
 <h2 mat-dialog-title>
-
-  {{ data ? 'Edit Product' : 'Add Product' }}
-
+  {{ isEditMode ? 'Edit Product' : 'Add Product' }}
 </h2>
 
 <form [formGroup]="productForm">
@@ -9,74 +7,71 @@
   <mat-dialog-content class="form-grid">
 
     <mat-form-field appearance="outline">
-      <mat-label>Product Name</mat-label>
-      <input matInput formControlName="name">
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
       <mat-label>SKU</mat-label>
-      <input matInput formControlName="sku">
+      <input matInput formControlName="sku" placeholder="e.g. ELEC-001">
+      <mat-error *ngIf="productForm.get('sku')?.hasError('required')">
+        SKU is required
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Category</mat-label>
-
-      <mat-select formControlName="category">
-
-        <mat-option
-          *ngFor="let c of categories"
-          [value]="c">
-
-          {{ c }}
-
-        </mat-option>
-
-      </mat-select>
-
+      <mat-label>Store ID</mat-label>
+      <input matInput formControlName="storeId" placeholder="e.g. STORE-1">
+      <mat-error *ngIf="productForm.get('storeId')?.hasError('required')">
+        Store ID is required
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Supplier</mat-label>
-      <input matInput formControlName="supplier">
+      <mat-label>Product Name</mat-label>
+      <input matInput formControlName="productName" placeholder="e.g. Wireless Headphones">
+      <mat-error *ngIf="productForm.get('productName')?.hasError('required')">
+        Product Name is required
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Price</mat-label>
-      <input matInput type="number" formControlName="price">
+      <mat-label>Current Price</mat-label>
+      <input matInput type="number" formControlName="currentPrice" placeholder="0.00">
+      <mat-error *ngIf="productForm.get('currentPrice')?.hasError('required')">
+        Current Price is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Base Price</mat-label>
+      <input matInput type="number" formControlName="basePrice" placeholder="0.00">
+      <mat-error *ngIf="productForm.get('basePrice')?.hasError('required')">
+        Base Price is required
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Stock</mat-label>
-      <input matInput type="number" formControlName="stock">
+      <input matInput type="number" formControlName="stock" placeholder="0">
+      <mat-error *ngIf="productForm.get('stock')?.hasError('required')">
+        Stock is required
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Reorder Level</mat-label>
-      <input matInput type="number" formControlName="reorderLevel">
+      <mat-label>Reorder Threshold</mat-label>
+      <input matInput type="number" formControlName="reorderThreshold" placeholder="0">
+      <mat-error *ngIf="productForm.get('reorderThreshold')?.hasError('required')">
+        Reorder Threshold is required
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Status</mat-label>
-
-      <mat-select formControlName="status">
-
-        <mat-option
-          *ngFor="let s of statuses"
-          [value]="s">
-
-          {{ s }}
-
-        </mat-option>
-
-      </mat-select>
-
+      <mat-label>Last Updated By</mat-label>
+      <input matInput formControlName="lastUpdatedBy" placeholder="Admin">
     </mat-form-field>
 
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">
 
-    <button mat-button mat-dialog-close>
+    <button mat-button type="button" mat-dialog-close>
       Cancel
     </button>
 
@@ -84,9 +79,7 @@
       mat-raised-button
       color="primary"
       (click)="save()">
-
       Save
-
     </button>
 
   </mat-dialog-actions>

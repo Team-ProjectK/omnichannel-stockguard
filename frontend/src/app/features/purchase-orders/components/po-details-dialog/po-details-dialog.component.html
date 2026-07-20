@@ -1,9 +1,17 @@
-<h2 mat-dialog-title>Purchase Order {{ po.poNumber }}</h2>
+<h2 mat-dialog-title>Purchase Order {{ po.purchaseOrderNo }}</h2>
 <mat-dialog-content>
   <div class="detail-grid">
     <div>
-      <span class="label">Supplier Name</span>
-      <div class="value">{{ po.supplierName }}</div>
+      <span class="label">Supplier Code</span>
+      <div class="value">{{ po.supplierCode }}</div>
+    </div>
+    <div>
+      <span class="label">SKU</span>
+      <div class="value">{{ po.sku }}</div>
+    </div>
+    <div>
+      <span class="label">Store ID</span>
+      <div class="value">{{ po.storeId }}</div>
     </div>
     <div>
       <span class="label">Status</span>
@@ -12,44 +20,22 @@
       </div>
     </div>
     <div>
-      <span class="label">Order Date</span>
-      <div class="value">{{ po.orderDate }}</div>
+      <span class="label">Quantity</span>
+      <div class="value">{{ po.quantity }}</div>
     </div>
     <div>
-      <span class="label">Expected Delivery</span>
-      <div class="value">{{ po.expectedDelivery }}</div>
+      <span class="label">Unit Price</span>
+      <div class="value">₹ {{ po.unitPrice | number }}</div>
     </div>
     <div>
       <span class="label">Total Amount</span>
-      <div class="value">{{ po.totalAmount | currency:'INR':'symbol':'1.0-0' }}</div>
+      <div class="value font-bold">₹ {{ po.totalAmount | number }}</div>
     </div>
-    <div>
-      <span class="label">Notes</span>
-      <div class="value">{{ po.notes || 'N/A' }}</div>
+    <div *ngIf="po.orderDate">
+      <span class="label">Order Date</span>
+      <div class="value">{{ po.orderDate | date:'mediumDate' }}</div>
     </div>
   </div>
-
-  <h3>Ordered Items</h3>
-  <table class="items-table">
-    <thead>
-      <tr>
-        <th>Product</th>
-        <th>SKU</th>
-        <th>Qty</th>
-        <th>Unit Price</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of po.items">
-        <td>{{ item.productName }}</td>
-        <td>{{ item.sku }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.unitPrice | currency:'INR':'symbol':'1.0-0' }}</td>
-        <td>{{ item.total | currency:'INR':'symbol':'1.0-0' }}</td>
-      </tr>
-    </tbody>
-  </table>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button color="primary" (click)="close()">Close</button>

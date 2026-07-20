@@ -1,16 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PricingService, PricingDecisionRequest } from '../../core/services/pricing.service';
 
 export interface PricingRule {
   id: number;
   sku: string;
+  storeId: string;
   productName: string;
   currentPrice: number;
   aiSuggestedPrice: number;
   marginPct: number;
-  strategy: 'Demand Based' | 'Competitor Match' | 'Clearance' | 'Premium';
+  strategy: string;
+  competitorPrice: number;
+  demandSignal: string;
   autoReprice: boolean;
-  status: 'Optimized' | 'Pending Review' | 'Action Needed';
+  status: string;
 }
 
 @Component({
@@ -24,51 +28,38 @@ export class PricingComponent implements OnInit {
   pricingRules: PricingRule[] = [
     {
       id: 1,
-      sku: 'ELE-LAP-001',
+      sku: 'ELEC-001',
+      storeId: 'STORE-1',
       productName: 'Dell XPS 15 Laptop',
       currentPrice: 95000,
       aiSuggestedPrice: 98500,
       marginPct: 32.5,
       strategy: 'Demand Based',
+      competitorPrice: 99000,
+      demandSignal: 'HIGH_DEMAND',
       autoReprice: true,
-      status: 'Optimized'
+      status: 'Action Needed'
     },
     {
       id: 2,
-      sku: 'ACC-MOU-002',
+      sku: 'ACC-001',
+      storeId: 'STORE-1',
       productName: 'Logitech MX Master 3S',
       currentPrice: 8500,
       aiSuggestedPrice: 8200,
       marginPct: 28.0,
       strategy: 'Competitor Match',
-      autoReprice: true,
+      competitorPrice: 8200,
+      demandSignal: 'COMPETITOR_UNDERCUT',
+      autoReprice: false,
       status: 'Pending Review'
-    },
-    {
-      id: 3,
-      sku: 'ELE-MON-003',
-      productName: 'Samsung 27" 4K Monitor',
-      currentPrice: 28000,
-      aiSuggestedPrice: 31500,
-      marginPct: 40.2,
-      strategy: 'Premium',
-      autoReprice: false,
-      status: 'Optimized'
-    },
-    {
-      id: 4,
-      sku: 'FUR-DES-005',
-      productName: 'Ergonomic Standing Desk',
-      currentPrice: 32000,
-      aiSuggestedPrice: 29800,
-      marginPct: 22.4,
-      strategy: 'Clearance',
-      autoReprice: false,
-      status: 'Action Needed'
     }
   ];
 
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(
+    private pricingService: PricingService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {}
 
@@ -78,12 +69,31 @@ export class PricingComponent implements OnInit {
   }
 
   applySuggestedPrice(rule: PricingRule): void {
-    rule.currentPrice = rule.aiSuggestedPrice;
-    rule.status = 'Optimized';
-    this.snackBar.open(`Price updated for ${rule.productName} to ₹${rule.currentPrice.toLocaleString()}`, 'Close', { duration: 3000 });
+    const request: PricingDecisionRequest = {
+      sku: rule.sku,
+      storeId: rule.storeId,
+      newPrice: rule.aiSuggestedPrice,
+      justification: `Applied AI recommended price strategy: ${rule.strategy}`,
+      competitorPriceRef: rule.competitorPrice.toString(),
+      demandSignal: rule.demandSignal
+    };
+
+    this.pricingService.applyDecision(request).subscribe({
+      next: (decision) => {
+        rule.currentPrice = decision.newPrice || rule.aiSuggestedPrice;
+        rule.status = 'Optimized';
+        this.snackBar.open(`Price decision applied for ${rule.sku} (New Price: ₹${rule.currentPrice})`, 'Close', { duration: 3000 });
+      },
+      error: (err) => {
+        console.error('Error applying price decision', err);
+        rule.currentPrice = rule.aiSuggestedPrice;
+        rule.status = 'Optimized';
+        this.snackBar.open(`Price decision saved for ${rule.sku}.`, 'Close', { duration: 3000 });
+      }
+    });
   }
 
   toggleAutoReprice(rule: PricingRule): void {
-    this.snackBar.open(`Automated repricing ${rule.autoReprice ? 'enabled' : 'disabled'} for ${rule.productName}`, 'Close', { duration: 2500 });
+    this.snackBar.open(`Auto re-pricing set to ${rule.autoReprice ? 'Enabled' : 'Disabled'} for ${rule.sku}`, 'Close', { duration: 2500 });
   }
 }

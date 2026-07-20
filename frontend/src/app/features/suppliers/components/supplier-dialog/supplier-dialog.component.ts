@@ -19,29 +19,34 @@ export class SupplierDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<SupplierDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Supplier
+    @Inject(MAT_DIALOG_DATA) public data: Supplier | null
   ) {}
 
   ngOnInit(): void {
     this.isEdit = !!this.data;
     this.supplierForm = this.fb.group({
-      name: [this.data?.name || '', Validators.required],
-      contactPerson: [this.data?.contactPerson || '', Validators.required],
-      email: [this.data?.email || '', [Validators.required, Validators.email]],
-      phone: [this.data?.phone || '', Validators.required],
-      category: [this.data?.category || 'Electronics', Validators.required],
-      address: [this.data?.address || '', Validators.required],
-      rating: [this.data?.rating || 4.5, [Validators.required, Validators.min(1), Validators.max(5)]],
-      status: [this.data?.status || 'Active', Validators.required]
+      supplierCode: [this.data?.supplierCode || '', Validators.required],
+      supplierName: [this.data?.supplierName || '', Validators.required],
+      contactPerson: [this.data?.contactPerson || 'John Doe', Validators.required],
+      email: [this.data?.email || 'supplier@example.com', [Validators.required, Validators.email]],
+      phone: [this.data?.phone ? this.data.phone.replace(/[^0-9]/g, '') : '9876543210', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      address: [this.data?.address || '100 Business Park', Validators.required],
+      city: [this.data?.city || 'San Jose', Validators.required],
+      state: [this.data?.state || 'CA', Validators.required],
+      country: [this.data?.country || 'USA', Validators.required],
+      status: [this.data?.status === 'INACTIVE' ? 'INACTIVE' : 'ACTIVE', Validators.required]
     });
+
+    if (this.isEdit) {
+      this.supplierForm.get('supplierCode')?.disable();
+    }
   }
 
   onSubmit(): void {
     if (this.supplierForm.valid) {
-      this.dialogRef.close({
-        ...this.data,
-        ...this.supplierForm.value
-      });
+      this.dialogRef.close(this.supplierForm.getRawValue());
+    } else {
+      this.supplierForm.markAllAsTouched();
     }
   }
 

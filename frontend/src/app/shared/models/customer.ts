@@ -1,12 +1,28 @@
 export interface Customer {
-  id: number;
-  name: string;
+  id?: number;
+  customerId: string;
+  customerName: string;
   email: string;
   phone: string;
-  company: string;
   address: string;
-  totalOrders: number;
-  lifetimeValue: number;
-  status: 'Active' | 'Inactive';
-  createdAt: string;
+  city: string;
+  state: string;
+  country: string;
+  customerType: string;
+  active: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CustomerDto {
+  customerId: string;
+  customerName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  customerType: string;
+  active: boolean;
 }

@@ -19,30 +19,34 @@ export class CustomerDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CustomerDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Customer
+    @Inject(MAT_DIALOG_DATA) public data: Customer | null
   ) {}
 
   ngOnInit(): void {
     this.isEdit = !!this.data;
     this.customerForm = this.fb.group({
-      name: [this.data?.name || '', Validators.required],
-      company: [this.data?.company || '', Validators.required],
-      email: [this.data?.email || '', [Validators.required, Validators.email]],
-      phone: [this.data?.phone || '', Validators.required],
-      address: [this.data?.address || '', Validators.required],
-      status: [this.data?.status || 'Active', Validators.required]
+      customerId: [this.data?.customerId || '', Validators.required],
+      customerName: [this.data?.customerName || '', Validators.required],
+      email: [this.data?.email || 'customer@example.com', [Validators.required, Validators.email]],
+      phone: [this.data?.phone ? this.data.phone.replace(/[^0-9]/g, '') : '9876543210', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      address: [this.data?.address || '100 Main Street', Validators.required],
+      city: [this.data?.city || 'Springfield', Validators.required],
+      state: [this.data?.state || 'IL', Validators.required],
+      country: [this.data?.country || 'USA', Validators.required],
+      customerType: [this.data?.customerType || 'REGULAR', [Validators.required, Validators.pattern(/^(REGULAR|PREMIUM|WHOLESALE)$/)]],
+      active: [this.data?.active !== undefined ? this.data.active : true, Validators.required]
     });
+
+    if (this.isEdit) {
+      this.customerForm.get('customerId')?.disable();
+    }
   }
 
   onSubmit(): void {
     if (this.customerForm.valid) {
-      this.dialogRef.close({
-        ...this.data,
-        ...this.customerForm.value,
-        totalOrders: this.data?.totalOrders || 0,
-        lifetimeValue: this.data?.lifetimeValue || 0,
-        createdAt: this.data?.createdAt || new Date().toISOString().split('T')[0]
-      });
+      this.dialogRef.close(this.customerForm.getRawValue());
+    } else {
+      this.customerForm.markAllAsTouched();
     }
   }
 

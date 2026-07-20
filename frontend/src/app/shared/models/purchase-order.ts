@@ -1,19 +1,28 @@
-export interface PurchaseOrderItem {
-  productName: string;
+export interface PurchaseOrder {
+  id?: number;
+  purchaseOrderNo: string;
+  supplierCode: string;
   sku: string;
+  storeId: string;
   quantity: number;
   unitPrice: number;
-  total: number;
+  totalAmount: number;
+  status: string;
+  orderDate?: string;
+  expectedDeliveryDate?: string;
+  receivedDate?: string;
 }
 
-export interface PurchaseOrder {
-  id: number;
-  poNumber: string;
-  supplierName: string;
-  orderDate: string;
-  expectedDelivery: string;
+export interface PurchaseOrderDto {
+  purchaseOrderNo: string;
+  supplierCode: string;
+  sku: string;
+  storeId: string;
+  quantity: number;
+  unitPrice: number;
   totalAmount: number;
-  status: 'Pending' | 'Approved' | 'Delivered' | 'Cancelled';
-  items: PurchaseOrderItem[];
-  notes?: string;
+  status: string;
+  orderDate?: string;
+  expectedDeliveryDate?: string;
+  receivedDate?: string;
 }

@@ -2,12 +2,12 @@
 <mat-dialog-content>
   <div class="detail-grid">
     <div>
-      <span class="label">Customer Name</span>
-      <div class="value">{{ customer.name }}</div>
+      <span class="label">Customer ID</span>
+      <div class="value">{{ customer.customerId }}</div>
     </div>
     <div>
-      <span class="label">Company</span>
-      <div class="value">{{ customer.company }}</div>
+      <span class="label">Customer Name</span>
+      <div class="value">{{ customer.customerName }}</div>
     </div>
     <div>
       <span class="label">Email Address</span>
@@ -18,26 +18,18 @@
       <div class="value">{{ customer.phone }}</div>
     </div>
     <div>
-      <span class="label">Total Orders</span>
-      <div class="value">{{ customer.totalOrders }}</div>
-    </div>
-    <div>
-      <span class="label">Lifetime Spend</span>
-      <div class="value">{{ customer.lifetimeValue | currency:'INR':'symbol':'1.0-0' }}</div>
+      <span class="label">Customer Type</span>
+      <div class="value">{{ customer.customerType }}</div>
     </div>
     <div>
       <span class="label">Status</span>
       <div class="value">
-        <app-status-badge [status]="customer.status"></app-status-badge>
+        <app-status-badge [status]="customer.active ? 'Active' : 'Inactive'"></app-status-badge>
       </div>
-    </div>
-    <div>
-      <span class="label">Customer Since</span>
-      <div class="value">{{ customer.createdAt }}</div>
     </div>
     <div style="grid-column: span 2;">
       <span class="label">Address</span>
-      <div class="value">{{ customer.address }}</div>
+      <div class="value">{{ customer.address }}, {{ customer.city }}, {{ customer.state }}, {{ customer.country }}</div>
     </div>
   </div>
 </mat-dialog-content>

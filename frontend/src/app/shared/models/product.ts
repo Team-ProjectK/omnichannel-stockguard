@@ -1,21 +1,23 @@
 export interface Product {
-
-  id: number;
-
-  name: string;
-
+  id?: number;
   sku: string;
-
-  category: string;
-
-  price: number;
-
+  storeId: string;
+  productName: string;
+  currentPrice: number;
+  basePrice: number;
   stock: number;
+  reorderThreshold: number;
+  lastPriceUpdate?: string;
+  lastUpdatedBy?: string;
+}
 
-  reorderLevel: number;
-
-  supplier: string;
-
-  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
-
+export interface ProductDto {
+  sku: string;
+  storeId: string;
+  productName: string;
+  currentPrice: number;
+  basePrice: number;
+  stock: number;
+  reorderThreshold: number;
+  lastUpdatedBy?: string;
 }

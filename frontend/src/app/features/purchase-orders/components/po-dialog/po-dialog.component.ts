@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PurchaseOrder } from '../../../../shared/models/purchase-order';
 
 @Component({
@@ -14,47 +14,45 @@ import { PurchaseOrder } from '../../../../shared/models/purchase-order';
 })
 export class PoDialogComponent implements OnInit {
   poForm!: FormGroup;
-
-  suppliers = ['TechSupply Global', 'LogiAccessories Inc', 'ErgoComfort Furniture', 'NextGen Cables & Power'];
+  isEdit = false;
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<PoDialogComponent>
+    private dialogRef: MatDialogRef<PoDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: PurchaseOrder | null
   ) {}
 
   ngOnInit(): void {
-    const randomNum = Math.floor(100 + Math.random() * 900);
+    this.isEdit = !!this.data;
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    const futureDate = new Date(Date.now() + 7 * 86400000).toISOString();
+
     this.poForm = this.fb.group({
-      poNumber: [`PO-2026-${randomNum}`, Validators.required],
-      supplierName: ['TechSupply Global', Validators.required],
-      orderDate: [new Date().toISOString().split('T')[0], Validators.required],
-      expectedDelivery: ['2026-07-30', Validators.required],
-      productName: ['Dell XPS 15 Laptop', Validators.required],
-      sku: ['ELE-LAP-001', Validators.required],
-      quantity: [10, [Validators.required, Validators.min(1)]],
-      unitPrice: [65000, [Validators.required, Validators.min(1)]],
-      notes: ['']
+      purchaseOrderNo: [this.data?.purchaseOrderNo || `PO-${randomNum}`, Validators.required],
+      supplierCode: [this.data?.supplierCode || 'SUP-001', Validators.required],
+      sku: [this.data?.sku || 'ELEC-001', Validators.required],
+      storeId: [this.data?.storeId || 'STORE-1', Validators.required],
+      quantity: [this.data?.quantity || 10, [Validators.required, Validators.min(1)]],
+      unitPrice: [this.data?.unitPrice || 100, [Validators.required, Validators.min(0.01)]],
+      status: [this.data?.status || 'CREATED', [Validators.required, Validators.pattern(/^(CREATED|APPROVED|SHIPPED|RECEIVED|CANCELLED)$/)]],
+      expectedDeliveryDate: [this.data?.expectedDeliveryDate || futureDate, Validators.required]
     });
+
+    if (this.isEdit) {
+      this.poForm.get('purchaseOrderNo')?.disable();
+    }
   }
 
   onSubmit(): void {
     if (this.poForm.valid) {
-      const val = this.poForm.value;
-      const totalAmount = val.quantity * val.unitPrice;
-      const newPO: PurchaseOrder = {
-        id: 0,
-        poNumber: val.poNumber,
-        supplierName: val.supplierName,
-        orderDate: val.orderDate,
-        expectedDelivery: val.expectedDelivery,
-        totalAmount: totalAmount,
-        status: 'Pending',
-        items: [
-          { productName: val.productName, sku: val.sku, quantity: val.quantity, unitPrice: val.unitPrice, total: totalAmount }
-        ],
-        notes: val.notes
-      };
-      this.dialogRef.close(newPO);
+      const val = this.poForm.getRawValue();
+      val.totalAmount = val.quantity * val.unitPrice;
+      if (!val.expectedDeliveryDate || new Date(val.expectedDeliveryDate) <= new Date()) {
+        val.expectedDeliveryDate = new Date(Date.now() + 7 * 86400000).toISOString();
+      }
+      this.dialogRef.close(val);
+    } else {
+      this.poForm.markAllAsTouched();
     }
   }
 

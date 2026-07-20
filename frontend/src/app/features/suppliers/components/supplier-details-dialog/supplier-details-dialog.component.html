@@ -2,12 +2,12 @@
 <mat-dialog-content>
   <div class="detail-grid">
     <div>
-      <span class="label">Supplier Name</span>
-      <div class="value">{{ supplier.name }}</div>
+      <span class="label">Supplier Code</span>
+      <div class="value">{{ supplier.supplierCode }}</div>
     </div>
     <div>
-      <span class="label">Category</span>
-      <div class="value">{{ supplier.category }}</div>
+      <span class="label">Supplier Name</span>
+      <div class="value">{{ supplier.supplierName }}</div>
     </div>
     <div>
       <span class="label">Contact Person</span>
@@ -22,20 +22,14 @@
       <div class="value">{{ supplier.phone }}</div>
     </div>
     <div>
-      <span class="label">Rating</span>
-      <div class="rating">
-        <mat-icon inline>star</mat-icon> {{ supplier.rating }} / 5.0
-      </div>
-    </div>
-    <div>
       <span class="label">Status</span>
       <div class="value">
-        <app-status-badge [status]="supplier.status"></app-status-badge>
+        <app-status-badge [status]="supplier.status || 'Active'"></app-status-badge>
       </div>
     </div>
     <div style="grid-column: span 2;">
       <span class="label">Address</span>
-      <div class="value">{{ supplier.address }}</div>
+      <div class="value">{{ supplier.address }} {{ supplier.city ? ', ' + supplier.city : '' }} {{ supplier.state ? ', ' + supplier.state : '' }} {{ supplier.country ? ', ' + supplier.country : '' }}</div>
     </div>
   </div>
 </mat-dialog-content>

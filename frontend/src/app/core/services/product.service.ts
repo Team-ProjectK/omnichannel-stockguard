@@ -1,65 +1,40 @@
 import { Injectable } from '@angular/core';
-import { Product } from '../../shared/models/product';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Product, ProductDto } from '../../shared/models/product';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  private storageKey = 'products';
+  private apiUrl = 'http://localhost:8081/api/products';
 
-  private defaultProducts: Product[] = [
+  constructor(private http: HttpClient) {}
 
-    {
-      id: 1,
-      name: 'Laptop',
-      sku: 'ELE001',
-      category: 'Electronics',
-      supplier: 'Dell',
-      price: 65000,
-      stock: 25,
-      reorderLevel: 5,
-      status: 'In Stock'
-    },
-
-    {
-      id: 2,
-      name: 'Wireless Mouse',
-      sku: 'ACC001',
-      category: 'Accessories',
-      supplier: 'Logitech',
-      price: 1200,
-      stock: 8,
-      reorderLevel: 5,
-      status: 'Low Stock'
-    }
-
-  ];
-
-  getProducts(): Product[] {
-
-    const data = localStorage.getItem(this.storageKey);
-
-    if (data) {
-      return JSON.parse(data) as Product[];
-    }
-
-    localStorage.setItem(
-      this.storageKey,
-      JSON.stringify(this.defaultProducts)
-    );
-
-    return [...this.defaultProducts];
-
+  getProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(this.apiUrl);
   }
 
-  saveProducts(products: Product[]): void {
+  getProduct(sku: string, storeId: string): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/${sku}/${storeId}`);
+  }
 
-    localStorage.setItem(
-      this.storageKey,
-      JSON.stringify(products)
-    );
+  addProduct(product: ProductDto | Product): Observable<Product> {
+    return this.http.post<Product>(this.apiUrl, product);
+  }
 
+  updateProduct(sku: string, storeId: string, product: ProductDto | Product): Observable<Product> {
+    return this.http.put<Product>(`${this.apiUrl}/${sku}/${storeId}`, product);
+  }
+
+  deleteProduct(sku: string, storeId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${sku}/${storeId}`);
+  }
+
+  searchProducts(keyword: string): Observable<Product[]> {
+    const params = new HttpParams().set('keyword', keyword);
+    return this.http.get<Product[]>(`${this.apiUrl}/search`, { params });
   }
 
 }

@@ -14,23 +14,15 @@ import { ReorderService, ReorderItem } from '../../core/services/reorder.service
 export class ReorderComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = [
     'sku',
-    'productName',
-    'warehouse',
-    'currentStock',
-    'minThreshold',
-    'suggestedReorderQty',
-    'unitCost',
-    'totalCost',
-    'preferredSupplier',
-    'urgency',
+    'storeId',
+    'quantity',
+    'supplier',
+    'status',
+    'timestamp',
     'actions'
   ];
 
   dataSource = new MatTableDataSource<ReorderItem>();
-  searchQuery = '';
-  selectedUrgency = 'All';
-
-  urgencies = ['All', 'Critical', 'Low'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -50,51 +42,53 @@ export class ReorderComponent implements OnInit, AfterViewInit {
   }
 
   loadItems(): void {
-    const items = this.reorderService.getReorderItems();
-    this.dataSource.data = items;
-    this.dataSource.filterPredicate = (item: ReorderItem, filter: string) => {
-      const search = this.searchQuery.toLowerCase();
-      const matchesSearch =
-        item.productName.toLowerCase().includes(search) ||
-        item.sku.toLowerCase().includes(search) ||
-        item.preferredSupplier.toLowerCase().includes(search);
+    this.reorderService.getReorderRequests().subscribe({
+      next: (items: ReorderItem[]) => {
+        this.dataSource.data = items || [];
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        this.setupFilter();
+      },
+      error: (err) => {
+        console.error('Error fetching reorder requests', err);
+        this.snackBar.open('Failed to load reorder requests.', 'Close', { duration: 3000 });
+      }
+    });
+  }
 
-      const matchesUrgency =
-        this.selectedUrgency === 'All' || item.urgency === this.selectedUrgency;
-
-      return matchesSearch && matchesUrgency;
+  setupFilter(): void {
+    this.dataSource.filterPredicate = (item: ReorderItem, filter: string): boolean => {
+      const search = filter.trim().toLowerCase();
+      return !!(
+        (item.sku && item.sku.toLowerCase().includes(search)) ||
+        (item.storeId && item.storeId.toLowerCase().includes(search)) ||
+        (item.supplier && item.supplier.toLowerCase().includes(search)) ||
+        (item.status && item.status.toLowerCase().includes(search))
+      );
     };
   }
 
   applySearch(event: Event): void {
-    this.searchQuery = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = Math.random().toString();
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  applyUrgencyFilter(): void {
-    this.dataSource.filter = Math.random().toString();
-  }
-
-  get totalEstimatedCost(): number {
-    return this.dataSource.filteredData.reduce(
-      (sum, item) => sum + item.suggestedReorderQty * item.unitCost,
-      0
-    );
-  }
-
-  generatePO(item: ReorderItem): void {
-    this.snackBar.open(
-      `Purchase Order created for ${item.productName} (${item.suggestedReorderQty} units)!`,
-      'Close',
-      { duration: 3000 }
-    );
-  }
-
-  generateBulkPO(): void {
-    this.snackBar.open(
-      `Bulk Purchase Orders created for ${this.dataSource.filteredData.length} items (Total: ₹${this.totalEstimatedCost.toLocaleString()})!`,
-      'Close',
-      { duration: 3000 }
-    );
+  submitReorderRequest(sku: string, storeId: string, quantity: number, supplier: string): void {
+    this.reorderService.createReorderRequest({
+      sku,
+      storeId,
+      quantity,
+      supplier,
+      draftDocText: `Auto-generated reorder request for SKU ${sku} at Store ${storeId}`
+    }).subscribe({
+      next: () => {
+        this.loadItems();
+        this.snackBar.open(`Reorder request created for SKU ${sku}!`, 'Close', { duration: 3000 });
+      },
+      error: (err) => {
+        console.error('Error creating reorder request', err);
+        this.snackBar.open('Failed to create reorder request.', 'Close', { duration: 3000 });
+      }
+    });
   }
 }

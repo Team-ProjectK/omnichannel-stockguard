@@ -1,59 +1,49 @@
-<h2 mat-dialog-title>Sales Order {{ so.soNumber }}</h2>
+<h2 mat-dialog-title>Sales Order {{ so.salesOrderNo }}</h2>
 <mat-dialog-content>
   <div class="detail-grid">
     <div>
-      <span class="label">Customer Name</span>
-      <div class="value">{{ so.customerName }}</div>
+      <span class="label">Customer ID</span>
+      <div class="value">{{ so.customerId }}</div>
+    </div>
+    <div>
+      <span class="label">SKU</span>
+      <div class="value">{{ so.sku }}</div>
+    </div>
+    <div>
+      <span class="label">Store ID</span>
+      <div class="value">{{ so.storeId }}</div>
     </div>
     <div>
       <span class="label">Status</span>
       <div class="value">
-        <app-status-badge [status]="so.status"></app-status-badge>
+        <app-status-badge [status]="so.orderStatus"></app-status-badge>
       </div>
     </div>
     <div>
-      <span class="label">Customer Email</span>
-      <div class="value">{{ so.customerEmail }}</div>
+      <span class="label">Quantity</span>
+      <div class="value">{{ so.quantity }}</div>
     </div>
     <div>
-      <span class="label">Phone</span>
-      <div class="value">{{ so.customerPhone }}</div>
-    </div>
-    <div>
-      <span class="label">Order Date</span>
-      <div class="value">{{ so.orderDate }}</div>
+      <span class="label">Selling Price</span>
+      <div class="value">₹ {{ so.sellingPrice | number }}</div>
     </div>
     <div>
       <span class="label">Total Amount</span>
-      <div class="value">{{ so.totalAmount | currency:'INR':'symbol':'1.0-0' }}</div>
+      <div class="value font-bold">₹ {{ so.totalAmount | number }}</div>
     </div>
-    <div style="grid-column: span 2;">
-      <span class="label">Shipping Address</span>
-      <div class="value">{{ so.shippingAddress }}</div>
+    <div>
+      <span class="label">Payment Method</span>
+      <div class="value">{{ so.paymentMethod }}</div>
+    </div>
+    <div *ngIf="so.orderDate">
+      <span class="label">Order Date</span>
+      <div class="value">{{ so.orderDate | date:'mediumDate' }}</div>
+    </div>
+    <div *ngIf="so.deliveryDate">
+      <span class="label">Delivery Date</span>
+      <div class="value">{{ so.deliveryDate | date:'mediumDate' }}</div>
     </div>
   </div>
-
-  <h3>Ordered Products</h3>
-  <table class="items-table">
-    <thead>
-      <tr>
-        <th>Product</th>
-        <th>SKU</th>
-        <th>Qty</th>
-        <th>Unit Price</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of so.items">
-        <td>{{ item.productName }}</td>
-        <td>{{ item.sku }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.unitPrice | currency:'INR':'symbol':'1.0-0' }}</td>
-        <td>{{ item.total | currency:'INR':'symbol':'1.0-0' }}</td>
-      </tr>
-    </tbody>
-  </table>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button color="primary" (click)="close()">Close</button>

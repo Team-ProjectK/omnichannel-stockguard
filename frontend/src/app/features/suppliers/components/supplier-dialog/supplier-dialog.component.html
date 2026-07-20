@@ -1,24 +1,34 @@
 <h2 mat-dialog-title>{{ isEdit ? 'Edit Supplier' : 'Add New Supplier' }}</h2>
 <mat-dialog-content>
   <form [formGroup]="supplierForm" class="dialog-content">
-    <mat-form-field appearance="outline">
-      <mat-label>Supplier Name</mat-label>
-      <input matInput formControlName="name" placeholder="e.g. TechSupply Global">
-    </mat-form-field>
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Supplier Code</mat-label>
+        <input matInput formControlName="supplierCode" placeholder="e.g. SUP-001">
+        <mat-error *ngIf="supplierForm.get('supplierCode')?.hasError('required')">Supplier Code is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Supplier Name</mat-label>
+        <input matInput formControlName="supplierName" placeholder="e.g. TechSupply Global">
+        <mat-error *ngIf="supplierForm.get('supplierName')?.hasError('required')">Supplier Name is required</mat-error>
+      </mat-form-field>
+    </div>
 
     <div class="form-row">
       <mat-form-field appearance="outline">
         <mat-label>Contact Person</mat-label>
         <input matInput formControlName="contactPerson">
+        <mat-error *ngIf="supplierForm.get('contactPerson')?.hasError('required')">Contact Person is required</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Category</mat-label>
-        <mat-select formControlName="category">
-          <mat-option value="Electronics">Electronics</mat-option>
-          <mat-option value="Accessories">Accessories</mat-option>
-          <mat-option value="Furniture">Furniture</mat-option>
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="ACTIVE">ACTIVE</mat-option>
+          <mat-option value="INACTIVE">INACTIVE</mat-option>
         </mat-select>
+        <mat-error *ngIf="supplierForm.get('status')?.hasError('required')">Status is required</mat-error>
       </mat-form-field>
     </div>
 
@@ -26,38 +36,48 @@
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" type="email">
+        <mat-error *ngIf="supplierForm.get('email')?.hasError('required')">Email is required</mat-error>
+        <mat-error *ngIf="supplierForm.get('email')?.hasError('email')">Invalid email address</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Phone</mat-label>
-        <input matInput formControlName="phone">
+        <mat-label>Phone (10 digits)</mat-label>
+        <input matInput formControlName="phone" placeholder="9876543210">
+        <mat-error *ngIf="supplierForm.get('phone')?.hasError('required')">Phone is required</mat-error>
+        <mat-error *ngIf="supplierForm.get('phone')?.hasError('pattern')">Phone must contain exactly 10 digits</mat-error>
       </mat-form-field>
     </div>
 
     <mat-form-field appearance="outline">
       <mat-label>Address</mat-label>
       <textarea matInput formControlName="address" rows="2"></textarea>
+      <mat-error *ngIf="supplierForm.get('address')?.hasError('required')">Address is required</mat-error>
     </mat-form-field>
 
     <div class="form-row">
       <mat-form-field appearance="outline">
-        <mat-label>Rating (1-5)</mat-label>
-        <input matInput formControlName="rating" type="number" step="0.1" min="1" max="5">
+        <mat-label>City</mat-label>
+        <input matInput formControlName="city">
+        <mat-error *ngIf="supplierForm.get('city')?.hasError('required')">City is required</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          <mat-option value="Active">Active</mat-option>
-          <mat-option value="Inactive">Inactive</mat-option>
-        </mat-select>
+        <mat-label>State</mat-label>
+        <input matInput formControlName="state">
+        <mat-error *ngIf="supplierForm.get('state')?.hasError('required')">State is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Country</mat-label>
+        <input matInput formControlName="country">
+        <mat-error *ngIf="supplierForm.get('country')?.hasError('required')">Country is required</mat-error>
       </mat-form-field>
     </div>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" [disabled]="supplierForm.invalid" (click)="onSubmit()">
+  <button mat-raised-button color="primary" (click)="onSubmit()">
     {{ isEdit ? 'Save Changes' : 'Add Supplier' }}
   </button>
 </mat-dialog-actions>

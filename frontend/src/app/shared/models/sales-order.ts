@@ -1,21 +1,28 @@
-export interface SalesOrderItem {
-  productName: string;
+export interface SalesOrder {
+  id?: number;
+  salesOrderNo: string;
+  customerId: string;
   sku: string;
+  storeId: string;
   quantity: number;
-  unitPrice: number;
-  total: number;
+  sellingPrice: number;
+  totalAmount: number;
+  paymentMethod: string;
+  orderStatus: string;
+  orderDate?: string;
+  deliveryDate?: string;
 }
 
-export interface SalesOrder {
-  id: number;
-  soNumber: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  orderDate: string;
-  shippingAddress: string;
-  totalItems: number;
+export interface SalesOrderDto {
+  salesOrderNo: string;
+  customerId: string;
+  sku: string;
+  storeId: string;
+  quantity: number;
+  sellingPrice: number;
   totalAmount: number;
-  status: 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
-  items: SalesOrderItem[];
+  paymentMethod: string;
+  orderStatus: string;
+  orderDate?: string;
+  deliveryDate?: string;
 }

@@ -2,19 +2,23 @@
 
 <mat-dialog-content>
 
-  <p><strong>Name:</strong> {{ product.name }}</p>
+  <p><strong>Product Name:</strong> {{ product.productName }}</p>
 
   <p><strong>SKU:</strong> {{ product.sku }}</p>
 
-  <p><strong>Category:</strong> {{ product.category }}</p>
+  <p><strong>Store ID:</strong> {{ product.storeId }}</p>
 
-  <p><strong>Supplier:</strong> {{ product.supplier }}</p>
+  <p><strong>Current Price:</strong> ₹{{ product.currentPrice | number }}</p>
 
-  <p><strong>Price:</strong> ₹{{ product.price }}</p>
+  <p><strong>Base Price:</strong> ₹{{ product.basePrice | number }}</p>
 
   <p><strong>Stock:</strong> {{ product.stock }}</p>
 
-  <p><strong>Status:</strong> {{ product.status }}</p>
+  <p><strong>Reorder Threshold:</strong> {{ product.reorderThreshold }}</p>
+
+  <p *ngIf="product.lastPriceUpdate"><strong>Last Price Update:</strong> {{ product.lastPriceUpdate | date:'medium' }}</p>
+
+  <p *ngIf="product.lastUpdatedBy"><strong>Last Updated By:</strong> {{ product.lastUpdatedBy }}</p>
 
 </mat-dialog-content>
 
@@ -24,9 +28,7 @@
     mat-raised-button
     color="primary"
     mat-dialog-close>
-
     Close
-
   </button>
 
 </mat-dialog-actions>
