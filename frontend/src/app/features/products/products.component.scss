@@ -1,140 +1,127 @@
 .products-container {
-  padding: 24px;
-  background: #f5f7fb;
-  min-height: 100vh;
+  padding: 8px 0 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
-
-/* ===============================
-   Page Header
-================================= */
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-}
+  margin-bottom: 8px;
 
-.page-header h1 {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 600;
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+  }
 }
-
-/* ===============================
-   Toolbar
-================================= */
 
 .toolbar {
   display: flex;
   gap: 16px;
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 20px;
-}
 
-.search-field {
-  flex: 1;
-  min-width: 300px;
-}
+  .search-field {
+    flex: 1;
+    min-width: 280px;
+  }
 
-.toolbar mat-form-field {
-  width: 220px;
-}
+  mat-form-field {
+    width: 200px;
+  }
 
-/* ===============================
-   Summary Card
-================================= */
+  button {
+    height: 48px !important;
+    white-space: nowrap;
+  }
+}
 
 .summary-row {
-  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 .summary-card {
-  width: 220px;
-  padding: 20px;
-}
+  flex: 1;
+  min-width: 200px;
+  padding: 22px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s ease;
 
-.summary-card h3 {
-  margin: 0;
-  font-size: 15px;
-  color: #6b7280;
-  font-weight: 500;
-}
+  &:hover {
+    transform: translateY(-2px);
+  }
 
-.summary-card h2 {
-  margin: 10px 0 0;
-  font-size: 30px;
-  color: #1976d2;
-}
+  h3 {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-/* ===============================
-   Material Table
-================================= */
+  h2 {
+    margin: 8px 0 0 0;
+    font-size: 28px;
+    font-weight: 900;
+    color: #2563eb;
+    letter-spacing: -0.5px;
+  }
+}
 
 .table-container {
   overflow: auto;
   background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
 }
 
 table {
   width: 100%;
-  min-width: 900px;
+  border-collapse: collapse;
 }
-
-.mat-mdc-header-row {
-  background: #f3f4f6;
-}
-
-.mat-mdc-header-cell {
-  font-weight: 600;
-  color: #374151;
-}
-
-.mat-mdc-cell,
-.mat-mdc-header-cell {
-  padding: 16px;
-}
-
-/* ===============================
-   Status Chips
-================================= */
 
 .status {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .in-stock {
   background: #dcfce7;
-  color: #166534;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
 }
 
 .low-stock {
   background: #fef3c7;
   color: #b45309;
+  border: 1px solid #fde68a;
 }
 
 .out-stock {
   background: #fee2e2;
   color: #b91c1c;
+  border: 1px solid #fecaca;
 }
 
-/* ===============================
-   Responsive
-================================= */
-
 @media (max-width: 768px) {
-
-  .products-container {
-    padding: 16px;
-  }
-
   .page-header {
     flex-direction: column;
     align-items: flex-start;
@@ -144,10 +131,11 @@ table {
   .toolbar {
     flex-direction: column;
     align-items: stretch;
+    .search-field, mat-form-field {
+      width: 100%;
+    }
   }
 
-  .search-field,
-  .toolbar mat-form-field,
   .summary-card {
     width: 100%;
   }
