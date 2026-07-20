@@ -1,0 +1,23 @@
+<div class="app-shell">
+  <header class="navbar">
+    <div class="navbar__left">
+      <span class="navbar__brand">StockGuard</span>
+      <nav class="navbar__links">
+        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/inventory" routerLinkActive="active">Inventory</a>
+        <a routerLink="/alerts" routerLinkActive="active">Alerts</a>
+        <a routerLink="/purchase-requests" routerLinkActive="active">Purchase Requests</a>
+      </nav>
+    </div>
+
+    <div class="navbar__right">
+      <span class="navbar__avatar">{{ auth.getUsername()?.charAt(0)?.toUpperCase() }}</span>
+      <span class="navbar__username">{{ auth.getUsername() }}</span>
+      <button class="navbar__signout" (click)="onSignOut()">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,17 +1,20 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.ProductDto;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.PriceDecision;
 import com.example.demo.model.ReorderRequest;
 import com.example.demo.model.product;
 import com.example.demo.repository.PriceDecisionRepository;
 import com.example.demo.repository.ReorderRequestRepository;
 import com.example.demo.repository.productRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class productService {
@@ -33,15 +36,80 @@ public class productService {
         return productRepo.findAll();
     }
 
+    // Get Products with Pagination
+    public Page<product> getProducts(Pageable pageable) {
+        return productRepo.findAll(pageable);
+    }
+
     // Get product by SKU and Store
     public product getProduct(String sku, String storeId) {
+
         return productRepo.findBySkuAndStoreId(sku, storeId)
                 .orElseThrow(() ->
-                        new NoSuchElementException("Product not found"));
+                        new ResourceNotFoundException("Product not found"));
+    }
+
+    // Create Product
+    public product createProduct(ProductDto dto) {
+
+        if (productRepo.existsBySkuAndStoreId(dto.getSku(), dto.getStoreId())) {
+            throw new RuntimeException("Product already exists.");
+        }
+
+        product p = new product();
+
+        p.setSku(dto.getSku());
+        p.setStoreId(dto.getStoreId());
+        p.setProductName(dto.getProductName());
+        p.setCurrentPrice(dto.getCurrentPrice());
+        p.setBasePrice(dto.getBasePrice());
+        p.setStock(dto.getStock());
+        p.setReorderThreshold(dto.getReorderThreshold());
+        p.setLastPriceUpdate(Instant.now());
+        p.setLastUpdatedBy(dto.getLastUpdatedBy());
+
+        return productRepo.save(p);
+    }
+
+    // Update Product
+    public product updateProduct(String sku,
+                                 String storeId,
+                                 ProductDto dto) {
+
+        product existing = productRepo.findBySkuAndStoreId(sku, storeId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Product not found"));
+
+        existing.setProductName(dto.getProductName());
+        existing.setCurrentPrice(dto.getCurrentPrice());
+        existing.setBasePrice(dto.getBasePrice());
+        existing.setStock(dto.getStock());
+        existing.setReorderThreshold(dto.getReorderThreshold());
+        existing.setLastPriceUpdate(Instant.now());
+        existing.setLastUpdatedBy(dto.getLastUpdatedBy());
+
+        return productRepo.save(existing);
+    }
+
+    // Delete Product
+    public void deleteProduct(String sku,
+                              String storeId) {
+
+        product existing = productRepo.findBySkuAndStoreId(sku, storeId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Product not found"));
+
+        productRepo.delete(existing);
+    }
+
+    // Search by Product Name
+    public List<product> searchProducts(String keyword) {
+        return productRepo.findByProductNameContainingIgnoreCase(keyword);
     }
 
     // Get Price History
     public List<PriceDecision> getPriceHistory(String sku, String storeId) {
+
         return priceDecisionRepo.findBySkuAndStoreIdOrderByTimestampAsc(sku, storeId);
     }
 
@@ -56,7 +124,7 @@ public class productService {
 
         product p = productRepo.findBySkuAndStoreId(sku, storeId)
                 .orElseThrow(() ->
-                        new NoSuchElementException("Product not found"));
+                        new ResourceNotFoundException("Product not found"));
 
         BigDecimal oldPrice = p.getCurrentPrice();
 
