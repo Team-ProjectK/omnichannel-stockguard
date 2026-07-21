@@ -88,6 +88,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { FloatingAiChatComponent } from './core/components/floating-ai-chat/floating-ai-chat.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -96,6 +98,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     FooterComponent,
     MainLayoutComponent,
     AuthLayoutComponent,
+    FloatingAiChatComponent,
     HomeComponent,
     DashboardComponent,
     ProductsComponent,

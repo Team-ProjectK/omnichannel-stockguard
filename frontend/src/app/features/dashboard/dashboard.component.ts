@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { Router } from '@angular/router';
 import { DashboardService, DashboardMetrics } from '../../core/services/dashboard.service';
+import { AiService, InventoryInsight, ReorderSuggestion, PriceRecommendation, DemandForecast } from '../ai/services/ai.service';
 
 interface DashboardCard {
   title: string;
@@ -56,6 +57,11 @@ export class DashboardComponent implements OnInit {
   greetingMessage = 'Good Day';
   todayDate: Date = new Date();
 
+  aiInsights: InventoryInsight | null = null;
+  aiReorders: ReorderSuggestion | null = null;
+  aiPricing: PriceRecommendation | null = null;
+  aiForecast: DemandForecast | null = null;
+
   dashboardCards: DashboardCard[] = [
     {
       title: 'Total Revenue',
@@ -96,12 +102,14 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dashboardService: DashboardService,
+    private aiService: AiService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.setGreeting();
     this.loadMetrics();
+    this.loadAiData();
   }
 
   private setGreeting(): void {
@@ -126,6 +134,26 @@ export class DashboardComponent implements OnInit {
       error: (err) => console.error('Error fetching dashboard metrics', err)
     });
   }
+
+  private loadAiData(): void {
+    this.aiService.getInventoryInsights().subscribe({
+      next: (res) => this.aiInsights = res,
+      error: (err) => console.error('AI Insights load error', err)
+    });
+    this.aiService.getReorderSuggestions().subscribe({
+      next: (res) => this.aiReorders = res,
+      error: (err) => console.error('AI Reorders load error', err)
+    });
+    this.aiService.getPriceRecommendations().subscribe({
+      next: (res) => this.aiPricing = res,
+      error: (err) => console.error('AI Pricing load error', err)
+    });
+    this.aiService.getDemandForecast().subscribe({
+      next: (res) => this.aiForecast = res,
+      error: (err) => console.error('AI Forecast load error', err)
+    });
+  }
+
 
   public lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],

@@ -42,6 +42,7 @@ const routes: Routes = [
   { path: 'reorder', component: ReorderComponent, canActivate: [AuthGuard] },
   { path: 'alerts', component: AlertsComponent, canActivate: [AuthGuard] },
   { path: 'analytics', component: AnalyticsComponent, canActivate: [AuthGuard] },
+  { path: 'ai', loadChildren: () => import('./features/ai/ai.module').then(m => m.AiModule), canActivate: [AuthGuard] },
   { path: 'ai-predictions', component: AiPredictionsComponent, canActivate: [AuthGuard] },
   { path: 'ai-dashboard', component: AiPredictionsComponent, canActivate: [AuthGuard] },
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard] },

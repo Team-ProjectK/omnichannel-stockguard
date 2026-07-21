@@ -1,0 +1,69 @@
+<div class="reorder-container animate-fade-in">
+  <div class="header-section">
+    <div>
+      <h2>AI Automated Reorder Suggestions</h2>
+      <p class="subtitle">Predictive reorder recommendations, lead-time buffer analysis, and priority ranking.</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="fetchReorderSuggestions()" [disabled]="isLoading">
+      <mat-icon>refresh</mat-icon> Re-evaluate Reorder Model
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-box">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Calculating reorder thresholds via AI analysis...</p>
+  </div>
+
+  <div *ngIf="!isLoading && suggestions" class="content-body">
+    <!-- Executive Banner -->
+    <div class="banner mat-elevation-z1">
+      <mat-icon class="banner-icon">precision_manufacturing</mat-icon>
+      <div>
+        <h4>Executive Reorder Summary</h4>
+        <p>{{ suggestions.summary }}</p>
+      </div>
+    </div>
+
+    <!-- Recommendations Table -->
+    <div class="table-card mat-elevation-z1">
+      <table>
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Product Name</th>
+            <th>Current Stock</th>
+            <th>Recommended Qty</th>
+            <th>Priority</th>
+            <th>AI Reasoning</th>
+            <th>Quick Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of suggestions.items">
+            <td class="font-mono">{{ item.sku }}</td>
+            <td class="font-bold">{{ item.productName }}</td>
+            <td class="text-red font-bold">{{ item.currentStock }} units</td>
+            <td class="text-blue font-bold">+{{ item.recommendedQuantity }} units</td>
+            <td>
+              <span
+                class="badge"
+                [ngClass]="{
+                  'badge-high': item.priority === 'HIGH',
+                  'badge-med': item.priority === 'MEDIUM',
+                  'badge-low': item.priority === 'LOW'
+                }">
+                {{ item.priority }}
+              </span>
+            </td>
+            <td class="reason-cell">{{ item.reason }}</td>
+            <td>
+              <button mat-raised-button color="accent" class="btn-sm" (click)="triggerQuickReorder(item)">
+                <mat-icon>shopping_cart</mat-icon> Create PO Draft
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

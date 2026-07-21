@@ -1,0 +1,75 @@
+<div class="insights-container animate-fade-in">
+  <div class="header-section">
+    <div>
+      <h2>AI Inventory Intelligence & Diagnostics</h2>
+      <p class="subtitle">Real-time stock velocity, turnover risk analysis, and automated health assessment.</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="fetchInsights()" [disabled]="isLoading">
+      <mat-icon>refresh</mat-icon> Refresh Diagnostics
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-box">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Executing LangChain4j Inventory Velocity Diagnostics...</p>
+  </div>
+
+  <div *ngIf="!isLoading && insights" class="content-grid">
+    <!-- Status Card -->
+    <div class="card health-card mat-elevation-z1">
+      <div class="health-header">
+        <mat-icon [ngClass]="insights.overallHealthStatus === 'HEALTHY' ? 'text-green' : 'text-amber'">
+          {{ insights.overallHealthStatus === 'HEALTHY' ? 'check_circle' : 'warning' }}
+        </mat-icon>
+        <div>
+          <h3>System Health: {{ insights.overallHealthStatus }}</h3>
+          <span class="subtext">Analyzed {{ insights.totalProductsAnalyzed }} products across catalog</span>
+        </div>
+      </div>
+      <div class="health-metrics">
+        <div class="metric">
+          <span class="label">Low Stock Alerts</span>
+          <span class="value text-red">{{ insights.lowStockItemCount }} SKUs</span>
+        </div>
+        <div class="metric">
+          <span class="label">Report Generated</span>
+          <span class="value">{{ insights.generatedAt | date:'shortTime' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Summary Banner -->
+    <div class="card summary-card mat-elevation-z1">
+      <h3><mat-icon class="text-blue">auto_awesome</mat-icon> AI Executive Insight Summary</h3>
+      <p class="summary-text">{{ insights.aiAnalysisSummary }}</p>
+    </div>
+
+    <!-- Fast vs Slow Moving Grid -->
+    <div class="two-col">
+      <div class="card mat-elevation-z1">
+        <h4 class="text-green"><mat-icon>trending_up</mat-icon> Fast-Moving High Velocity SKUs</h4>
+        <ul>
+          <li *ngFor="let item of insights.fastMovingItems">{{ item }}</li>
+        </ul>
+      </div>
+
+      <div class="card mat-elevation-z1">
+        <h4 class="text-amber"><mat-icon>trending_down</mat-icon> Slow-Moving / High Holding Cost SKUs</h4>
+        <ul>
+          <li *ngFor="let item of insights.slowMovingItems">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Recommendations Card -->
+    <div class="card rec-card mat-elevation-z1">
+      <h3><mat-icon class="text-purple">lightbulb</mat-icon> Top Recommended Actions</h3>
+      <div class="rec-list">
+        <div *ngFor="let rec of insights.keyRecommendations" class="rec-item">
+          <mat-icon class="check-icon">task_alt</mat-icon>
+          <span>{{ rec }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

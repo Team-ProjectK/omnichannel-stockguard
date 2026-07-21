@@ -1,0 +1,91 @@
+<div class="floating-ai-widget">
+
+  <!-- Floating Trigger Bubble -->
+  <button
+    mat-fab
+    color="primary"
+    class="ai-trigger-bubble"
+    [ngClass]="{ 'is-open': isOpen }"
+    (click)="toggleChat()"
+    matTooltip="StockGuard AI Assistant">
+
+    <div class="online-indicator"></div>
+    <span *ngIf="unreadBadgeCount > 0 && !isOpen" class="notification-badge">{{ unreadBadgeCount }}</span>
+
+    <mat-icon *ngIf="!isOpen">smart_toy</mat-icon>
+    <mat-icon *ngIf="isOpen">close</mat-icon>
+  </button>
+
+  <!-- Popup Chat Window (Desktop 420px x 600px, Responsive) -->
+  <div *ngIf="isOpen" class="floating-chat-window mat-elevation-z8 animate-slide-up">
+
+    <!-- Header -->
+    <div class="window-header">
+      <div class="brand-title">
+        <div class="bot-avatar"><mat-icon>auto_awesome</mat-icon></div>
+        <div>
+          <h4>StockGuard AI</h4>
+          <span class="status-subtext"><span class="dot"></span> Online • LangChain4j</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button mat-icon-button class="action-btn" (click)="clearChat()" matTooltip="Clear Chat">
+          <mat-icon>cleaning_services</mat-icon>
+        </button>
+        <button mat-icon-button class="action-btn" (click)="toggleChat()" matTooltip="Close Window">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Message List Container -->
+    <div class="window-body" #chatScrollContainer>
+      <div
+        *ngFor="let msg of messages"
+        class="chat-bubble-row"
+        [ngClass]="{ 'user-row': msg.sender === 'user', 'ai-row': msg.sender === 'ai' }">
+
+        <div class="bubble-content" [ngClass]="{ 'user-bg': msg.sender === 'user', 'ai-bg': msg.sender === 'ai' }">
+          <p class="text-body">{{ msg.text }}</p>
+          <div class="meta-info">
+            <span class="time">{{ msg.timestamp | date:'shortTime' }}</span>
+            <span *ngIf="msg.status === 'OLLAMA_ERROR'" class="warn-chip">Offline Fallback</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Typing Indicator -->
+      <div *ngIf="isLoading" class="chat-bubble-row ai-row">
+        <div class="bubble-content ai-bg typing-box">
+          <div class="typing-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="typing-label">StockGuard AI is generating response...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Footer -->
+    <div class="window-footer">
+      <textarea
+        class="chat-textarea"
+        placeholder="Ask AI a question... (Enter to send, Shift+Enter for new line)"
+        [(ngModel)]="userInput"
+        (keydown)="onKeyDown($event)"
+        rows="2"
+        [disabled]="isLoading"></textarea>
+
+      <button
+        mat-mini-fab
+        color="primary"
+        class="send-fab"
+        (click)="sendMessage()"
+        [disabled]="!userInput.trim() || isLoading">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+
+  </div>
+
+</div>
