@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
-import { ThemeService } from '../../services/theme.service';
+import { ThemeService, AppTheme } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { AuthResponse } from '../../models/user.model';
 
@@ -14,6 +14,7 @@ export class NavbarComponent implements OnInit {
   today: Date = new Date();
   unreadCount = 0;
   isDark = false;
+  currentTheme: AppTheme = 'light';
   currentUser: AuthResponse | null = null;
 
   constructor(
@@ -28,8 +29,9 @@ export class NavbarComponent implements OnInit {
       this.unreadCount = items.filter(n => !n.read).length;
     });
 
-    this.themeService.isDarkTheme().subscribe(dark => {
-      this.isDark = dark;
+    this.themeService.getTheme().subscribe(theme => {
+      this.currentTheme = theme;
+      this.isDark = theme === 'dark';
     });
 
     this.authService.currentUser$.subscribe(user => {
@@ -38,7 +40,11 @@ export class NavbarComponent implements OnInit {
   }
 
   toggleTheme(): void {
-    this.themeService.toggleTheme();
+    this.themeService.cycleTheme();
+  }
+
+  setTheme(theme: AppTheme): void {
+    this.themeService.setTheme(theme);
   }
 
   goToNotifications(): void {

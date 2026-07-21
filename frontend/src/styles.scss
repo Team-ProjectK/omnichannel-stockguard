@@ -374,3 +374,166 @@ body.dark-theme {
     color: #38bdf8 !important;
   }
 }
+
+/* ====================================================
+   WARM THEME (LIGHT BISCUIT + DARK ORANGE) OVERRIDES
+   ==================================================== */
+body.warm-theme {
+  --primary-color: #C96B00;
+  --primary-hover: #B85A00;
+  --primary-light: #FFF0DB;
+  --success-color: #2E7D32;
+  --warning-color: #E89B2C;
+  --danger-color: #D84315;
+  --accent-color: #E89B2C;
+
+  --bg-main: #FFF8EC;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #FFFDF8;
+
+  --text-main: #2D2218;
+  --text-muted: #6D5A46;
+  --text-subtle: #8B7A66;
+
+  --border-color: #E8D8B8;
+  --border-focus: #C96B00;
+  --shadow-sm: 0 1px 3px rgba(45, 34, 24, 0.06), 0 1px 2px rgba(45, 34, 24, 0.04);
+  --shadow-md: 0 4px 12px rgba(45, 34, 24, 0.08);
+
+  background-color: #FFF8EC !important;
+  color: #2D2218 !important;
+
+  .layout {
+    background-color: #FFF8EC;
+  }
+
+  /* Sidebar Warm Theme */
+  .sidebar {
+    background-color: #FFF4DE !important;
+    border-right-color: #E8D8B8 !important;
+    color: #2D2218 !important;
+
+    .logo h2 { color: #2D2218 !important; }
+    .logo p { color: #C96B00 !important; }
+
+    nav a {
+      color: #6D5A46 !important;
+      mat-icon { color: #C96B00 !important; }
+
+      &:hover {
+        background-color: #F5DFC0 !important;
+        color: #C96B00 !important;
+        mat-icon { color: #C96B00 !important; }
+      }
+
+      &.active {
+        background-color: #C96B00 !important;
+        color: #FFFFFF !important;
+        mat-icon { color: #FFFFFF !important; }
+      }
+    }
+  }
+
+  /* Navbar Warm Theme */
+  .navbar {
+    background-color: #FFF9EF !important;
+    border-bottom-color: #E8D8B8 !important;
+    color: #2D2218 !important;
+
+    .left-section h2 { color: #2D2218 !important; }
+    .left-section p { color: #6D5A46 !important; }
+
+    .search-box {
+      background-color: #FFFDF8 !important;
+      border-color: #E8D8B8 !important;
+      mat-icon { color: #C96B00 !important; }
+      input {
+        color: #2D2218 !important;
+        &::placeholder { color: #8B7A66 !important; }
+      }
+    }
+
+    button mat-icon {
+      color: #C96B00 !important;
+    }
+
+    .profile-info h4 { color: #2D2218 !important; }
+    .profile-info small { color: #6D5A46 !important; }
+  }
+
+  /* Card and Panel Warm Theme */
+  .card, .panel, .summary-card, .filter-card, .table-card, .wh-card, .pred-card, .chat-card, .user-card, .tab-panel, .chart-panel {
+    background-color: #FFFFFF !important;
+    border-color: #E8D8B8 !important;
+    color: #2D2218 !important;
+    box-shadow: 0 4px 14px rgba(45, 34, 24, 0.06) !important;
+  }
+
+  .glass-panel {
+    background: rgba(255, 253, 248, 0.9) !important;
+    border-color: #E8D8B8 !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #2D2218 !important;
+  }
+
+  .subtitle, .text-subtle, .description, p {
+    color: #6D5A46 !important;
+  }
+
+  /* Tables Warm Theme */
+  table {
+    background-color: #FFFFFF !important;
+    color: #2D2218 !important;
+
+    th, thead {
+      background-color: #F8EEDC !important;
+      color: #2D2218 !important;
+      border-bottom-color: #E8D8B8 !important;
+    }
+
+    td {
+      border-bottom-color: #E8D8B8 !important;
+      color: #2D2218 !important;
+    }
+
+    tbody tr:hover {
+      background-color: #F7E5C5 !important;
+    }
+  }
+
+  /* Dialogs, Menus & Form Fields Warm Theme */
+  .mat-mdc-dialog-container, .mat-mdc-menu-panel {
+    background-color: #FFFFFF !important;
+    color: #2D2218 !important;
+  }
+
+  .mat-mdc-form-field {
+    .mdc-text-field--outlined {
+      background-color: #FFFDF8 !important;
+    }
+    input, select, textarea {
+      color: #2D2218 !important;
+    }
+    .mdc-floating-label {
+      color: #6D5A46 !important;
+    }
+  }
+
+  .mat-mdc-paginator {
+    background-color: #FFFFFF !important;
+    color: #6D5A46 !important;
+  }
+
+  /* Primary Button Overrides for Warm Theme */
+  button.mat-mdc-raised-button.mat-primary, button.mat-mdc-unelevated-button.mat-primary {
+    background-color: #C96B00 !important;
+    color: #FFFFFF !important;
+
+    &:hover {
+      background-color: #B65A00 !important;
+      box-shadow: 0 4px 12px rgba(201, 107, 0, 0.3) !important;
+    }
+  }
+}

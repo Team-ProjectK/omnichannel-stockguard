@@ -10,13 +10,13 @@
   justify-content: space-between;
   align-items: center;
 
-  h2 { font-size: 22px; font-weight: 800; margin: 0; color: #0f172a; letter-spacing: -0.5px; }
-  .subtitle { margin: 4px 0 0 0; color: #64748b; font-size: 14px; }
+  h2 { font-size: 24px; font-weight: 800; margin: 0; color: #111827; letter-spacing: -0.02em; }
+  .subtitle { margin: 4px 0 0 0; color: #6B7280; font-size: 13.5px; }
 
   button {
-    height: 44px !important;
-    padding: 0 20px !important;
-    font-weight: 700 !important;
+    height: 42px !important;
+    padding: 0 18px !important;
+    font-weight: 600 !important;
     border-radius: 8px !important;
     white-space: nowrap !important;
   }
@@ -24,7 +24,7 @@
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 20px;
 }
 
@@ -35,28 +35,30 @@
 }
 
 .table-card {
-  background: #ffffff;
-  border-radius: 12px;
+  background: #FFFFFF;
+  border-radius: var(--radius-card, 16px);
   overflow: hidden;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 
   table { width: 100%; border-collapse: collapse; }
-  thead { background: #f8fafc; }
+  thead { background: #F8FAFC; }
   th, td {
-    padding: 14px 16px;
+    padding: 14px 18px;
     text-align: left;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #E5E7EB;
     font-size: 13.5px;
+    color: #111827;
   }
-  th { font-weight: 700; color: #475569; }
+  th { font-weight: 700; color: #6B7280; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  tbody tr:hover td { background: #F8FAFC; }
 
-  .font-mono { font-family: monospace; font-weight: 600; }
-  .font-bold { font-weight: 700; color: #0f172a; }
-  .text-blue { color: #2563eb; font-weight: 700; }
+  .font-mono { font-family: ui-monospace, monospace; font-weight: 600; }
+  .font-bold { font-weight: 700; color: #111827; }
+  .text-blue { color: #2563EB; font-weight: 700; }
 
   .strategy-badge {
-    background: #f1f5f9;
+    background: #F1F5F9;
     color: #475569;
     padding: 4px 10px;
     border-radius: 12px;
@@ -71,9 +73,9 @@
     font-weight: 700;
     text-transform: uppercase;
 
-    &.opt { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-    &.review { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
-    &.action { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    &.opt { background: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; }
+    &.review { background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
+    &.action { background: #FEE2E2; color: #B91C1C; border: 1px solid #FECACA; }
   }
 
   .btn-sm {

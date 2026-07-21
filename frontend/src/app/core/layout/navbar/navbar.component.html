@@ -19,9 +19,24 @@
             <mat-icon [matBadge]="unreadCount" matBadgeColor="warn" [matBadgeHidden]="unreadCount === 0">notifications</mat-icon>
         </button>
 
-        <button mat-icon-button (click)="toggleTheme()" matTooltip="Toggle Dark Mode">
-            <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        <button mat-icon-button [matMenuTriggerFor]="themeMenu" matTooltip="Select Theme">
+            <mat-icon>{{ currentTheme === 'dark' ? 'dark_mode' : (currentTheme === 'warm' ? 'palette' : 'light_mode') }}</mat-icon>
         </button>
+
+        <mat-menu #themeMenu="matMenu" xPosition="before">
+            <button mat-menu-item (click)="setTheme('light')" [class.active-theme]="currentTheme === 'light'">
+                <mat-icon color="primary">light_mode</mat-icon>
+                <span>Light Theme</span>
+            </button>
+            <button mat-menu-item (click)="setTheme('dark')" [class.active-theme]="currentTheme === 'dark'">
+                <mat-icon color="primary">dark_mode</mat-icon>
+                <span>Dark Theme</span>
+            </button>
+            <button mat-menu-item (click)="setTheme('warm')" [class.active-theme]="currentTheme === 'warm'">
+                <mat-icon color="primary">palette</mat-icon>
+                <span>Warm Theme (Executive Biscuit)</span>
+            </button>
+        </mat-menu>
 
         <!-- Professional Profile Dropdown Trigger -->
         <div class="profile-trigger" [matMenuTriggerFor]="profileMenu" matTooltip="User Account" *ngIf="currentUser">
@@ -56,9 +71,9 @@
                 <span>Account Settings</span>
             </button>
 
-            <button mat-menu-item (click)="toggleTheme()">
-                <mat-icon color="primary">{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
-                <span>Switch to {{ isDark ? 'Light' : 'Dark' }} Mode</span>
+            <button mat-menu-item [matMenuTriggerFor]="themeMenu">
+                <mat-icon color="primary">palette</mat-icon>
+                <span>Theme ({{ currentTheme | titlecase }})</span>
             </button>
 
             <mat-divider></mat-divider>

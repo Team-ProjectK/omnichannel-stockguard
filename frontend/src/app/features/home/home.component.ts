@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ThemeService } from '../../core/services/theme.service';
+import { ThemeService, AppTheme } from '../../core/services/theme.service';
+import { Subscription } from 'rxjs';
 
 interface FeatureCard {
   icon: string;
@@ -22,8 +23,10 @@ interface OverviewCard {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   isDark = false;
+  private themeSub!: Subscription;
+  private savedThemeOnEntry: AppTheme = 'light';
 
   features: FeatureCard[] = [
     {
@@ -99,13 +102,32 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.themeService.isDarkTheme().subscribe(dark => {
+    this.savedThemeOnEntry = this.themeService.currentTheme;
+
+    // Landing Page supports Light & Dark themes only. Remove warm-theme while on welcome page.
+    if (document.body.classList.contains('warm-theme')) {
+      document.body.classList.remove('warm-theme');
+    }
+
+    this.themeSub = this.themeService.isDarkTheme().subscribe(dark => {
       this.isDark = dark;
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.themeSub) {
+      this.themeSub.unsubscribe();
+    }
+    // Restore user theme when leaving landing page to app pages
+    if (this.savedThemeOnEntry === 'warm') {
+      document.body.classList.add('warm-theme');
+    }
+  }
+
   toggleTheme(): void {
-    this.themeService.toggleTheme();
+    const nextDark = !this.isDark;
+    this.isDark = nextDark;
+    this.themeService.setDarkTheme(nextDark);
   }
 
   navigateToLogin(): void {
