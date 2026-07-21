@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ThemeService } from '../../../core/services/theme.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../../core/services/auth.service';
+import { AuthResponse } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -9,53 +11,57 @@ import { ThemeService } from '../../../core/services/theme.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  isSignUp = false;
   loginForm!: FormGroup;
-  signupForm!: FormGroup;
-  isDark = false;
+  loading = false;
+  hidePassword = true;
+  returnUrl = '/dashboard';
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
     private router: Router,
-    public themeService: ThemeService
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
-    this.themeService.isDarkTheme().subscribe(dark => {
-      this.isDark = dark;
-    });
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate([this.returnUrl]);
+    }
 
     this.loginForm = this.fb.group({
-      email: ['admin@stockguard.com', [Validators.required, Validators.email]],
-      password: ['admin123', Validators.required],
-      rememberMe: [true]
-    });
-
-    this.signupForm = this.fb.group({
-      fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      company: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
-  toggleTab(signUp: boolean): void {
-    this.isSignUp = signUp;
-  }
-
-  onLogin(): void {
-    if (this.loginForm.valid) {
-      this.router.navigate(['/dashboard']);
+  onSubmit(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
     }
+
+    this.loading = true;
+    const val = this.loginForm.value;
+
+    this.authService.login(val).subscribe({
+      next: (res: AuthResponse) => {
+        this.loading = false;
+        this.snackBar.open(`Welcome back, ${res.name}! (${res.role})`, 'Close', { duration: 3000 });
+        this.router.navigate([this.returnUrl]);
+      },
+      error: (err: any) => {
+        this.loading = false;
+        console.error('Login error details:', err);
+        const msg = err.error?.message || err.error?.error || 'Invalid email or password.';
+        this.snackBar.open(msg, 'Close', { duration: 5000 });
+      }
+    });
   }
 
-  onSignUp(): void {
-    if (this.signupForm.valid) {
-      this.router.navigate(['/dashboard']);
-    }
-  }
-
-  goHome(): void {
-    this.router.navigate(['/home']);
+  goToRegister(): void {
+    this.router.navigate(['/register']);
   }
 }

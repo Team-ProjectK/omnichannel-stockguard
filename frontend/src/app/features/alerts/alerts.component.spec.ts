@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { AlertsComponent } from './alerts.component';
 
@@ -8,7 +11,9 @@ describe('AlertsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AlertsComponent]
+      imports: [HttpClientTestingModule, MatSnackBarModule],
+      declarations: [AlertsComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(AlertsComponent);
     component = fixture.componentInstance;

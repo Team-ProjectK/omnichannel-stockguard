@@ -112,6 +112,10 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  navigateToRegister(): void {
+    this.router.navigate(['/register']);
+  }
+
   scrollToSection(sectionId: string): void {
     const el = document.getElementById(sectionId);
     if (el) {

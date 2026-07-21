@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
 import { ThemeService } from '../../services/theme.service';
+import { AuthService } from '../../services/auth.service';
+import { AuthResponse } from '../../models/user.model';
 
 @Component({
   selector: 'app-navbar',
@@ -12,10 +14,12 @@ export class NavbarComponent implements OnInit {
   today: Date = new Date();
   unreadCount = 0;
   isDark = false;
+  currentUser: AuthResponse | null = null;
 
   constructor(
     private notificationService: NotificationService,
     public themeService: ThemeService,
+    public authService: AuthService,
     private router: Router
   ) {}
 
@@ -26,6 +30,10 @@ export class NavbarComponent implements OnInit {
 
     this.themeService.isDarkTheme().subscribe(dark => {
       this.isDark = dark;
+    });
+
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
     });
   }
 
@@ -46,6 +54,6 @@ export class NavbarComponent implements OnInit {
   }
 
   logout(): void {
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }

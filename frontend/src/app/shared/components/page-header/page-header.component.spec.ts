@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { PageHeaderComponent } from './page-header.component';
 
@@ -8,7 +9,8 @@ describe('PageHeaderComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PageHeaderComponent]
+      declarations: [PageHeaderComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(PageHeaderComponent);
     component = fixture.componentInstance;

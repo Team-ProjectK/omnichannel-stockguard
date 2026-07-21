@@ -24,6 +24,6 @@ export class MainLayoutComponent implements OnInit {
 
   private checkCurrentRoute(url: string): void {
     const cleanUrl = url.split('?')[0].split('#')[0];
-    this.isStandalonePage = cleanUrl === '/home' || cleanUrl === '/login' || cleanUrl === '/';
+    this.isStandalonePage = cleanUrl === '/home' || cleanUrl === '/login' || cleanUrl === '/register' || cleanUrl === '/';
   }
 }

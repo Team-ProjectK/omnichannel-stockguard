@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -13,6 +13,12 @@ import { SidebarComponent } from './core/layout/sidebar/sidebar.component';
 import { NavbarComponent } from './core/layout/navbar/navbar.component';
 import { FooterComponent } from './core/layout/footer/footer.component';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component';
+import { AuthLayoutComponent } from './core/layout/auth-layout/auth-layout.component';
+
+// Auth & Interceptor
+import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
+import { LoginComponent } from './features/auth/login/login.component';
+import { RegisterComponent } from './features/auth/register/register.component';
 
 // Features
 import { HomeComponent } from './features/home/home.component';
@@ -41,7 +47,6 @@ import { ReportsComponent } from './features/reports/reports.component';
 import { NotificationsComponent } from './features/notifications/notifications.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { SettingsComponent } from './features/settings/settings.component';
-import { LoginComponent } from './features/auth/login/login.component';
 import { ProductDialogComponent } from './features/products/components/product-dialog/product-dialog.component';
 import { ProductDetailsDialogComponent } from './features/products/components/product-details-dialog/product-details-dialog.component';
 
@@ -76,6 +81,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -89,6 +95,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     NavbarComponent,
     FooterComponent,
     MainLayoutComponent,
+    AuthLayoutComponent,
     HomeComponent,
     DashboardComponent,
     ProductsComponent,
@@ -116,6 +123,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ProfileComponent,
     SettingsComponent,
     LoginComponent,
+    RegisterComponent,
     PageHeaderComponent,
     LoadingSpinnerComponent,
     ConfirmationDialogComponent,
@@ -156,6 +164,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatSnackBarModule,
     MatBadgeModule,
     MatProgressBarModule,
+    MatProgressSpinnerModule,
     MatTabsModule,
     MatChipsModule,
     MatSlideToggleModule,
@@ -164,7 +173,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
     NgChartsModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -20,30 +20,34 @@ import { NotificationsComponent } from './features/notifications/notifications.c
 import { ProfileComponent } from './features/profile/profile.component';
 import { SettingsComponent } from './features/settings/settings.component';
 import { LoginComponent } from './features/auth/login/login.component';
+import { RegisterComponent } from './features/auth/register/register.component';
+import { AuthGuard } from './core/guards/auth.guard';
+import { NoAuthGuard } from './core/guards/no-auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent, canActivate: [NoAuthGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [NoAuthGuard] },
 
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'products', component: ProductsComponent },
-  { path: 'inventory', component: InventoryComponent },
-  { path: 'suppliers', component: SuppliersComponent },
-  { path: 'purchase-orders', component: PurchaseOrdersComponent },
-  { path: 'sales-orders', component: SalesOrdersComponent },
-  { path: 'customers', component: CustomersComponent },
-  { path: 'warehouses', component: WarehousesComponent },
-  { path: 'pricing', component: PricingComponent },
-  { path: 'reorder', component: ReorderComponent },
-  { path: 'alerts', component: AlertsComponent },
-  { path: 'analytics', component: AnalyticsComponent },
-  { path: 'ai-predictions', component: AiPredictionsComponent },
-  { path: 'ai-dashboard', component: AiPredictionsComponent },
-  { path: 'reports', component: ReportsComponent },
-  { path: 'notifications', component: NotificationsComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'settings', component: SettingsComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'products', component: ProductsComponent, canActivate: [AuthGuard] },
+  { path: 'inventory', component: InventoryComponent, canActivate: [AuthGuard] },
+  { path: 'suppliers', component: SuppliersComponent, canActivate: [AuthGuard] },
+  { path: 'purchase-orders', component: PurchaseOrdersComponent, canActivate: [AuthGuard] },
+  { path: 'sales-orders', component: SalesOrdersComponent, canActivate: [AuthGuard] },
+  { path: 'customers', component: CustomersComponent, canActivate: [AuthGuard] },
+  { path: 'warehouses', component: WarehousesComponent, canActivate: [AuthGuard] },
+  { path: 'pricing', component: PricingComponent, canActivate: [AuthGuard] },
+  { path: 'reorder', component: ReorderComponent, canActivate: [AuthGuard] },
+  { path: 'alerts', component: AlertsComponent, canActivate: [AuthGuard] },
+  { path: 'analytics', component: AnalyticsComponent, canActivate: [AuthGuard] },
+  { path: 'ai-predictions', component: AiPredictionsComponent, canActivate: [AuthGuard] },
+  { path: 'ai-dashboard', component: AiPredictionsComponent, canActivate: [AuthGuard] },
+  { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard] },
+  { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
 
   { path: '**', redirectTo: 'home' }
 ];

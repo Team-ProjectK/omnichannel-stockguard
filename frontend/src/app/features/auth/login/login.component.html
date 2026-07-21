@@ -1,91 +1,41 @@
-<div class="auth-wrapper" [ngClass]="{ 'dark-theme': isDark }">
-
-  <div class="auth-card glass-panel animate-scale-in">
-
-    <!-- Header Logo -->
-    <div class="auth-header" (click)="goHome()" style="cursor: pointer;" matTooltip="Back to Home Page">
-      <mat-icon class="brand-icon">shield</mat-icon>
-      <h2>Omnichannel StockGuard</h2>
-      <p>Intelligent Supply & Dynamic Pricing Platform</p>
-    </div>
-
-    <!-- Toggle Tabs -->
-    <div class="auth-tabs">
-      <button
-        class="tab-btn"
-        [ngClass]="{ 'active': !isSignUp }"
-        (click)="toggleTab(false)">
-        Login
-      </button>
-      <button
-        class="tab-btn"
-        [ngClass]="{ 'active': isSignUp }"
-        (click)="toggleTab(true)">
-        Sign Up
-      </button>
-    </div>
-
-    <!-- Login Form -->
-    <form *ngIf="!isSignUp" [formGroup]="loginForm" (ngSubmit)="onLogin()" class="auth-form">
-      <mat-form-field appearance="outline">
-        <mat-label>Work Email</mat-label>
-        <input matInput formControlName="email" type="email" placeholder="admin@stockguard.com">
-        <mat-icon matSuffix>email</mat-icon>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input matInput formControlName="password" type="password">
-        <mat-icon matSuffix>lock</mat-icon>
-      </mat-form-field>
-
-      <div class="form-options">
-        <mat-slide-toggle formControlName="rememberMe">Remember Me</mat-slide-toggle>
-        <a class="forgot-link">Forgot password?</a>
+<div class="auth-container">
+  <div class="auth-card mat-elevation-z4 animate-fade-in">
+    <div class="auth-header">
+      <div class="logo-badge">
+        <mat-icon color="primary">shield</mat-icon>
       </div>
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Sign in to Omnichannel StockGuard</p>
+    </div>
 
-      <button mat-raised-button color="primary" class="submit-btn" type="submit" [disabled]="loginForm.invalid">
-        Sign In to Enterprise Dashboard
-      </button>
-    </form>
-
-    <!-- Sign Up Form -->
-    <form *ngIf="isSignUp" [formGroup]="signupForm" (ngSubmit)="onSignUp()" class="auth-form">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
       <mat-form-field appearance="outline">
-        <mat-label>Full Name</mat-label>
-        <input matInput formControlName="fullName" placeholder="e.g. Vinay Admin">
-        <mat-icon matSuffix>person</mat-icon>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Work Email</mat-label>
+        <mat-label>Email Address</mat-label>
         <input matInput formControlName="email" type="email" placeholder="name@company.com">
-        <mat-icon matSuffix>email</mat-icon>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Company / Organization</mat-label>
-        <input matInput formControlName="company" placeholder="e.g. StockGuard Logistics">
-        <mat-icon matSuffix>business</mat-icon>
+        <mat-icon matPrefix>email</mat-icon>
+        <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email is required</mat-error>
+        <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Invalid email format</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
-        <input matInput formControlName="password" type="password">
-        <mat-icon matSuffix>lock</mat-icon>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+        <mat-icon matPrefix>lock</mat-icon>
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required</mat-error>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" class="submit-btn" type="submit" [disabled]="signupForm.invalid">
-        Create Enterprise Account
+      <button mat-raised-button color="primary" class="auth-btn" type="submit" [disabled]="loading">
+        <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+        <span *ngIf="!loading">Sign In</span>
       </button>
+
+      <div class="auth-footer">
+        <span>Don't have an account?</span>
+        <a (click)="goToRegister()">Register Account</a>
+      </div>
     </form>
-
-    <!-- Demo Credentials Footer -->
-    <div class="demo-box">
-      <small><strong>Demo Console Credentials:</strong></small>
-      <small>Email: admin@stockguard.com | Password: admin123</small>
-    </div>
-
   </div>
-
 </div>
