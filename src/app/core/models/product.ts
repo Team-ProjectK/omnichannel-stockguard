@@ -7,7 +7,7 @@ export interface Product {
   stock: number;
   reorderThreshold: number;
   lastPriceUpdate: string;
-  lastUpdatedBy: 'AI' | 'MANUAL';
+  lastUpdatedBy: 'AI' | 'MANUAL' | string;
   category: string;
   avgSales7Days: number;
   todaySalesUnits: number;

@@ -3,6 +3,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Product } from '../models/product';
 import { PriceDecision } from '../models/price-decision';
 import { ReorderRequest } from '../models/reorder-request';
+import { LangChainPricingService, StructuredCompetitorPricing } from './langchain-pricing.service';
+import { NousHermesTrendService, PurchasingTrendAnalysis } from './nous-hermes-trend.service';
+import { OpenClawOrderAgentService, WholesaleOrderDocument } from './openclaw-order-agent.service';
 
 export interface SimulationState {
   activeSku: string | null;
@@ -12,6 +15,11 @@ export interface SimulationState {
   competitorPrices: { storeA: number; storeB: number; storeC: number } | null;
   recommendedPrice: number | null;
   draftedRequest: ReorderRequest | null;
+
+  // 3-Tier GenAI Artifacts
+  langChainData?: StructuredCompetitorPricing | null;
+  nousHermesAnalysis?: PurchasingTrendAnalysis | null;
+  openClawPoDocument?: WholesaleOrderDocument | null;
 
   // Simulated metrics for UI overlays
   simulatedSalesRate?: number;
@@ -364,7 +372,11 @@ export class SimulationService {
   // Autopilot background worker reference
   private autopilotTimer: any;
 
-  constructor() {
+  constructor(
+    private langChainService: LangChainPricingService,
+    private nousHermesService: NousHermesTrendService,
+    private openClawService: OpenClawOrderAgentService
+  ) {
     this.startAutopilotTimer();
     this.startStockDepletionTimer();
 
@@ -421,7 +433,10 @@ export class SimulationService {
       ],
       competitorPrices: null,
       recommendedPrice: null,
-      draftedRequest: null
+      draftedRequest: null,
+      langChainData: null,
+      nousHermesAnalysis: null,
+      openClawPoDocument: null
     });
   }
 
@@ -436,6 +451,9 @@ export class SimulationService {
     let competitorPrices = currentState.competitorPrices;
     let recommendedPrice = currentState.recommendedPrice;
     let draftedRequest = currentState.draftedRequest;
+    let langChainData = currentState.langChainData;
+    let nousHermesAnalysis = currentState.nousHermesAnalysis;
+    let openClawPoDocument = currentState.openClawPoDocument;
 
     const time = new Date().toLocaleTimeString();
 
@@ -458,18 +476,25 @@ export class SimulationService {
         break;
 
       case 3:
-        const base = product.basePrice;
-        competitorPrices = {
-          storeA: Math.round((base * 1.3 + Math.random() * 5) * 10) / 10,
-          storeB: Math.round((base * 1.25 + Math.random() * 5) * 10) / 10,
-          storeC: Math.round((base * 1.32 + Math.random() * 5) * 10) / 10
-        };
-        recommendedPrice = Math.round(((competitorPrices.storeA + competitorPrices.storeB + competitorPrices.storeC) / 3 - 1) * 10) / 10;
-        
+        // 1. LangChain4j Agent parses unstructured public competitor market text
+        langChainData = this.langChainService.structurePublicPricingText(
+          product.sku,
+          product.productName,
+          product.basePrice
+        );
+        competitorPrices = langChainData.structuredPrices;
+
+        // 2. Nous Hermes AI identifies purchasing trends and recommends pricing & reorder qty
+        nousHermesAnalysis = this.nousHermesService.analyzePurchasingTrends(
+          product,
+          competitorPrices
+        );
+        recommendedPrice = nousHermesAnalysis.recommendedPrice;
+
         logs.push(
-          `[${time}] [3. AI Analysis] pricing models active: LangChain4j + Nous Hermes.`,
-          `[${time}] [3. AI Analysis] Competitor prices: Store A: ₹${competitorPrices.storeA}, Store B: ₹${competitorPrices.storeB}, Store C: ₹${competitorPrices.storeC}`,
-          `[${time}] [3. AI Analysis] Pricing optimization complete. Recommended Retail Price: ₹${recommendedPrice}.`
+          `[${time}] [3. LangChain4j] Extracted & structured competitor prices from public market feeds: Store A: ₹${competitorPrices.storeA}, Store B: ₹${competitorPrices.storeB}, Store C: ₹${competitorPrices.storeC}.`,
+          `[${time}] [3. Nous Hermes AI] Analyzed purchasing velocity (${nousHermesAnalysis.salesVelocityMultiplier}x avg). ${nousHermesAnalysis.demandInsightText}`,
+          `[${time}] [3. GenAI Pipeline] Dynamic price recommendation generated: ₹${recommendedPrice} (Suggested adjustment: ${nousHermesAnalysis.suggestedPriceAdjustmentPct > 0 ? '+' : ''}${nousHermesAnalysis.suggestedPriceAdjustmentPct}%).`
         );
         break;
 
@@ -477,7 +502,7 @@ export class SimulationService {
         const oldPrice = product.currentPrice;
         product.currentPrice = recommendedPrice || product.currentPrice;
         product.lastPriceUpdate = new Date().toISOString();
-        product.lastUpdatedBy = 'AI';
+        product.lastUpdatedBy = 'AI (Nous Hermes)';
 
         const decision: PriceDecision = {
           sku: product.sku,
@@ -487,7 +512,7 @@ export class SimulationService {
           newPrice: product.currentPrice,
           demandSignal: `${pct}% Sales Spike`,
           competitorPriceRef: `Store A: ₹${competitorPrices?.storeA}, Store B: ₹${competitorPrices?.storeB}`,
-          justification: `AI optimized pricing. Increased price to ₹${product.currentPrice} (+${pct}% simulated spike) to optimize margins.`
+          justification: `Nous Hermes & LangChain4j AI optimized. Recommended retail price set to ₹${product.currentPrice}.`
         };
 
         const updatedDecisions = [decision, ...this.priceDecisionsSubject.value];
@@ -501,11 +526,9 @@ export class SimulationService {
         break;
 
       case 5:
-        // Do NOT deplete stock. Keep product.stock at its original value!
-        // Run alert condition check
         const isSpike = pct >= 50;
         const isLow = product.stock < product.reorderThreshold;
-        
+
         let conditionAlertMsg = '';
         if (isSpike && isLow) {
           conditionAlertMsg = `CRITICAL INVENTORY ALERT: High Demand & Low Inventory. Immediate Restock Required for ${product.productName} (SKU: ${product.sku})!`;
@@ -529,49 +552,57 @@ export class SimulationService {
         break;
 
       case 6:
-        const quantity = recReorder;
+        // 3. OpenClaw Autonomous Agent updates/generates wholesale ordering document
+        const neededQty = nousHermesAnalysis?.recommendedReorderQty || recReorder;
+        openClawPoDocument = this.openClawService.generateWholesaleOrder(
+          product,
+          neededQty,
+          `Stock drop below reorder threshold (${product.stock} <= ${product.reorderThreshold})`
+        );
+
         draftedRequest = {
           sku: product.sku,
           storeId: product.storeId,
           timestamp: new Date().toISOString(),
-          quantity,
-          supplier: 'ABC Distributors Ltd',
+          quantity: openClawPoDocument.quantityOrdered,
+          supplier: openClawPoDocument.supplierName,
           status: 'DRAFTED',
-          draftDocText: `PURCHASE ORDER CONTRACT
-=======================
-Order Reference: PO-${Math.floor(100000 + Math.random() * 900000)}
-Date: ${new Date().toLocaleDateString()}
+          draftDocText: `PURCHASE ORDER CONTRACT (Generated by OpenClaw Agent)
+===================================================
+PO Reference: ${openClawPoDocument.poNumber}
+Date: ${new Date(openClawPoDocument.createdAt).toLocaleDateString()}
 Buyer: StockGuard Retail (Store #101)
-Supplier: ABC Distributors Ltd
+Supplier: ${openClawPoDocument.supplierName} (ID: ${openClawPoDocument.supplierId})
+Fulfillment Hub: ${openClawPoDocument.warehouseSource}
 
-We hereby place an order for the following items:
+Item Specifications:
 --------------------------------------------------
-SKU: ${product.sku}
-Product Name: ${product.productName}
-Quantity: ${quantity} units
-Unit Cost: ₹${Math.round(product.basePrice * 0.95)}
-Estimated Order Total: ₹${Math.round(product.basePrice * 0.95 * quantity)}
+SKU: ${openClawPoDocument.sku}
+Product Name: ${openClawPoDocument.productName}
+Quantity: ${openClawPoDocument.quantityOrdered} units
+Unit Wholesale Price: ₹${openClawPoDocument.unitWholesalePrice}
+Total Estimated Order: ₹${openClawPoDocument.totalOrderCost}
 
-Delivery Terms: DDP Store #101 Warehouse.
-Transfer Recommendation: Nearest source ${warehouseSource} has ${warehouseSourceStock} units.
-Prepared By: OpenClaw Autonomous Restocking Agent.
-Status: READY TO SEND. Awaiting manager approval.`
+Notes / AI Triggers:
+${openClawPoDocument.notes}
+
+Status: ${openClawPoDocument.status}. Prepared by ${openClawPoDocument.agentSignature}.`
         };
 
         logs.push(
-          `[${time}] [6. OpenClaw Agent] OpenClaw Restocking Agent active.`,
-          `[${time}] [6. OpenClaw Agent] Drafted Purchase Order for ${quantity} units from ABC Distributors Ltd.`,
-          `[${time}] [6. OpenClaw Agent] Nearest source suggestion: Transfer from ${warehouseSource} (Available: ${warehouseSourceStock} Units).`,
-          `[${time}] [6. OpenClaw Agent] PO status: READY TO SEND. Ready for approval.`
+          `[${time}] [6. OpenClaw Agent] OpenClaw Wholesale Logistics Agent active.`,
+          `[${time}] [6. OpenClaw Agent] Generated draft Wholesale Order Contract (${openClawPoDocument.poNumber}) for ${openClawPoDocument.quantityOrdered} units from ${openClawPoDocument.supplierName}.`,
+          `[${time}] [6. OpenClaw Agent] Logistics hub: ${openClawPoDocument.warehouseSource}. Total cost: ₹${openClawPoDocument.totalOrderCost}.`,
+          `[${time}] [6. OpenClaw Agent] Document status: READY TO TRANSMIT.`
         );
         break;
 
       case 7:
         logs.push(
-          `[${time}] [7. Manager Approval] Review the drafted purchase order in the action card.`,
+          `[${time}] [7. Manager Approval] Review the drafted purchase order document in the action card.`,
           `[${time}] [7. Manager Approval] Awaiting manager reviews...`
         );
-        
+
         if (this.autopilotRestocking) {
           setTimeout(() => {
             this.approvePurchaseOrder();
@@ -580,11 +611,13 @@ Status: READY TO SEND. Awaiting manager approval.`
         break;
 
       case 8:
+        if (openClawPoDocument) {
+          openClawPoDocument.status = 'TRANSMITTED';
+        }
         logs.push(
-          `[${time}] [8. Order Sent] Manager approval verified.`,
-          `[${time}] [8. Order Sent] Order sent successfully to supplier.`,
-          `[${time}] [8. Order Sent] Purchase Order ID: PO-${Math.floor(100000 + Math.random() * 900000)}`,
-          `[${time}] [8. Order Sent] Transfer requested: Transferring units from ${warehouseSource}.`
+          `[${time}] [8. Order Transmitted] Manager approval verified.`,
+          `[${time}] [8. Order Transmitted] OpenClaw agent transmitted PO ${openClawPoDocument?.poNumber || ''} to ${openClawPoDocument?.supplierName || 'supplier'}.`,
+          `[${time}] [8. Order Transmitted] Electronic Data Interchange (EDI) dispatch complete.`
         );
         break;
     }
@@ -596,7 +629,10 @@ Status: READY TO SEND. Awaiting manager approval.`
       logs,
       competitorPrices,
       recommendedPrice,
-      draftedRequest
+      draftedRequest,
+      langChainData,
+      nousHermesAnalysis,
+      openClawPoDocument
     });
   }
 

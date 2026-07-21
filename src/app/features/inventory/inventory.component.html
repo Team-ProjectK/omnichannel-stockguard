@@ -182,9 +182,18 @@
 
     <!-- Active Step Focus Cards -->
     <div class="step-card-container">
-      <!-- Step 3: AI Price Recommendation -->
+      <!-- Step 3: AI Price Recommendation & Purchasing Trend (LangChain4j + Nous Hermes) -->
       <div class="step-card pricing-card" *ngIf="simState.step === 3 && simState.competitorPrices">
-        <div class="card-title">LangChain4j + Nous Hermes pricing recommendations:</div>
+        <div class="card-title">
+          <span class="badge badge-ai">GenAI Stack</span>
+          LangChain4j + Nous Hermes Intelligence Engine
+        </div>
+        
+        <div *ngIf="simState.langChainData" class="langchain-feed-box" style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 0.85rem;">
+          <div style="font-weight: 600; color: #38bdf8; margin-bottom: 4px;">🦜🔗 LangChain4j Structural Parser</div>
+          <div style="font-family: monospace; color: #cbd5e1;">{{ simState.langChainData.rawTextFeed }}</div>
+        </div>
+
         <div class="competitor-grid">
           <div class="comp-box">
             <span class="store">Store A</span>
@@ -199,8 +208,14 @@
             <span class="price">₹{{ simState.competitorPrices.storeC }}</span>
           </div>
         </div>
-        <div class="rec-price-box">
-          <span class="label">AI Recommended Price</span>
+
+        <div *ngIf="simState.nousHermesAnalysis" class="nous-hermes-box" style="margin-top: 12px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 10px;">
+          <div style="font-weight: 600; color: #60a5fa;">🧠 Nous Hermes Purchasing Trend Insight</div>
+          <div style="font-size: 0.85rem; color: #e2e8f0; margin-top: 4px;">{{ simState.nousHermesAnalysis.demandInsightText }}</div>
+        </div>
+
+        <div class="rec-price-box" style="margin-top: 12px;">
+          <span class="label">AI Recommended Retail Price</span>
           <span class="rec-price">₹{{ simState.recommendedPrice }}</span>
         </div>
       </div>
@@ -210,20 +225,23 @@
         <div class="success-message">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#1e40af" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
           <div>
-            <h5>Price Updated Successfully</h5>
+            <h5>Price Updated Successfully (Nous Hermes Optimization)</h5>
             <p>Database updated from ₹{{ getActiveProduct()?.basePrice }} to ₹{{ simState.recommendedPrice }}</p>
           </div>
         </div>
       </div>
 
-      <!-- Step 7: Manager Approval Card -->
+      <!-- Step 7: OpenClaw Autonomous Order Approval Card -->
       <div class="step-card approval-card" *ngIf="simState.step === 7 && simState.draftedRequest">
         <div class="po-details">
-          <h4>Restocking Order Review Required</h4>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h4 style="margin: 0;">OpenClaw Autonomous Wholesale Order</h4>
+            <span style="background: #0284c7; color: #fff; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px;">OpenClaw Agent v4.0</span>
+          </div>
           <div class="detail-row"><span>Supplier:</span> <strong>{{ simState.draftedRequest.supplier }}</strong></div>
           <div class="detail-row"><span>Quantity:</span> <strong>{{ simState.draftedRequest.quantity }} units</strong></div>
           <div class="detail-row"><span>Priority:</span> <strong class="priority-high">HIGH PRIORITY</strong></div>
-          <div class="detail-row"><span>Status:</span> <strong class="status-draft">READY TO SEND</strong></div>
+          <div class="detail-row"><span>Status:</span> <strong class="status-draft">READY TO TRANSMIT</strong></div>
           
           <div class="doc-preview">
             <pre>{{ simState.draftedRequest.draftDocText }}</pre>
