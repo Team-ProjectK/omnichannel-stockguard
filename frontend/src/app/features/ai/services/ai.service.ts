@@ -18,10 +18,21 @@ export interface ChatResponse {
   errorMessage?: string;
 }
 
+export interface DashboardSummary {
+  executiveSummary: string;
+  inventoryHealthScore: string;
+  riskLevel: string;
+  keyInsights: string[];
+  quickRecommendations: string[];
+  generatedAt: string;
+}
+
 export interface InventoryInsight {
   overallHealthStatus: string;
   totalProductsAnalyzed: number;
   lowStockItemCount: number;
+  criticalStockItemCount?: number;
+  overstockItemCount?: number;
   fastMovingItems: string[];
   slowMovingItems: string[];
   aiAnalysisSummary: string;
@@ -36,6 +47,7 @@ export interface ReorderItemSuggestion {
   recommendedQuantity: number;
   priority: string;
   reason: string;
+  estimatedUrgency?: string;
 }
 
 export interface ReorderSuggestion {
@@ -74,6 +86,17 @@ export interface DemandForecast {
   forecasts: ProductForecastItem[];
 }
 
+export interface BusinessSummary {
+  executiveSummary: string;
+  todayOverview: string;
+  inventoryStatusSummary: string;
+  salesOverviewSummary: string;
+  purchaseOverviewSummary: string;
+  activeAlertsSummary: string[];
+  strategicRecommendations: string[];
+  generatedAt: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -82,8 +105,12 @@ export class AiService {
 
   constructor(private http: HttpClient) {}
 
-  sendChatMessage(message: string): Observable<ChatResponse> {
-    return this.http.post<ChatResponse>(`${this.apiUrl}/chat`, { message });
+  sendChatMessage(message: string, sessionId?: string): Observable<ChatResponse> {
+    return this.http.post<ChatResponse>(`${this.apiUrl}/chat`, { message, sessionId });
+  }
+
+  getDashboardSummary(): Observable<DashboardSummary> {
+    return this.http.post<DashboardSummary>(`${this.apiUrl}/dashboard-summary`, {});
   }
 
   getInventoryInsights(): Observable<InventoryInsight> {
@@ -100,5 +127,9 @@ export class AiService {
 
   getDemandForecast(): Observable<DemandForecast> {
     return this.http.post<DemandForecast>(`${this.apiUrl}/demand-forecast`, {});
+  }
+
+  getBusinessSummary(): Observable<BusinessSummary> {
+    return this.http.post<BusinessSummary>(`${this.apiUrl}/business-summary`, {});
   }
 }

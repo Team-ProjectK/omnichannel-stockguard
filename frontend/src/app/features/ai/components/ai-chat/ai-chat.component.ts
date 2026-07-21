@@ -56,7 +56,7 @@ export class AiChatComponent implements OnInit, AfterViewChecked {
         this.isLoading = false;
         this.messages.push({
           sender: 'ai',
-          text: 'Unable to reach StockGuard AI backend service. Please check if Ollama server or backend is running.',
+          text: 'Unable to reach StockGuard AI backend service. Please check backend connection.',
           timestamp: new Date(),
           status: 'ERROR'
         });

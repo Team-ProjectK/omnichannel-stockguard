@@ -175,74 +175,74 @@
     </div>
   </div>
 
-  <!-- AI Intelligence Hub Section (Phase 5.7) -->
-  <div class="panel ai-hub-panel mat-elevation-z1 animate-fade-in" style="margin-top: 1.5rem; background: linear-gradient(135deg, #1e1b4b, #312e81); color: #ffffff;">
-    <div class="panel-header" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-      <h2 style="color: #ffffff; display: flex; align-items: center; gap: 8px;">
-        <mat-icon style="color: #818cf8;">auto_awesome</mat-icon> StockGuard AI Intelligence Hub
+  <!-- AI Intelligence Hub Section -->
+  <div class="panel ai-hub-panel mat-elevation-z1 animate-fade-in" style="margin-top: 1.5rem; background: linear-gradient(135deg, #0f172a, #1e293b); color: #ffffff; border-radius: 14px; padding: 1.25rem;">
+    <div class="panel-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 16px;">
+      <h2 style="color: #ffffff; display: flex; align-items: center; gap: 8px; margin: 0; font-size: 1.2rem;">
+        <mat-icon style="color: #6366f1;">auto_awesome</mat-icon> StockGuard AI Intelligence Hub
       </h2>
-      <span class="chip" style="background: rgba(129, 140, 248, 0.2); color: #c7d2fe;">LangChain4j + Ollama</span>
+      <span class="chip" style="background: rgba(99, 102, 241, 0.25); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); font-size: 0.75rem; padding: 4px 10px; border-radius: 12px;">OpenRouter (Gemini 2.5 Flash)</span>
     </div>
 
     <!-- AI Cards Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; padding: 1rem 0;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding-bottom: 0.5rem;">
 
-      <!-- Card 1: Inventory Health -->
-      <div style="background: rgba(255,255,255,0.06); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="margin: 0 0 8px; color: #a5b4fc; font-size: 0.88rem;">INVENTORY HEALTH</h4>
-        <div style="font-size: 1.3rem; font-weight: 700; color: #4ade80;">
-          {{ aiInsights?.overallHealthStatus || 'HEALTHY' }}
+      <!-- Card 1: Inventory Health Score -->
+      <div style="background: rgba(255,255,255,0.05); padding: 1.1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+        <h4 style="margin: 0 0 6px; color: #94a3b8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">HEALTH SCORE</h4>
+        <div style="font-size: 1.5rem; font-weight: 800; color: #10b981;">
+          {{ aiSummary?.inventoryHealthScore || '92/100' }}
         </div>
-        <p style="margin: 6px 0 0; font-size: 0.8rem; color: #e0e7ff;">
-          Analyzed {{ aiInsights?.totalProductsAnalyzed || 0 }} products in catalog
+        <p style="margin: 4px 0 0; font-size: 0.78rem; color: #cbd5e1;">
+          Overall catalog safety status
         </p>
       </div>
 
-      <!-- Card 2: AI Alerts -->
-      <div style="background: rgba(255,255,255,0.06); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="margin: 0 0 8px; color: #a5b4fc; font-size: 0.88rem;">AI ALERTS SUMMARY</h4>
-        <div style="font-size: 1.3rem; font-weight: 700; color: #f87171;">
-          {{ aiInsights?.lowStockItemCount || 0 }} Low-Stock Items
+      <!-- Card 2: Risk Indicator -->
+      <div style="background: rgba(255,255,255,0.05); padding: 1.1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+        <h4 style="margin: 0 0 6px; color: #94a3b8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">RISK INDICATOR</h4>
+        <div style="font-size: 1.4rem; font-weight: 800;" [style.color]="aiSummary?.riskLevel === 'HIGH' ? '#f87171' : (aiSummary?.riskLevel === 'MEDIUM' ? '#fbbf24' : '#34d399')">
+          {{ aiSummary?.riskLevel || 'LOW' }} RISK
         </div>
-        <p style="margin: 6px 0 0; font-size: 0.8rem; color: #e0e7ff;">Reorder threshold triggers active</p>
+        <p style="margin: 4px 0 0; font-size: 0.78rem; color: #cbd5e1;">{{ aiInsights?.lowStockItemCount || 0 }} items below safety threshold</p>
       </div>
 
       <!-- Card 3: Demand Forecast -->
-      <div style="background: rgba(255,255,255,0.06); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="margin: 0 0 8px; color: #a5b4fc; font-size: 0.88rem;">30-DAY DEMAND FORECAST</h4>
-        <div style="font-size: 1.1rem; font-weight: 700; color: #fbbf24;">
-          {{ aiForecast?.forecastModelType || 'HYBRID_RULE_AI' }}
+      <div style="background: rgba(255,255,255,0.05); padding: 1.1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+        <h4 style="margin: 0 0 6px; color: #94a3b8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">30-DAY FORECAST</h4>
+        <div style="font-size: 1.2rem; font-weight: 700; color: #fbbf24;">
+          {{ aiForecast?.forecastModelType || 'HYBRID_RUNRATE_AI' }}
         </div>
-        <p style="margin: 6px 0 0; font-size: 0.8rem; color: #e0e7ff;">
-          {{ aiForecast?.forecasts?.length || 0 }} product velocity forecasts
+        <p style="margin: 4px 0 0; font-size: 0.78rem; color: #cbd5e1;">
+          {{ aiForecast?.forecasts?.length || 0 }} catalog velocity predictions
         </p>
       </div>
 
       <!-- Card 4: Suggested Reorders -->
-      <div style="background: rgba(255,255,255,0.06); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="margin: 0 0 8px; color: #a5b4fc; font-size: 0.88rem;">SUGGESTED REORDERS</h4>
-        <div style="font-size: 1.3rem; font-weight: 700; color: #38bdf8;">
+      <div style="background: rgba(255,255,255,0.05); padding: 1.1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+        <h4 style="margin: 0 0 6px; color: #94a3b8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">SUGGESTED REORDERS</h4>
+        <div style="font-size: 1.4rem; font-weight: 800; color: #38bdf8;">
           {{ aiReorders?.items?.length || 0 }} Priority Items
         </div>
-        <p style="margin: 6px 0 0; font-size: 0.8rem; color: #e0e7ff;">Automated purchase recommendation</p>
+        <p style="margin: 4px 0 0; font-size: 0.78rem; color: #cbd5e1;">Automated replenishment order</p>
       </div>
 
-      <!-- Card 5: Price Recommendation -->
-      <div style="background: rgba(255,255,255,0.06); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="margin: 0 0 8px; color: #a5b4fc; font-size: 0.88rem;">PRICE RECOMMENDATION</h4>
-        <div style="font-size: 1.3rem; font-weight: 700; color: #c084fc;">
-          {{ aiPricing?.recommendations?.length || 0 }} Optimization Rules
+      <!-- Card 5: Price Recommendations -->
+      <div style="background: rgba(255,255,255,0.05); padding: 1.1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+        <h4 style="margin: 0 0 6px; color: #94a3b8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">PRICE OPTIMIZATION</h4>
+        <div style="font-size: 1.4rem; font-weight: 800; color: #c084fc;">
+          {{ aiPricing?.recommendations?.length || 0 }} Recommendations
         </div>
-        <p style="margin: 6px 0 0; font-size: 0.8rem; color: #e0e7ff;">Margin & elasticity optimization</p>
+        <p style="margin: 4px 0 0; font-size: 0.78rem; color: #cbd5e1;">Gross margin & volume tuning</p>
       </div>
 
     </div>
 
-    <!-- AI Latest Insights Banner -->
-    <div style="margin-top: 1rem; background: rgba(0,0,0,0.2); padding: 1rem 1.25rem; border-radius: 8px; border-left: 4px solid #818cf8;">
-      <h5 style="margin: 0 0 4px; color: #c7d2fe; font-size: 0.85rem; text-transform: uppercase;">LATEST AI INSIGHTS</h5>
-      <p style="margin: 0; font-size: 0.9rem; color: #f1f5f9; line-height: 1.5;">
-        {{ aiInsights?.aiAnalysisSummary || 'AI model evaluated current inventory stock levels and pricing rules.' }}
+    <!-- AI Executive Summary Banner -->
+    <div style="margin-top: 1rem; background: rgba(15, 23, 42, 0.6); padding: 1rem 1.25rem; border-radius: 10px; border-left: 4px solid #6366f1;">
+      <h5 style="margin: 0 0 4px; color: #818cf8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">EXECUTIVE SUMMARY</h5>
+      <p style="margin: 0; font-size: 0.9rem; color: #f8fafc; line-height: 1.5;">
+        {{ aiSummary?.executiveSummary || aiInsights?.aiAnalysisSummary || 'StockGuard OpenRouter AI evaluated current stock levels, order velocities, and price elasticity rules.' }}
       </p>
     </div>
   </div>

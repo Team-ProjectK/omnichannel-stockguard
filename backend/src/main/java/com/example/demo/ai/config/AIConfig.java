@@ -1,31 +1,25 @@
 package com.example.demo.ai.config;
 
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.ollama.OllamaChatModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.time.Duration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class AIConfig {
 
-    @Value("${ollama.base-url:http://localhost:11434}")
-    private String baseUrl;
-
-    @Value("${ollama.model-name:llama3}")
-    private String modelName;
-
-    @Value("${ollama.timeout-seconds:60}")
-    private long timeoutSeconds;
+    @Value("${openrouter.api.url:https://openrouter.ai/api/v1/chat/completions}")
+    private String openRouterUrl;
 
     @Bean
-    public ChatLanguageModel chatLanguageModel() {
-        return OllamaChatModel.builder()
-                .baseUrl(baseUrl)
-                .modelName(modelName)
-                .timeout(Duration.ofSeconds(timeoutSeconds))
+    public WebClient openRouterWebClient() {
+        return WebClient.builder()
+                .baseUrl(openRouterUrl)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader("HTTP-Referer", "https://stockguard.internal")
+                .defaultHeader("X-Title", "Omnichannel StockGuard AI")
                 .build();
     }
 }

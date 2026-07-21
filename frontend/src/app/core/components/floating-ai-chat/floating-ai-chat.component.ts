@@ -13,18 +13,22 @@ export class FloatingAiChatComponent implements OnInit, AfterViewChecked {
   userInput = '';
   isLoading = false;
   unreadBadgeCount = 1;
+  copiedIndex: number | null = null;
 
-  messages: ChatMessage[] = [
-    {
-      sender: 'ai',
-      text: 'Hello! I am StockGuard AI. Ask me about inventory velocity, safety thresholds, or pricing recommendations!',
-      timestamp: new Date()
-    }
+  quickPrompts = [
+    "What products are low in stock?",
+    "What should I reorder today?",
+    "Show today's business summary.",
+    "Suggest pricing improvements."
   ];
+
+  messages: ChatMessage[] = [];
 
   constructor(private aiService: AiService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadHistory();
+  }
 
   ngAfterViewChecked(): void {
     if (this.isOpen) {
@@ -36,6 +40,7 @@ export class FloatingAiChatComponent implements OnInit, AfterViewChecked {
     this.isOpen = !this.isOpen;
     if (this.isOpen) {
       this.unreadBadgeCount = 0;
+      this.scrollToBottom();
     }
   }
 
@@ -46,8 +51,8 @@ export class FloatingAiChatComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  sendMessage(): void {
-    const text = this.userInput.trim();
+  sendMessage(textToSend?: string): void {
+    const text = (textToSend || this.userInput).trim();
     if (!text || this.isLoading) return;
 
     this.messages.push({
@@ -58,19 +63,21 @@ export class FloatingAiChatComponent implements OnInit, AfterViewChecked {
 
     this.userInput = '';
     this.isLoading = true;
+    this.saveHistory();
 
     this.aiService.sendChatMessage(text).subscribe({
       next: (res) => {
         this.isLoading = false;
         this.messages.push({
           sender: 'ai',
-          text: res.response || 'No response from AI model.',
+          text: res.response || 'No response from OpenRouter model.',
           timestamp: new Date(res.timestamp || Date.now()),
           status: res.status,
           errorMessage: res.errorMessage
         });
+        this.saveHistory();
       },
-      error: () => {
+      error: (err) => {
         this.isLoading = false;
         this.messages.push({
           sender: 'ai',
@@ -78,7 +85,23 @@ export class FloatingAiChatComponent implements OnInit, AfterViewChecked {
           timestamp: new Date(),
           status: 'ERROR'
         });
+        this.saveHistory();
       }
+    });
+  }
+
+  sendQuickPrompt(promptText: string): void {
+    this.sendMessage(promptText);
+  }
+
+  copyToClipboard(text: string, index: number): void {
+    navigator.clipboard.writeText(text).then(() => {
+      this.copiedIndex = index;
+      setTimeout(() => {
+        if (this.copiedIndex === index) {
+          this.copiedIndex = null;
+        }
+      }, 2000);
     });
   }
 
@@ -86,10 +109,33 @@ export class FloatingAiChatComponent implements OnInit, AfterViewChecked {
     this.messages = [
       {
         sender: 'ai',
-        text: 'Chat history cleared. How can I help you next?',
+        text: 'Hello! I am StockGuard OpenRouter AI. Ask me about live inventory velocity, safety thresholds, or pricing recommendations!',
         timestamp: new Date()
       }
     ];
+    localStorage.removeItem('stockguard_chat_history');
+  }
+
+  private saveHistory(): void {
+    try {
+      localStorage.setItem('stockguard_chat_history', JSON.stringify(this.messages.slice(-30)));
+    } catch (e) {}
+  }
+
+  private loadHistory(): void {
+    try {
+      const saved = localStorage.getItem('stockguard_chat_history');
+      if (saved) {
+        this.messages = JSON.parse(saved).map((m: any) => ({
+          ...m,
+          timestamp: new Date(m.timestamp)
+        }));
+      }
+    } catch (e) {}
+
+    if (this.messages.length === 0) {
+      this.clearChat();
+    }
   }
 
   private scrollToBottom(): void {

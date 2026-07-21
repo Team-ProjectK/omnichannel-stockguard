@@ -56,7 +56,7 @@ public class DataLoader {
                 repository.save(p2);
                 repository.save(p3);
 
-                System.out.println("Sample products inserted.");
+                org.slf4j.LoggerFactory.getLogger(DataLoader.class).info("Sample products inserted.");
             }
         };
     }

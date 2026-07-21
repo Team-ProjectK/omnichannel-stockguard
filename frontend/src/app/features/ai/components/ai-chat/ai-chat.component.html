@@ -6,7 +6,7 @@
         <mat-icon class="ai-icon">auto_awesome</mat-icon>
         <div>
           <h3>StockGuard AI Assistant</h3>
-          <span class="status-indicator online">LangChain4j + Ollama Connected</span>
+          <span class="status-indicator online">OpenRouter Gemini 2.5 Flash</span>
         </div>
       </div>
       <button mat-stroked-button color="warn" class="btn-clear" (click)="clearChat()">
@@ -29,7 +29,7 @@
           <div class="message-content">{{ msg.text }}</div>
           <div class="message-footer">
             <span class="timestamp">{{ msg.timestamp | date:'shortTime' }}</span>
-            <span *ngIf="msg.status === 'OLLAMA_ERROR'" class="error-badge">Offline Fallback</span>
+            <span *ngIf="msg.status === 'FALLBACK_SUCCESS'" class="error-badge">Database Rule Engine</span>
           </div>
         </div>
 

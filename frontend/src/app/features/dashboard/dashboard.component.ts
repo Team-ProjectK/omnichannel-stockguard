@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { Router } from '@angular/router';
 import { DashboardService, DashboardMetrics } from '../../core/services/dashboard.service';
-import { AiService, InventoryInsight, ReorderSuggestion, PriceRecommendation, DemandForecast } from '../ai/services/ai.service';
+import { AiService, DashboardSummary, InventoryInsight, ReorderSuggestion, PriceRecommendation, DemandForecast } from '../ai/services/ai.service';
 
 interface DashboardCard {
   title: string;
@@ -57,6 +57,7 @@ export class DashboardComponent implements OnInit {
   greetingMessage = 'Good Day';
   todayDate: Date = new Date();
 
+  aiSummary: DashboardSummary | null = null;
   aiInsights: InventoryInsight | null = null;
   aiReorders: ReorderSuggestion | null = null;
   aiPricing: PriceRecommendation | null = null;
@@ -136,6 +137,10 @@ export class DashboardComponent implements OnInit {
   }
 
   private loadAiData(): void {
+    this.aiService.getDashboardSummary().subscribe({
+      next: (res) => this.aiSummary = res,
+      error: (err) => console.error('AI Summary load error', err)
+    });
     this.aiService.getInventoryInsights().subscribe({
       next: (res) => this.aiInsights = res,
       error: (err) => console.error('AI Insights load error', err)
