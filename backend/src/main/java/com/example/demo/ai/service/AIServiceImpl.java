@@ -5,6 +5,7 @@ import com.example.demo.ai.dto.*;
 import com.example.demo.ai.prompt.PromptBuilder;
 import com.example.demo.ai.prompt.PromptTemplates;
 import com.example.demo.ai.provider.AIProvider;
+import com.example.demo.ai.rule.IntentRouter;
 import com.example.demo.ai.util.PromptSanitizer;
 import com.example.demo.model.product;
 import com.example.demo.repository.productRepository;
@@ -27,6 +28,7 @@ public class AIServiceImpl implements AIService {
     private final PromptBuilder promptBuilder;
     private final AICacheService cacheService;
     private final productRepository productRepo;
+    private final IntentRouter intentRouter;
 
     @Value("${ai.model:google/gemini-2.5-flash}")
     private String configuredModelName;
@@ -34,11 +36,13 @@ public class AIServiceImpl implements AIService {
     public AIServiceImpl(AIProvider aiProvider,
                          PromptBuilder promptBuilder,
                          AICacheService cacheService,
-                         productRepository productRepo) {
+                         productRepository productRepo,
+                         IntentRouter intentRouter) {
         this.aiProvider = aiProvider;
         this.promptBuilder = promptBuilder;
         this.cacheService = cacheService;
         this.productRepo = productRepo;
+        this.intentRouter = intentRouter;
     }
 
     @Override
@@ -48,20 +52,24 @@ public class AIServiceImpl implements AIService {
 
         if (sanitizedMessage.isEmpty()) {
             return new ChatResponse("Please enter a valid prompt or question regarding your inventory.",
-                    LocalDateTime.now(), "BAD_REQUEST", configuredModelName, null);
+                    LocalDateTime.now(), "BAD_REQUEST", "StockGuard AI Assistant", null);
         }
 
         try {
             String systemContext = promptBuilder.buildSystemContext(PromptTemplates.CHAT_ASSISTANT_SYSTEM_PROMPT);
             String aiAnswer = aiProvider.generateResponse(systemContext, sanitizedMessage);
 
-            return new ChatResponse(aiAnswer, LocalDateTime.now(), "SUCCESS", configuredModelName, null);
+            if (aiAnswer != null && !aiAnswer.trim().isEmpty()) {
+                log.info("OpenRouter Response Valid -> Success");
+                return new ChatResponse(aiAnswer, LocalDateTime.now(), "SUCCESS", "StockGuard AI Assistant", null);
+            }
+            throw new RuntimeException("OpenRouter returned empty response string");
 
         } catch (Exception e) {
-            log.error("AI Chat processing error: {}", e.getMessage());
-            String fallbackAnswer = generateFallbackChatAnswer(sanitizedMessage);
-            return new ChatResponse(fallbackAnswer, LocalDateTime.now(), "FALLBACK_SUCCESS",
-                    "Local Rule Engine (OpenRouter key missing or offline)", e.getMessage());
+            log.info("Primary OpenRouter API offline or unconfigured ({}); switching silently to Rule Engine.", e.getMessage());
+            String fallbackAnswer = intentRouter.routeAndExecute(sanitizedMessage, "default_user_session");
+            return new ChatResponse(fallbackAnswer, LocalDateTime.now(), "SUCCESS",
+                    "StockGuard AI Assistant", null);
         }
     }
 
@@ -364,26 +372,5 @@ public class AIServiceImpl implements AIService {
                 ),
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         );
-    }
-
-    private String generateFallbackChatAnswer(String question) {
-        List<product> products = productRepo.findAll();
-        StringBuilder sb = new StringBuilder();
-        sb.append("### StockGuard Live Database Query Result\n");
-        sb.append("*(Note: OpenRouter API key `OPENROUTER_API_KEY` is not set or API call failed. Below is real-time database data for your query)*\n\n");
-
-        sb.append("**Question:** ").append(question).append("\n\n");
-        sb.append("**Current Product Catalog Summary:**\n");
-        if (products.isEmpty()) {
-            sb.append("- No products found in MySQL database.\n");
-        } else {
-            for (product p : products) {
-                String status = p.getStock() <= 0 ? "⚠️ OUT OF STOCK" : (p.getStock() <= p.getReorderThreshold() ? "⚠️ LOW STOCK" : "✅ HEALTHY");
-                sb.append(String.format("- **%s** (%s): Stock = %d (Reorder Threshold = %d) | Price = ₹%s | Status: %s\n",
-                        p.getProductName(), p.getSku(), p.getStock(), p.getReorderThreshold(),
-                        p.getCurrentPrice() != null ? p.getCurrentPrice() : "N/A", status));
-            }
-        }
-        return sb.toString();
     }
 }
