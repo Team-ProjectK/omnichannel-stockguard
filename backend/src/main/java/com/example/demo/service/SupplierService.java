@@ -17,6 +17,7 @@ import java.util.List;
 public class SupplierService {
 
     private static final Logger logger = LoggerFactory.getLogger(SupplierService.class);
+    private static final String SUPPLIER_NOT_FOUND = "Supplier not found";
 
     private final SupplierRepository supplierRepo;
 
@@ -48,7 +49,7 @@ public class SupplierService {
         return supplierRepo.findBySupplierCode(supplierCode)
                 .orElseThrow(() -> {
                     logger.warn("Supplier not found. Code: {}", supplierCode);
-                    return new ResourceNotFoundException("Supplier not found");
+                    return new ResourceNotFoundException(SUPPLIER_NOT_FOUND);
                 });
     }
 
@@ -104,7 +105,7 @@ public class SupplierService {
         Supplier supplier = supplierRepo.findBySupplierCode(supplierCode)
                 .orElseThrow(() -> {
                     logger.warn("Supplier not found for update. Code: {}", supplierCode);
-                    return new ResourceNotFoundException("Supplier not found");
+                    return new ResourceNotFoundException(SUPPLIER_NOT_FOUND);
                 });
 
         supplier.setSupplierName(dto.getSupplierName());
@@ -134,7 +135,7 @@ public class SupplierService {
         Supplier supplier = supplierRepo.findBySupplierCode(supplierCode)
                 .orElseThrow(() -> {
                     logger.warn("Supplier not found for deletion. Code: {}", supplierCode);
-                    return new ResourceNotFoundException("Supplier not found");
+                    return new ResourceNotFoundException(SUPPLIER_NOT_FOUND);
                 });
 
         supplierRepo.delete(supplier);

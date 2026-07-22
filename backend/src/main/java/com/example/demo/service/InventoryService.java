@@ -17,6 +17,7 @@ import java.util.List;
 public class InventoryService {
 
     private static final Logger logger = LoggerFactory.getLogger(InventoryService.class);
+    private static final String INVENTORY_NOT_FOUND = "Inventory not found";
 
     private final InventoryRepository inventoryRepo;
 
@@ -48,7 +49,7 @@ public class InventoryService {
         return inventoryRepo.findBySkuAndStoreId(sku, storeId)
                 .orElseThrow(() -> {
                     logger.warn("Inventory not found. SKU: {}, Store ID: {}", sku, storeId);
-                    return new ResourceNotFoundException("Inventory not found");
+                    return new ResourceNotFoundException(INVENTORY_NOT_FOUND);
                 });
     }
 
@@ -95,7 +96,7 @@ public class InventoryService {
                 .orElseThrow(() -> {
                     logger.warn("Inventory not found for update. SKU: {}, Store ID: {}",
                             sku, storeId);
-                    return new ResourceNotFoundException("Inventory not found");
+                    return new ResourceNotFoundException(INVENTORY_NOT_FOUND);
                 });
 
         inventory.setAvailableStock(dto.getAvailableStock());
@@ -120,7 +121,7 @@ public class InventoryService {
                 .orElseThrow(() -> {
                     logger.warn("Inventory not found for deletion. SKU: {}, Store ID: {}",
                             sku, storeId);
-                    return new ResourceNotFoundException("Inventory not found");
+                    return new ResourceNotFoundException(INVENTORY_NOT_FOUND);
                 });
 
         inventoryRepo.delete(inventory);

@@ -33,7 +33,7 @@ public class PriceHandler implements IntentHandler {
             String currentStr = p.getCurrentPrice() != null ? "₹" + p.getCurrentPrice() : "N/A";
             String baseStr = p.getBasePrice() != null ? "₹" + p.getBasePrice() : "N/A";
 
-            sb.append(String.format("| %s | %s | %s | %s |\n",
+            sb.append(String.format("| %s | %s | %s | %s |%n",
                     p.getProductName(), p.getSku(), currentStr, baseStr));
         }
 

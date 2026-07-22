@@ -20,6 +20,7 @@ import java.util.List;
 public class SalesOrderService {
 
     private static final Logger logger = LoggerFactory.getLogger(SalesOrderService.class);
+    private static final String SO_NOT_FOUND = "Sales Order not found";
 
     private final SalesOrderRepository salesOrderRepo;
     private final InventoryRepository inventoryRepo;
@@ -56,7 +57,7 @@ public class SalesOrderService {
         return salesOrderRepo.findBySalesOrderNo(salesOrderNo)
                 .orElseThrow(() -> {
                     logger.warn("Sales Order not found. Order No: {}", salesOrderNo);
-                    return new ResourceNotFoundException("Sales Order not found");
+                    return new ResourceNotFoundException(SO_NOT_FOUND);
                 });
     }
 
@@ -137,7 +138,7 @@ public class SalesOrderService {
                 .orElseThrow(() -> {
                     logger.warn("Sales Order not found for update. Order No: {}",
                             salesOrderNo);
-                    return new ResourceNotFoundException("Sales Order not found");
+                    return new ResourceNotFoundException(SO_NOT_FOUND);
                 });
 
         order.setCustomerId(dto.getCustomerId());
@@ -172,7 +173,7 @@ public class SalesOrderService {
                 .orElseThrow(() -> {
                     logger.warn("Sales Order not found for deletion. Order No: {}",
                             salesOrderNo);
-                    return new ResourceNotFoundException("Sales Order not found");
+                    return new ResourceNotFoundException(SO_NOT_FOUND);
                 });
 
         salesOrderRepo.delete(order);

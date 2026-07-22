@@ -2,6 +2,10 @@ package com.example.demo.ai.prompt;
 
 public class PromptTemplates {
 
+    private PromptTemplates() {
+        // Private constructor to prevent instantiation of utility class
+    }
+
     public static final String CHAT_ASSISTANT_SYSTEM_PROMPT = """
             You are StockGuard AI, an expert enterprise inventory, procurement, and pricing intelligence assistant for Omnichannel StockGuard.
             You must answer questions strictly using the actual live database context provided below.

@@ -15,9 +15,13 @@ public class GoodbyeHandler implements IntentHandler {
 
     @Override
     public String handle(String userMessage, List<product> products) {
-        return "Goodbye! 👋\n\n" +
-                "Thank you for using StockGuard AI Assistant.\n\n" +
-                "Have a wonderful day!\n\n" +
-                "Feel free to return anytime for inventory insights, analytics, pricing recommendations, or stock monitoring.";
+        return """
+                Goodbye! 👋
+
+                Thank you for using StockGuard AI Assistant.
+
+                Have a wonderful day!
+
+                Feel free to return anytime for inventory insights, analytics, pricing recommendations, or stock monitoring.""";
     }
 }

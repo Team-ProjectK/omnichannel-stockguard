@@ -34,12 +34,12 @@ public class ProductHandler implements IntentHandler {
             if (p.getSku() != null && query.contains(p.getSku().toLowerCase())) {
                 matches.add(p);
             } else if (p.getProductName() != null) {
-                String pName = p.getProductName().toLowerCase();
-                if (query.contains(pName) || pName.contains(query)) {
+                String productName = p.getProductName().toLowerCase();
+                if (query.contains(productName) || productName.contains(query)) {
                     matches.add(p);
                 } else {
                     // Partial word match (e.g. "mouse", "keyboard")
-                    String[] words = pName.split("\\s+");
+                    String[] words = productName.split("\\s+");
                     for (String word : words) {
                         if (word.length() >= 4 && query.contains(word)) {
                             matches.add(p);
@@ -69,13 +69,13 @@ public class ProductHandler implements IntentHandler {
             String rec = p.getStock() <= 0 ? "Generate urgent purchase order (Critical Stockout)" :
                     (p.getStock() <= p.getReorderThreshold() ? "Initiate reorder replenishment" : "Stock level is healthy");
 
-            sb.append(String.format("#### 📦 %s (SKU: %s)\n", p.getProductName(), p.getSku()));
-            sb.append(String.format("• **Current Stock** : %d units\n", p.getStock()));
-            sb.append(String.format("• **Current Price** : %s\n", p.getCurrentPrice() != null ? "₹" + p.getCurrentPrice() : "N/A"));
-            sb.append(String.format("• **Base Price** : %s\n", p.getBasePrice() != null ? "₹" + p.getBasePrice() : "N/A"));
-            sb.append(String.format("• **Reorder Safety Level** : %d units\n", p.getReorderThreshold()));
-            sb.append(String.format("• **Status** : %s\n", status));
-            sb.append(String.format("• **Recommendation** : %s\n\n", rec));
+            sb.append(String.format("#### 📦 %s (SKU: %s)%n", p.getProductName(), p.getSku()));
+            sb.append(String.format("• **Current Stock** : %d units%n", p.getStock()));
+            sb.append(String.format("• **Current Price** : %s%n", p.getCurrentPrice() != null ? "₹" + p.getCurrentPrice() : "N/A"));
+            sb.append(String.format("• **Base Price** : %s%n", p.getBasePrice() != null ? "₹" + p.getBasePrice() : "N/A"));
+            sb.append(String.format("• **Reorder Safety Level** : %d units%n", p.getReorderThreshold()));
+            sb.append(String.format("• **Status** : %s%n", status));
+            sb.append(String.format("• **Recommendation** : %s%n%n", rec));
         }
 
         return responseBuilder.buildResponse("Product Lookup Results",

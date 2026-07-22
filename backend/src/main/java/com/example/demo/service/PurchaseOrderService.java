@@ -18,6 +18,7 @@ import java.util.List;
 public class PurchaseOrderService {
 
     private static final Logger logger = LoggerFactory.getLogger(PurchaseOrderService.class);
+    private static final String PO_NOT_FOUND = "Purchase Order not found";
 
     private final PurchaseOrderRepository purchaseOrderRepo;
 
@@ -49,7 +50,7 @@ public class PurchaseOrderService {
         return purchaseOrderRepo.findByPurchaseOrderNo(purchaseOrderNo)
                 .orElseThrow(() -> {
                     logger.warn("Purchase Order not found. PO Number: {}", purchaseOrderNo);
-                    return new ResourceNotFoundException("Purchase Order not found");
+                    return new ResourceNotFoundException(PO_NOT_FOUND);
                 });
     }
 
@@ -103,7 +104,7 @@ public class PurchaseOrderService {
                 .orElseThrow(() -> {
                     logger.warn("Purchase Order not found for update. PO Number: {}",
                             purchaseOrderNo);
-                    return new ResourceNotFoundException("Purchase Order not found");
+                    return new ResourceNotFoundException(PO_NOT_FOUND);
                 });
 
         order.setSupplierCode(dto.getSupplierCode());
@@ -138,7 +139,7 @@ public class PurchaseOrderService {
                 .orElseThrow(() -> {
                     logger.warn("Purchase Order not found for deletion. PO Number: {}",
                             purchaseOrderNo);
-                    return new ResourceNotFoundException("Purchase Order not found");
+                    return new ResourceNotFoundException(PO_NOT_FOUND);
                 });
 
         purchaseOrderRepo.delete(order);

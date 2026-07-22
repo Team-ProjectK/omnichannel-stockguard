@@ -38,7 +38,7 @@ public class InventoryHandler implements IntentHandler {
             String status = p.getStock() <= 0 ? "⚠️ Out of Stock" : (p.getStock() <= p.getReorderThreshold() ? "⚠️ Low Stock" : "✅ Healthy");
             String priceStr = p.getCurrentPrice() != null ? "₹" + p.getCurrentPrice() : "-";
 
-            sb.append(String.format("| %s | %s | %d | %s | %d | %s |\n",
+            sb.append(String.format("| %s | %s | %d | %s | %d | %s |%n",
                     p.getProductName(),
                     p.getSku(),
                     p.getStock(),

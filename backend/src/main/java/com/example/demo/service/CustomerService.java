@@ -17,6 +17,7 @@ import java.util.List;
 public class CustomerService {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
+    private static final String CUSTOMER_NOT_FOUND = "Customer not found";
 
     private final CustomerRepository customerRepo;
 
@@ -48,7 +49,7 @@ public class CustomerService {
         return customerRepo.findByCustomerId(customerId)
                 .orElseThrow(() -> {
                     logger.warn("Customer not found. ID: {}", customerId);
-                    return new ResourceNotFoundException("Customer not found");
+                    return new ResourceNotFoundException(CUSTOMER_NOT_FOUND);
                 });
     }
 
@@ -102,7 +103,7 @@ public class CustomerService {
         Customer customer = customerRepo.findByCustomerId(customerId)
                 .orElseThrow(() -> {
                     logger.warn("Customer not found for update. ID: {}", customerId);
-                    return new ResourceNotFoundException("Customer not found");
+                    return new ResourceNotFoundException(CUSTOMER_NOT_FOUND);
                 });
 
         customer.setCustomerName(dto.getCustomerName());
@@ -132,7 +133,7 @@ public class CustomerService {
         Customer customer = customerRepo.findByCustomerId(customerId)
                 .orElseThrow(() -> {
                     logger.warn("Customer not found for deletion. ID: {}", customerId);
-                    return new ResourceNotFoundException("Customer not found");
+                    return new ResourceNotFoundException(CUSTOMER_NOT_FOUND);
                 });
 
         customerRepo.delete(customer);

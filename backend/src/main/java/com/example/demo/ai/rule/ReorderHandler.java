@@ -47,7 +47,7 @@ public class ReorderHandler implements IntentHandler {
             String priority = p.getStock() <= 0 ? "CRITICAL" : (p.getStock() < 5 ? "HIGH" : "MEDIUM");
             String action = priority.equals("CRITICAL") ? "Issue Immediate PO (24h)" : "Schedule Restock (3 Days)";
 
-            sb.append(String.format("| %s | %d | %d | %d | %s | %s |\n",
+            sb.append(String.format("| %s | %d | %d | %d | %s | %s |%n",
                     p.getProductName(), p.getStock(), p.getReorderThreshold(), recQty, priority, action));
         }
 

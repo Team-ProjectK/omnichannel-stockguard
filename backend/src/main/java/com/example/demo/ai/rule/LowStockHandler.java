@@ -44,7 +44,7 @@ public class LowStockHandler implements IntentHandler {
 
         for (product p : lowStockItems) {
             String status = p.getStock() <= 0 ? "🔴 CRITICAL STOCKOUT" : "⚠️ LOW STOCK";
-            sb.append(String.format("| %s | %s | %d | %d | %s |\n",
+            sb.append(String.format("| %s | %s | %d | %d | %s |%n",
                     p.getProductName(), p.getSku(), p.getStock(), p.getReorderThreshold(), status));
         }
 

@@ -2,6 +2,10 @@ package com.example.demo.ai.util;
 
 public class PromptSanitizer {
 
+    private PromptSanitizer() {
+        // Private constructor to prevent instantiation of utility class
+    }
+
     public static String sanitize(String input) {
         if (input == null) {
             return "";

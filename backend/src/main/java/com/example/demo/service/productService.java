@@ -19,6 +19,8 @@ import java.util.List;
 @Service
 public class productService {
 
+    private static final String PRODUCT_NOT_FOUND = "Product not found";
+
     private final productRepository productRepo;
     private final PriceDecisionRepository priceDecisionRepo;
     private final ReorderRequestRepository reorderRepo;
@@ -46,7 +48,7 @@ public class productService {
 
         return productRepo.findBySkuAndStoreId(sku, storeId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Product not found"));
+                        new ResourceNotFoundException(PRODUCT_NOT_FOUND));
     }
 
     // Create Product
@@ -56,19 +58,19 @@ public class productService {
             throw new RuntimeException("Product already exists.");
         }
 
-        product p = new product();
+        product newProduct = new product();
 
-        p.setSku(dto.getSku());
-        p.setStoreId(dto.getStoreId());
-        p.setProductName(dto.getProductName());
-        p.setCurrentPrice(dto.getCurrentPrice());
-        p.setBasePrice(dto.getBasePrice());
-        p.setStock(dto.getStock());
-        p.setReorderThreshold(dto.getReorderThreshold());
-        p.setLastPriceUpdate(Instant.now());
-        p.setLastUpdatedBy(dto.getLastUpdatedBy());
+        newProduct.setSku(dto.getSku());
+        newProduct.setStoreId(dto.getStoreId());
+        newProduct.setProductName(dto.getProductName());
+        newProduct.setCurrentPrice(dto.getCurrentPrice());
+        newProduct.setBasePrice(dto.getBasePrice());
+        newProduct.setStock(dto.getStock());
+        newProduct.setReorderThreshold(dto.getReorderThreshold());
+        newProduct.setLastPriceUpdate(Instant.now());
+        newProduct.setLastUpdatedBy(dto.getLastUpdatedBy());
 
-        return productRepo.save(p);
+        return productRepo.save(newProduct);
     }
 
     // Update Product
@@ -78,7 +80,7 @@ public class productService {
 
         product existing = productRepo.findBySkuAndStoreId(sku, storeId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Product not found"));
+                        new ResourceNotFoundException(PRODUCT_NOT_FOUND));
 
         existing.setProductName(dto.getProductName());
         existing.setCurrentPrice(dto.getCurrentPrice());
@@ -97,7 +99,7 @@ public class productService {
 
         product existing = productRepo.findBySkuAndStoreId(sku, storeId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Product not found"));
+                        new ResourceNotFoundException(PRODUCT_NOT_FOUND));
 
         productRepo.delete(existing);
     }
@@ -122,17 +124,17 @@ public class productService {
             String competitorRef,
             String demandSignal) {
 
-        product p = productRepo.findBySkuAndStoreId(sku, storeId)
+        product targetProduct = productRepo.findBySkuAndStoreId(sku, storeId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Product not found"));
+                        new ResourceNotFoundException(PRODUCT_NOT_FOUND));
 
-        BigDecimal oldPrice = p.getCurrentPrice();
+        BigDecimal oldPrice = targetProduct.getCurrentPrice();
 
-        p.setCurrentPrice(newPrice);
-        p.setLastPriceUpdate(Instant.now());
-        p.setLastUpdatedBy("AI");
+        targetProduct.setCurrentPrice(newPrice);
+        targetProduct.setLastPriceUpdate(Instant.now());
+        targetProduct.setLastUpdatedBy("AI");
 
-        productRepo.save(p);
+        productRepo.save(targetProduct);
 
         PriceDecision decision = new PriceDecision();
 

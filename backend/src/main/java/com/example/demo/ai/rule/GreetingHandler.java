@@ -15,16 +15,21 @@ public class GreetingHandler implements IntentHandler {
 
     @Override
     public String handle(String userMessage, List<product> products) {
-        return "Hello 👋\n\n" +
-                "Welcome to StockGuard AI Assistant.\n\n" +
-                "I can help you with:\n\n" +
-                "• Current Inventory\n" +
-                "• Low Stock Alerts\n" +
-                "• Product Availability\n" +
-                "• Pricing\n" +
-                "• Reorder Suggestions\n" +
-                "• Inventory Analytics\n" +
-                "• Stock Health Reports\n\n" +
-                "How can I help you today?";
+        return """
+                Hello 👋
+
+                Welcome to StockGuard AI Assistant.
+
+                I can help you with:
+
+                • Current Inventory
+                • Low Stock Alerts
+                • Product Availability
+                • Pricing
+                • Reorder Suggestions
+                • Inventory Analytics
+                • Stock Health Reports
+
+                How can I help you today?""";
     }
 }

@@ -21,15 +21,18 @@ public class UnknownIntentHandler implements IntentHandler {
 
     @Override
     public String handle(String userMessage, List<product> products) {
-        String body = "I couldn't understand your request.\n\n" +
-                "Try asking questions like:\n\n" +
-                "• Show inventory\n" +
-                "• Current stock\n" +
-                "• Product price\n" +
-                "• Low stock\n" +
-                "• Inventory statistics\n" +
-                "• Reorder recommendations\n" +
-                "• Inventory health";
+        String body = """
+                I couldn't understand your request.
+
+                Try asking questions like:
+
+                • Show inventory
+                • Current stock
+                • Product price
+                • Low stock
+                • Inventory statistics
+                • Reorder recommendations
+                • Inventory health""";
 
         return responseBuilder.buildResponse("StockGuard Assistant Guidance",
                 null, body, null);

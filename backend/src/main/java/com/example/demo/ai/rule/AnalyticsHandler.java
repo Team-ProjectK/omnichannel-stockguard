@@ -48,23 +48,23 @@ public class AnalyticsHandler implements IntentHandler {
 
         StringBuilder sb = new StringBuilder();
         if (highestStock != null) {
-            sb.append(String.format("• **Highest Stock Product** : %s (SKU: %s) — **%d units**\n",
+            sb.append(String.format("• **Highest Stock Product** : %s (SKU: %s) — **%d units**%n",
                     highestStock.getProductName(), highestStock.getSku(), highestStock.getStock()));
         }
         if (lowestStock != null) {
-            sb.append(String.format("• **Lowest Stock Product** : %s (SKU: %s) — **%d units**\n",
+            sb.append(String.format("• **Lowest Stock Product** : %s (SKU: %s) — **%d units**%n",
                     lowestStock.getProductName(), lowestStock.getSku(), lowestStock.getStock()));
         }
         if (highestPrice != null) {
-            sb.append(String.format("• **Highest Price Product** : %s (SKU: %s) — **₹%s**\n",
+            sb.append(String.format("• **Highest Price Product** : %s (SKU: %s) — **₹%s**%n",
                     highestPrice.getProductName(), highestPrice.getSku(), highestPrice.getCurrentPrice()));
         }
         if (lowestPrice != null) {
-            sb.append(String.format("• **Lowest Price Product** : %s (SKU: %s) — **₹%s**\n",
+            sb.append(String.format("• **Lowest Price Product** : %s (SKU: %s) — **₹%s**%n",
                     lowestPrice.getProductName(), lowestPrice.getSku(), lowestPrice.getCurrentPrice()));
         }
 
-        sb.append(String.format("\n💰 **Estimated Total Inventory Valuation** : **₹%,.2f**", totalValue));
+        sb.append(String.format("%n💰 **Estimated Total Inventory Valuation** : **₹%,.2f**", totalValue));
 
         return responseBuilder.buildResponse("StockGuard Executive Analytics Report",
                 "High-level product catalog performance and valuation breakdown:",

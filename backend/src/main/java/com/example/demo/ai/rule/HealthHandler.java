@@ -45,13 +45,13 @@ public class HealthHandler implements IntentHandler {
         int scoreValue = Math.max(20, 100 - (lowStock * 10) - (critical * 20));
         String healthStatus = critical > 0 ? "CRITICAL_ATTENTION" : (lowStock > 2 ? "NEEDS_REORDER" : "HEALTHY");
 
-        String summary = String.format("• **Overall System Status** : **%s**\n• **Health Score** : **%d/100**", healthStatus, scoreValue);
+        String summary = String.format("• **Overall System Status** : **%s**%n• **Health Score** : **%d/100**", healthStatus, scoreValue);
 
         StringBuilder sb = new StringBuilder();
         sb.append("#### Stock Level Breakdown:\n");
-        sb.append(String.format("• **Healthy SKUs** : %d / %d\n", healthy, total));
-        sb.append(String.format("• **Low Stock Alerts** : %d\n", lowStock));
-        sb.append(String.format("• **Critical Stockouts** : %d\n", critical));
+        sb.append(String.format("• **Healthy SKUs** : %d / %d%n", healthy, total));
+        sb.append(String.format("• **Low Stock Alerts** : %d%n", lowStock));
+        sb.append(String.format("• **Critical Stockouts** : %d%n", critical));
         sb.append(String.format("• **Out Of Stock Items** : %d", outOfStock));
 
         return responseBuilder.buildResponse("StockGuard System Inventory Health Audit",

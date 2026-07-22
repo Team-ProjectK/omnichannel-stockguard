@@ -14,7 +14,7 @@ public class EnterpriseResponseBuilder {
 
     public String buildHeader(String title) {
         String timestampStr = LocalDateTime.now().format(TIMESTAMP_FORMATTER);
-        return String.format("### %s\n*Generated: %s*\n\n", title, timestampStr);
+        return String.format("### %s%n*Generated: %s*%n%n", title, timestampStr);
     }
 
     public String buildEmptyCatalogResponse() {
@@ -39,7 +39,7 @@ public class EnterpriseResponseBuilder {
         if (recommendations != null && !recommendations.isEmpty()) {
             sb.append("#### Recommendations:\n");
             for (int i = 0; i < recommendations.size(); i++) {
-                sb.append(String.format("%d. %s\n", i + 1, recommendations.get(i)));
+                sb.append(String.format("%d. %s%n", i + 1, recommendations.get(i)));
             }
         }
 

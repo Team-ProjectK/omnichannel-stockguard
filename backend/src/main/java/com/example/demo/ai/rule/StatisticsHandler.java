@@ -51,12 +51,12 @@ public class StatisticsHandler implements IntentHandler {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("• **Total Products** : %d\n", totalProducts));
-        sb.append(String.format("• **Total Units** : %d\n", totalUnits));
-        sb.append(String.format("• **Healthy Products** : %d\n", healthyProducts));
-        sb.append(String.format("• **Low Stock Products** : %d\n", lowStockProducts));
-        sb.append(String.format("• **Critical Products** : %d\n", criticalProducts));
-        sb.append(String.format("• **Out Of Stock** : %d\n", outOfStock));
+        sb.append(String.format("• **Total Products** : %d%n", totalProducts));
+        sb.append(String.format("• **Total Units** : %d%n", totalUnits));
+        sb.append(String.format("• **Healthy Products** : %d%n", healthyProducts));
+        sb.append(String.format("• **Low Stock Products** : %d%n", lowStockProducts));
+        sb.append(String.format("• **Critical Products** : %d%n", criticalProducts));
+        sb.append(String.format("• **Out Of Stock** : %d%n", outOfStock));
         sb.append(String.format("• **Overstocked** : %d", overstocked));
 
         return responseBuilder.buildResponse("Inventory Statistics",

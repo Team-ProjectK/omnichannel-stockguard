@@ -77,10 +77,8 @@ public class IntentDetector {
         }
 
         // 11. AMBIGUOUS FOLLOW-UP CONTEXT RESOLUTION
-        if (candidates.isEmpty() && sessionState != null && sessionState.getLastIntent() != IntentType.UNKNOWN) {
-            if (isAmbiguousFollowUp(text)) {
-                return new IntentConfidence(sessionState.getLastIntent(), 0.85);
-            }
+        if (candidates.isEmpty() && sessionState != null && sessionState.getLastIntent() != IntentType.UNKNOWN && isAmbiguousFollowUp(text)) {
+            return new IntentConfidence(sessionState.getLastIntent(), 0.85);
         }
 
         if (candidates.isEmpty()) {

@@ -47,7 +47,7 @@ public class PromptBuilder {
                 sb.append("No products currently registered in database.\n");
             } else {
                 for (product p : products) {
-                    sb.append(String.format("- SKU: %s | Name: %s | Stock: %d | ReorderThreshold: %d | Price: %s | BasePrice: %s\n",
+                    sb.append(String.format("- SKU: %s | Name: %s | Stock: %d | ReorderThreshold: %d | Price: %s | BasePrice: %s%n",
                             p.getSku(),
                             p.getProductName(),
                             p.getStock(),
@@ -66,7 +66,7 @@ public class PromptBuilder {
             sb.append("\n[INVENTORY WAREHOUSE ITEMS (Total: ").append(items.size()).append(")]\n");
             if (!items.isEmpty()) {
                 for (Inventory inv : items) {
-                    sb.append(String.format("- SKU: %s | StoreId: %s | AvailableStock: %d | ReservedStock: %d\n",
+                    sb.append(String.format("- SKU: %s | StoreId: %s | AvailableStock: %d | ReservedStock: %d%n",
                             inv.getSku(),
                             inv.getStoreId() != null ? inv.getStoreId() : "Default",
                             inv.getAvailableStock() != null ? inv.getAvailableStock() : 0,
@@ -83,7 +83,7 @@ public class PromptBuilder {
             sb.append("\n[SUPPLIERS (Total: ").append(suppliers.size()).append(")]\n");
             if (!suppliers.isEmpty()) {
                 for (Supplier s : suppliers) {
-                    sb.append(String.format("- Code: %s | Name: %s | Email: %s | Status: %s\n",
+                    sb.append(String.format("- Code: %s | Name: %s | Email: %s | Status: %s%n",
                             s.getSupplierCode(),
                             s.getSupplierName(),
                             s.getEmail() != null ? s.getEmail() : "N/A",
@@ -100,7 +100,7 @@ public class PromptBuilder {
             sb.append("\n[PURCHASE ORDERS (Total: ").append(pos.size()).append(")]\n");
             if (!pos.isEmpty()) {
                 for (PurchaseOrder po : pos) {
-                    sb.append(String.format("- PO#: %s | SupplierCode: %s | Total: %s | Status: %s\n",
+                    sb.append(String.format("- PO#: %s | SupplierCode: %s | Total: %s | Status: %s%n",
                             po.getPurchaseOrderNo(),
                             po.getSupplierCode() != null ? po.getSupplierCode() : "N/A",
                             po.getTotalAmount() != null ? po.getTotalAmount().toString() : "0.00",
@@ -117,7 +117,7 @@ public class PromptBuilder {
             sb.append("\n[SALES ORDERS (Total: ").append(sos.size()).append(")]\n");
             if (!sos.isEmpty()) {
                 for (SalesOrder so : sos) {
-                    sb.append(String.format("- SO#: %s | CustomerId: %s | Total: %s | Status: %s\n",
+                    sb.append(String.format("- SO#: %s | CustomerId: %s | Total: %s | Status: %s%n",
                             so.getSalesOrderNo(),
                             so.getCustomerId() != null ? so.getCustomerId() : "N/A",
                             so.getTotalAmount() != null ? so.getTotalAmount().toString() : "0.00",
