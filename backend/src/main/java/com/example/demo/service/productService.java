@@ -24,13 +24,16 @@ public class productService {
     private final productRepository productRepo;
     private final PriceDecisionRepository priceDecisionRepo;
     private final ReorderRequestRepository reorderRepo;
+    private final com.example.demo.repository.InventoryRepository inventoryRepo;
 
     public productService(productRepository productRepo,
                           PriceDecisionRepository priceDecisionRepo,
-                          ReorderRequestRepository reorderRepo) {
+                          ReorderRequestRepository reorderRepo,
+                          com.example.demo.repository.InventoryRepository inventoryRepo) {
         this.productRepo = productRepo;
         this.priceDecisionRepo = priceDecisionRepo;
         this.reorderRepo = reorderRepo;
+        this.inventoryRepo = inventoryRepo;
     }
 
     // Get all products
@@ -70,7 +73,20 @@ public class productService {
         newProduct.setLastPriceUpdate(Instant.now());
         newProduct.setLastUpdatedBy(dto.getLastUpdatedBy());
 
-        return productRepo.save(newProduct);
+        product savedProduct = productRepo.save(newProduct);
+
+        if (!inventoryRepo.existsBySkuAndStoreId(savedProduct.getSku(), savedProduct.getStoreId())) {
+            com.example.demo.model.Inventory inv = new com.example.demo.model.Inventory();
+            inv.setSku(savedProduct.getSku());
+            inv.setStoreId(savedProduct.getStoreId());
+            inv.setAvailableStock(savedProduct.getStock());
+            inv.setReservedStock(0);
+            inv.setDamagedStock(0);
+            inv.setLastUpdated(Instant.now());
+            inventoryRepo.save(inv);
+        }
+
+        return savedProduct;
     }
 
     // Update Product

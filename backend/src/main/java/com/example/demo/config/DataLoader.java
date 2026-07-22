@@ -12,8 +12,14 @@ import java.time.Instant;
 @Configuration
 public class DataLoader {
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DataLoader.class);
+
     @Bean
-    CommandLineRunner loadData(productRepository repository) {
+    CommandLineRunner loadData(
+            productRepository repository,
+            com.example.demo.repository.InventoryRepository inventoryRepo,
+            com.example.demo.repository.SupplierRepository supplierRepo
+    ) {
 
         return args -> {
 
@@ -56,7 +62,55 @@ public class DataLoader {
                 repository.save(p2);
                 repository.save(p3);
 
-                org.slf4j.LoggerFactory.getLogger(DataLoader.class).info("Sample products inserted.");
+                logger.info("Sample products inserted.");
+            }
+
+            if (inventoryRepo.count() == 0) {
+                com.example.demo.model.Inventory i1 = new com.example.demo.model.Inventory();
+                i1.setSku("SKU101");
+                i1.setStoreId("HYD01");
+                i1.setAvailableStock(40);
+                i1.setReservedStock(5);
+                i1.setDamagedStock(0);
+                i1.setLastUpdated(Instant.now());
+
+                com.example.demo.model.Inventory i2 = new com.example.demo.model.Inventory();
+                i2.setSku("SKU102");
+                i2.setStoreId("HYD01");
+                i2.setAvailableStock(12);
+                i2.setReservedStock(2);
+                i2.setDamagedStock(0);
+                i2.setLastUpdated(Instant.now());
+
+                com.example.demo.model.Inventory i3 = new com.example.demo.model.Inventory();
+                i3.setSku("SKU103");
+                i3.setStoreId("BLR01");
+                i3.setAvailableStock(65);
+                i3.setReservedStock(8);
+                i3.setDamagedStock(1);
+                i3.setLastUpdated(Instant.now());
+
+                inventoryRepo.save(i1);
+                inventoryRepo.save(i2);
+                inventoryRepo.save(i3);
+
+                logger.info("Sample inventory records inserted.");
+            }
+
+            if (supplierRepo.count() == 0) {
+                com.example.demo.model.Supplier s1 = new com.example.demo.model.Supplier();
+                s1.setSupplierCode("SUPP101");
+                s1.setSupplierName("ABC Electronics");
+                s1.setContactPerson("Rajesh Kumar");
+                s1.setEmail("contact@abcelectronics.com");
+                s1.setPhone("9876543210");
+                s1.setAddress("Hyderabad, Telangana");
+                s1.setStatus("ACTIVE");
+                s1.setCreatedAt(Instant.now());
+
+                supplierRepo.save(s1);
+
+                logger.info("Sample suppliers inserted.");
             }
         };
     }
