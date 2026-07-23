@@ -32,7 +32,9 @@ public class User implements UserDetails {
 
     private Instant createdAt = Instant.now();
 
-    public User() {}
+    public User() {
+        // Default constructor required by JPA entity reflection
+    }
 
     public User(String name, String email, String password, Role role) {
         this.name = name;

@@ -20,20 +20,25 @@ public class AssistantExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(AssistantExceptionHandler.class);
 
+    private static final String TIMESTAMP_KEY = "timestamp";
+    private static final String STATUS_KEY = "status";
+    private static final String ERROR_KEY = "error";
+    private static final String MESSAGE_KEY = "message";
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         log.warn("Invalid request payload for assistant API: {}", ex.getMessage());
         Map<String, Object> errorDetails = new HashMap<>();
-        errorDetails.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        errorDetails.put("status", HttpStatus.BAD_REQUEST.value());
-        errorDetails.put("error", "Bad Request");
+        errorDetails.put(TIMESTAMP_KEY, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        errorDetails.put(STATUS_KEY, HttpStatus.BAD_REQUEST.value());
+        errorDetails.put(ERROR_KEY, "Bad Request");
 
         String errorMessage = ex.getBindingResult().getFieldErrors().stream()
                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
                 .findFirst()
                 .orElse("Validation failed");
 
-        errorDetails.put("message", errorMessage);
+        errorDetails.put(MESSAGE_KEY, errorMessage);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 
@@ -41,10 +46,10 @@ public class AssistantExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleConnectException(ConnectException ex) {
         log.error("Ollama server connection failed: {}", ex.getMessage());
         Map<String, Object> errorDetails = new HashMap<>();
-        errorDetails.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        errorDetails.put("status", HttpStatus.SERVICE_UNAVAILABLE.value());
-        errorDetails.put("error", "Service Unavailable");
-        errorDetails.put("message", "Ollama AI server is not running or unreachable at configured URL.");
+        errorDetails.put(TIMESTAMP_KEY, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        errorDetails.put(STATUS_KEY, HttpStatus.SERVICE_UNAVAILABLE.value());
+        errorDetails.put(ERROR_KEY, "Service Unavailable");
+        errorDetails.put(MESSAGE_KEY, "Ollama AI server is not running or unreachable at configured URL.");
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorDetails);
     }
 
@@ -52,10 +57,10 @@ public class AssistantExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleTimeoutException(SocketTimeoutException ex) {
         log.error("Ollama server request timed out: {}", ex.getMessage());
         Map<String, Object> errorDetails = new HashMap<>();
-        errorDetails.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        errorDetails.put("status", HttpStatus.GATEWAY_TIMEOUT.value());
-        errorDetails.put("error", "Gateway Timeout");
-        errorDetails.put("message", "Ollama AI server request timed out.");
+        errorDetails.put(TIMESTAMP_KEY, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        errorDetails.put(STATUS_KEY, HttpStatus.GATEWAY_TIMEOUT.value());
+        errorDetails.put(ERROR_KEY, "Gateway Timeout");
+        errorDetails.put(MESSAGE_KEY, "Ollama AI server request timed out.");
         return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(errorDetails);
     }
 
@@ -77,10 +82,10 @@ public class AssistantExceptionHandler {
         }
 
         Map<String, Object> errorDetails = new HashMap<>();
-        errorDetails.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        errorDetails.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        errorDetails.put("error", "Internal Server Error");
-        errorDetails.put("message", ex.getMessage() != null ? ex.getMessage() : "An unexpected error occurred while communicating with Ollama.");
+        errorDetails.put(TIMESTAMP_KEY, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        errorDetails.put(STATUS_KEY, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorDetails.put(ERROR_KEY, "Internal Server Error");
+        errorDetails.put(MESSAGE_KEY, ex.getMessage() != null ? ex.getMessage() : "An unexpected error occurred while communicating with Ollama.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails);
     }
 }

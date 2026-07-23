@@ -11,6 +11,7 @@ import com.example.demo.security.JwtService;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,9 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    @Value("${app.default-admin-password:DefaultAdminSecretPass2026!}")
+    private String defaultAdminPassword;
 
     public AuthenticationService(
             UserRepository userRepository,
@@ -45,7 +49,7 @@ public class AuthenticationService {
             User admin = new User(
                     "System Admin",
                     "admin@stockguard.com",
-                    passwordEncoder.encode("Admin@123"),
+                    passwordEncoder.encode(defaultAdminPassword),
                     Role.ADMIN
             );
             userRepository.save(admin);

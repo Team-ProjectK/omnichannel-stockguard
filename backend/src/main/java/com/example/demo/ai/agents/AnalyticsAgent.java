@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class AnalyticsAgent implements AIAgent {
@@ -60,6 +61,16 @@ public class AnalyticsAgent implements AIAgent {
         return KEYWORDS.stream().anyMatch(lower::contains);
     }
 
+    private String getHealthStatusLabel(int score) {
+        if (score > 80) {
+            return "Optimal";
+        }
+        if (score > 60) {
+            return "Moderate Risk";
+        }
+        return "Critical Attention Required";
+    }
+
     @Override
     public String process(String sessionId, String message) {
         long startTime = System.currentTimeMillis();
@@ -95,7 +106,7 @@ public class AnalyticsAgent implements AIAgent {
         // Calculate aggregated metrics & Inventory Health Score
         BigDecimal totalRevenue = salesOrders.stream()
                 .map(SalesOrder::getTotalAmount)
-                .filter(amt -> amt != null)
+                .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         int totalSalesCount = salesOrders.size();
@@ -111,28 +122,27 @@ public class AnalyticsAgent implements AIAgent {
                 .count();
 
         // Calculate Inventory Health Score (0 to 100)
-        int totalItems = Math.max(1, allInventory.size());
         int healthDeduction = (int) ((lowStockAlertCount * 5) + (outOfStockCount * 10) + (overstockCount * 3));
         int inventoryHealthScore = Math.max(0, Math.min(100, 100 - healthDeduction));
 
         log.info("Analytics aggregated metrics -> Health Score: {}, Revenue: {}, Sales Count: {}, Catalog Products: {}, Low Stock: {}, Overstock: {} (DB Time: {} ms)",
                 inventoryHealthScore, totalRevenue, totalSalesCount, totalCatalogProducts, lowStockAlertCount, overstockCount, dbExecutionTime);
 
-        // Format structured context
-        StringBuilder contextBuilder = new StringBuilder("Real-Time Business Analytics & Executive Dashboard Context:\n");
-        contextBuilder.append(String.format("- Calculated Inventory Health Score: %d/100 (%s)\n",
-                inventoryHealthScore, inventoryHealthScore > 80 ? "Optimal" : (inventoryHealthScore > 60 ? "Moderate Risk" : "Critical Attention Required")));
-        contextBuilder.append(String.format("- Total Sales Revenue: ₹%s\n", totalRevenue.toPlainString()));
-        contextBuilder.append(String.format("- Total Sales Orders Executed: %d\n", totalSalesCount));
-        contextBuilder.append(String.format("- Total Product Catalog SKUs: %d\n", totalCatalogProducts));
-        contextBuilder.append(String.format("- Active Low Stock Items: %d\n", lowStockAlertCount));
-        contextBuilder.append(String.format("- Critical Out of Stock Items: %d\n", outOfStockCount));
-        contextBuilder.append(String.format("- Overstock Items (Stock > 50 units): %d\n", overstockCount));
+        // Format structured context with platform-independent line separators
+        StringBuilder contextBuilder = new StringBuilder("Real-Time Business Analytics & Executive Dashboard Context:%n".formatted());
+        contextBuilder.append(String.format("- Calculated Inventory Health Score: %d/100 (%s)%n",
+                inventoryHealthScore, getHealthStatusLabel(inventoryHealthScore)));
+        contextBuilder.append(String.format("- Total Sales Revenue: ₹%s%n", totalRevenue.toPlainString()));
+        contextBuilder.append(String.format("- Total Sales Orders Executed: %d%n", totalSalesCount));
+        contextBuilder.append(String.format("- Total Product Catalog SKUs: %d%n", totalCatalogProducts));
+        contextBuilder.append(String.format("- Active Low Stock Items: %d%n", lowStockAlertCount));
+        contextBuilder.append(String.format("- Critical Out of Stock Items: %d%n", outOfStockCount));
+        contextBuilder.append(String.format("- Overstock Items (Stock > 50 units): %d%n", overstockCount));
 
         if (!lowStockItems.isEmpty()) {
-            contextBuilder.append("  Low Stock Items Requiring Immediate Attention:\n");
+            contextBuilder.append("  Low Stock Items Requiring Immediate Attention:%n".formatted());
             for (Inventory item : lowStockItems) {
-                contextBuilder.append(String.format("  * SKU: %s (Available: %d)\n", item.getSku(), item.getAvailableStock()));
+                contextBuilder.append(String.format("  * SKU: %s (Available: %d)%n", item.getSku(), item.getAvailableStock()));
             }
         }
 
@@ -151,7 +161,7 @@ public class AnalyticsAgent implements AIAgent {
             }
         }
 
-        String fullUserPrompt = contextBuilder.toString() + "\nUser Query: " + message;
+        String fullUserPrompt = contextBuilder.toString() + System.lineSeparator() + "User Query: " + message;
         promptMessages.add(UserMessage.from(fullUserPrompt));
 
         long llmStartTime = System.currentTimeMillis();

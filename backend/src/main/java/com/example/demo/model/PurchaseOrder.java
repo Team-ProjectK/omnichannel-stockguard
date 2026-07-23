@@ -44,6 +44,7 @@ public class PurchaseOrder {
     private Instant receivedDate;
 
     public PurchaseOrder() {
+        // Default constructor required by JPA entity reflection
     }
 
     public Long getId() {

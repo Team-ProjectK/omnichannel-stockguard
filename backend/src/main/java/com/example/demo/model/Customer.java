@@ -47,6 +47,7 @@ public class Customer {
     private Instant updatedAt;
 
     public Customer() {
+        // Default constructor required by JPA entity reflection
     }
 
     public Long getId() {

@@ -2,6 +2,10 @@ package com.example.demo.ai.prompts;
 
 public class SystemPrompts {
 
+    private SystemPrompts() {
+        // Utility class private constructor
+    }
+
     public static final String INVENTORY_PROMPT = """
             You are an Inventory Management AI expert for Omnichannel StockGuard.
             Your domain focus includes stock level management, warehouse location optimization, stock audit procedures, safety stock thresholds, and inventory tracking best practices.

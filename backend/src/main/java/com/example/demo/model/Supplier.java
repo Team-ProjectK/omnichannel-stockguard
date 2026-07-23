@@ -39,6 +39,7 @@ public class Supplier {
     private Instant updatedAt;
 
     public Supplier() {
+        // Default constructor required by JPA entity reflection
     }
 
     public Long getId() {

@@ -25,6 +25,7 @@ public class Inventory {
     private Instant lastUpdated;
 
     public Inventory() {
+        // Default constructor required by JPA entity reflection
     }
 
     public Long getId() {
