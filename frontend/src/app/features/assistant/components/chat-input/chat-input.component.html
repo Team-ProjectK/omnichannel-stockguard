@@ -1,0 +1,16 @@
+<div class="chat-input-box">
+  <textarea
+    class="input-textarea"
+    rows="1"
+    placeholder="Ask StockGuard AI about inventory, products, suppliers, revenue..."
+    [(ngModel)]="messageText"
+    (keydown)="onKeyDown($event)"
+    [disabled]="disabled">
+  </textarea>
+  <button
+    class="send-btn"
+    (click)="onSend()"
+    [disabled]="!messageText.trim() || disabled">
+    <mat-icon>send</mat-icon>
+  </button>
+</div>

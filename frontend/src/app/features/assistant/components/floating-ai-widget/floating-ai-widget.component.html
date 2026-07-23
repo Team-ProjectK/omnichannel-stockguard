@@ -1,0 +1,98 @@
+<!-- Floating AI Assistant Trigger Button -->
+<button
+  class="floating-ai-trigger"
+  [ngClass]="{ 'active': isOpen }"
+  (click)="toggleWidget()"
+  title="Open StockGuard AI Assistant">
+  
+  <mat-icon *ngIf="!isOpen">auto_awesome</mat-icon>
+  <mat-icon *ngIf="isOpen">close</mat-icon>
+  
+  <span *ngIf="!isOpen" class="trigger-ping"></span>
+</button>
+
+<!-- Compact Floating Chat Drawer Popup -->
+<div class="floating-chat-popup" [ngClass]="{ 'open': isOpen }">
+  <!-- Header Bar -->
+  <div class="popup-header">
+    <div class="header-left">
+      <div class="header-ai-icon">
+        <mat-icon>auto_awesome</mat-icon>
+      </div>
+      <div>
+        <h4 class="popup-title">StockGuard AI Assistant</h4>
+        <div class="context-chip">
+          <mat-icon>place</mat-icon>
+          <span>{{ getPageContextName() }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button class="popup-close-btn" (click)="onClearChat()" title="Clear Chat History">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+      <button class="popup-close-btn" (click)="toggleWidget()" title="Close Drawer">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Messages Scroll Area -->
+  <div class="popup-body" #scrollContainer>
+    <!-- Empty State Prompt Suggestions -->
+    <div *ngIf="messages.length === 0" class="popup-empty-state">
+      <div class="empty-ai-badge">
+        <mat-icon>auto_awesome</mat-icon>
+      </div>
+      <h5>How can I assist you on this page?</h5>
+      <p>Ask real-time questions about {{ getPageContextName() }} or general inventory operations.</p>
+
+      <div class="popup-prompt-list">
+        <button class="popup-prompt-chip" (click)="onSelectPrompt('Summarize key data on this page')">
+          <mat-icon>bolt</mat-icon>
+          <span>Summarize key data on this page</span>
+        </button>
+        <button class="popup-prompt-chip" (click)="onSelectPrompt('Show low stock products in inventory')">
+          <mat-icon>warning</mat-icon>
+          <span>Check low stock items</span>
+        </button>
+        <button class="popup-prompt-chip" (click)="onSelectPrompt('Suggest reorder quantities')">
+          <mat-icon>shopping_cart</mat-icon>
+          <span>Suggest reorder quantities</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Message List -->
+    <app-chat-message
+      *ngFor="let msg of messages"
+      [message]="msg">
+    </app-chat-message>
+
+    <!-- Typing Indicator -->
+    <app-typing-indicator *ngIf="isLoading"></app-typing-indicator>
+  </div>
+
+  <!-- Footer Input Area -->
+  <div class="popup-footer">
+    <div class="popup-input-wrapper">
+      <textarea
+        class="popup-textarea"
+        rows="1"
+        placeholder="Type an AI query for {{ getPageContextName() }}..."
+        [(ngModel)]="messageText"
+        (keydown)="onKeyDown($event)"
+        [disabled]="isLoading">
+      </textarea>
+      
+      <button
+        class="popup-send-btn"
+        (click)="onSend()"
+        [disabled]="!messageText.trim() || isLoading"
+        title="Send Prompt">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,60 +1,56 @@
 package com.example.demo.ai.controller;
 
-import com.example.demo.ai.dto.*;
-import com.example.demo.ai.service.AIService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ai")
 @CrossOrigin(origins = "*")
 public class AIController {
 
-    private final AIService aiService;
-
-    public AIController(AIService aiService) {
-        this.aiService = aiService;
+    private Map<String, Object> unavailableResponse() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "AI Assistant is temporarily unavailable.");
+        return response;
     }
 
     @PostMapping("/chat")
-    public ResponseEntity<ChatResponse> chat(@RequestBody ChatRequest request) {
-        ChatResponse response = aiService.processChat(request);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Map<String, Object>> chat(@RequestBody(required = false) Object request) {
+        return ResponseEntity.ok(unavailableResponse());
     }
 
     @PostMapping("/dashboard-summary")
-    public ResponseEntity<DashboardSummaryDto> getDashboardSummary() {
-        DashboardSummaryDto summary = aiService.getDashboardSummary();
-        return ResponseEntity.ok(summary);
+    public ResponseEntity<Map<String, Object>> getDashboardSummary() {
+        return ResponseEntity.ok(unavailableResponse());
     }
 
     @PostMapping("/inventory-insights")
-    public ResponseEntity<InventoryInsightDto> getInventoryInsights() {
-        InventoryInsightDto insights = aiService.getInventoryInsights();
-        return ResponseEntity.ok(insights);
+    public ResponseEntity<Map<String, Object>> getInventoryInsights() {
+        return ResponseEntity.ok(unavailableResponse());
     }
 
     @PostMapping("/reorder-suggestions")
-    public ResponseEntity<ReorderSuggestionDto> getReorderSuggestions() {
-        ReorderSuggestionDto suggestions = aiService.getReorderSuggestions();
-        return ResponseEntity.ok(suggestions);
+    public ResponseEntity<Map<String, Object>> getReorderSuggestions() {
+        return ResponseEntity.ok(unavailableResponse());
     }
 
     @PostMapping("/price-recommendations")
-    public ResponseEntity<PriceRecommendationDto> getPriceRecommendations() {
-        PriceRecommendationDto recommendations = aiService.getPriceRecommendations();
-        return ResponseEntity.ok(recommendations);
+    public ResponseEntity<Map<String, Object>> getPriceRecommendations() {
+        return ResponseEntity.ok(unavailableResponse());
     }
 
     @PostMapping("/demand-forecast")
-    public ResponseEntity<DemandForecastDto> getDemandForecast() {
-        DemandForecastDto forecast = aiService.getDemandForecast();
-        return ResponseEntity.ok(forecast);
+    public ResponseEntity<Map<String, Object>> getDemandForecast() {
+        return ResponseEntity.ok(unavailableResponse());
     }
 
     @PostMapping("/business-summary")
-    public ResponseEntity<BusinessSummaryDto> getBusinessSummary() {
-        BusinessSummaryDto summary = aiService.getBusinessSummary();
-        return ResponseEntity.ok(summary);
+    public ResponseEntity<Map<String, Object>> getBusinessSummary() {
+        return ResponseEntity.ok(unavailableResponse());
     }
 }
+

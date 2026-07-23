@@ -42,13 +42,22 @@ import { PricingComponent } from './features/pricing/pricing.component';
 import { ReorderComponent } from './features/reorder/reorder.component';
 import { AlertsComponent } from './features/alerts/alerts.component';
 import { AnalyticsComponent } from './features/analytics/analytics.component';
-import { AiPredictionsComponent } from './features/ai-predictions/ai-predictions.component';
 import { ReportsComponent } from './features/reports/reports.component';
 import { NotificationsComponent } from './features/notifications/notifications.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { SettingsComponent } from './features/settings/settings.component';
 import { ProductDialogComponent } from './features/products/components/product-dialog/product-dialog.component';
 import { ProductDetailsDialogComponent } from './features/products/components/product-details-dialog/product-details-dialog.component';
+
+// Assistant Components
+import { AssistantChatComponent } from './features/assistant/assistant-chat/assistant-chat.component';
+import { ChatMessageComponent } from './features/assistant/components/chat-message/chat-message.component';
+import { ChatInputComponent } from './features/assistant/components/chat-input/chat-input.component';
+import { TypingIndicatorComponent } from './features/assistant/components/typing-indicator/typing-indicator.component';
+import { FloatingAiWidgetComponent } from './features/assistant/components/floating-ai-widget/floating-ai-widget.component';
+
+// Knowledge Base Components
+import { KnowledgeManagementComponent } from './features/knowledge/knowledge-management/knowledge-management.component';
 
 // Shared Components
 import { PageHeaderComponent } from './shared/components/page-header/page-header.component';
@@ -88,8 +97,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { FloatingAiChatComponent } from './core/components/floating-ai-chat/floating-ai-chat.component';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -98,7 +105,6 @@ import { FloatingAiChatComponent } from './core/components/floating-ai-chat/floa
     FooterComponent,
     MainLayoutComponent,
     AuthLayoutComponent,
-    FloatingAiChatComponent,
     HomeComponent,
     DashboardComponent,
     ProductsComponent,
@@ -120,7 +126,6 @@ import { FloatingAiChatComponent } from './core/components/floating-ai-chat/floa
     ReorderComponent,
     AlertsComponent,
     AnalyticsComponent,
-    AiPredictionsComponent,
     ReportsComponent,
     NotificationsComponent,
     ProfileComponent,
@@ -139,7 +144,13 @@ import { FloatingAiChatComponent } from './core/components/floating-ai-chat/floa
     LoadingSkeletonComponent,
     ReusableTableComponent,
     ProductDialogComponent,
-    ProductDetailsDialogComponent
+    ProductDetailsDialogComponent,
+    AssistantChatComponent,
+    ChatMessageComponent,
+    ChatInputComponent,
+    TypingIndicatorComponent,
+    KnowledgeManagementComponent,
+    FloatingAiWidgetComponent
   ],
   imports: [
     BrowserModule,

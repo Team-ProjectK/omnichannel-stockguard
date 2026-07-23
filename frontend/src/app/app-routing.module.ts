@@ -14,13 +14,14 @@ import { PricingComponent } from './features/pricing/pricing.component';
 import { ReorderComponent } from './features/reorder/reorder.component';
 import { AlertsComponent } from './features/alerts/alerts.component';
 import { AnalyticsComponent } from './features/analytics/analytics.component';
-import { AiPredictionsComponent } from './features/ai-predictions/ai-predictions.component';
 import { ReportsComponent } from './features/reports/reports.component';
 import { NotificationsComponent } from './features/notifications/notifications.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { SettingsComponent } from './features/settings/settings.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
+import { AssistantChatComponent } from './features/assistant/assistant-chat/assistant-chat.component';
+import { KnowledgeManagementComponent } from './features/knowledge/knowledge-management/knowledge-management.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { NoAuthGuard } from './core/guards/no-auth.guard';
 
@@ -42,13 +43,12 @@ const routes: Routes = [
   { path: 'reorder', component: ReorderComponent, canActivate: [AuthGuard] },
   { path: 'alerts', component: AlertsComponent, canActivate: [AuthGuard] },
   { path: 'analytics', component: AnalyticsComponent, canActivate: [AuthGuard] },
-  { path: 'ai', loadChildren: () => import('./features/ai/ai.module').then(m => m.AiModule), canActivate: [AuthGuard] },
-  { path: 'ai-predictions', component: AiPredictionsComponent, canActivate: [AuthGuard] },
-  { path: 'ai-dashboard', component: AiPredictionsComponent, canActivate: [AuthGuard] },
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard] },
   { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
+  { path: 'assistant', component: AssistantChatComponent, canActivate: [AuthGuard] },
+  { path: 'knowledge', component: KnowledgeManagementComponent, canActivate: [AuthGuard] },
 
   { path: '**', redirectTo: 'home' }
 ];

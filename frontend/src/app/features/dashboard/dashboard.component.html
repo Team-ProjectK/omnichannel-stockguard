@@ -45,6 +45,141 @@
     </button>
   </div>
 
+  <!-- Executive AI Inventory Health & Business Insights Panel -->
+  <div class="panel ai-health-panel mat-elevation-z1 animate-fade-in">
+    <div class="ai-health-header">
+      <div class="header-title-group">
+        <div class="ai-badge-icon">
+          <mat-icon>insights</mat-icon>
+        </div>
+        <div>
+          <h2 class="panel-title">AI Inventory Health & Insights</h2>
+          <span class="panel-subtitle">Automated supply chain diagnostics & executive recommendations</span>
+        </div>
+      </div>
+
+      <div class="health-score-container">
+        <div class="health-score-text">
+          <span class="score-label">Inventory Health Score</span>
+          <span class="score-value">{{ healthScore }}/100</span>
+        </div>
+        <span class="health-status-badge" [ngClass]="{
+          'status-optimal': healthScore > 80,
+          'status-warning': healthScore > 60 && healthScore <= 80,
+          'status-critical': healthScore <= 60
+        }">
+          {{ healthStatus }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Health Breakdown Mini Grid -->
+    <div class="health-metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon warning"><mat-icon>warning</mat-icon></div>
+        <div class="metric-info">
+          <span class="metric-label">Low Stock Alerts</span>
+          <h4 class="metric-val">{{ dashboardCards[3].value }} SKUs</h4>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon danger"><mat-icon>error_outline</mat-icon></div>
+        <div class="metric-info">
+          <span class="metric-label">Out of Stock</span>
+          <h4 class="metric-val">{{ outOfStockCount }} SKUs</h4>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon purple"><mat-icon>inventory_2</mat-icon></div>
+        <div class="metric-info">
+          <span class="metric-label">Overstock Items</span>
+          <h4 class="metric-val">{{ overstockCount }} SKUs</h4>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon info"><mat-icon>schedule</mat-icon></div>
+        <div class="metric-info">
+          <span class="metric-label">Last Analysis</span>
+          <h4 class="metric-val">{{ lastAnalysisTime | date:'shortTime' }}</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendations List -->
+    <div class="recommendations-box">
+      <span class="recommendations-title">Automated Executive AI Suggestions:</span>
+      <div *ngFor="let rec of aiRecommendations" class="rec-item">
+        <mat-icon class="rec-icon">check_circle_outline</mat-icon>
+        <span class="rec-text">{{ rec }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Native StockGuard AI Widget Panel -->
+  <div class="panel ai-widget-panel mat-elevation-z1 animate-fade-in" style="background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 16px; padding: 20px; backdrop-filter: blur(12px);">
+    <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #2563eb, #3b82f6); color: #fff; display: flex; align-items: center; justify-content: center;">
+          <mat-icon style="font-size: 20px; width: 20px; height: 20px;">auto_awesome</mat-icon>
+        </div>
+        <div>
+          <h2 style="font-size: 1.1rem; font-weight: 700; color: #f8fafc; margin: 0;">StockGuard AI Assistant</h2>
+          <span style="font-size: 0.75rem; color: #94a3b8;">Ask questions about inventory, products, suppliers, revenue, or knowledge base docs</span>
+        </div>
+      </div>
+      <button mat-stroked-button color="primary" routerLink="/assistant" style="border-color: rgba(37, 99, 235, 0.4); color: #60a5fa;">
+        <span>Open Full AI Chat</span>
+        <mat-icon style="margin-left: 4px;">open_in_new</mat-icon>
+      </button>
+    </div>
+
+    <!-- Quick Query Chips -->
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+      <button mat-chip-option (click)="onAskAi('Show low stock products in inventory')" style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); color: #93c5fd; font-size: 0.8rem; cursor: pointer; border-radius: 16px; padding: 4px 12px;">
+        ⚡ Low Stock Summary
+      </button>
+      <button mat-chip-option (click)="onAskAi('Analyze sales revenue metrics')" style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); color: #93c5fd; font-size: 0.8rem; cursor: pointer; border-radius: 16px; padding: 4px 12px;">
+        ⚡ Revenue Metrics
+      </button>
+      <button mat-chip-option (click)="onAskAi('Suggest products to reorder')" style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); color: #93c5fd; font-size: 0.8rem; cursor: pointer; border-radius: 16px; padding: 4px 12px;">
+        ⚡ Reorder Suggestions
+      </button>
+    </div>
+
+    <!-- Query Input Bar -->
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <input
+        type="text"
+        placeholder="Type an AI query here (e.g. 'What items need reordering?')..."
+        [(ngModel)]="aiQueryText"
+        (keydown.enter)="onAskAi()"
+        style="flex: 1; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; padding: 10px 18px; color: #f8fafc; font-size: 0.9rem; outline: none;" />
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="onAskAi()"
+        [disabled]="isAiLoading || !aiQueryText.trim()"
+        style="border-radius: 20px; background: linear-gradient(135deg, #2563eb, #3b82f6); color: #fff;">
+        <mat-icon>send</mat-icon>
+        <span style="margin-left: 4px;">Ask AI</span>
+      </button>
+    </div>
+
+    <!-- AI Response Preview Container -->
+    <div *ngIf="isAiLoading" style="margin-top: 16px; color: #60a5fa; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+      <mat-icon style="animation: spin 1s linear infinite;">sync</mat-icon>
+      <span>StockGuard AI is analyzing database records & knowledge chunks...</span>
+    </div>
+
+    <div *ngIf="aiResponseText && !isAiLoading" style="margin-top: 16px; padding: 14px 18px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(37, 99, 235, 0.3); border-radius: 12px; color: #f8fafc; font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap;">
+      <div style="font-size: 0.75rem; color: #60a5fa; font-weight: 600; margin-bottom: 6px;">AI ASSISTANT RESPONSE:</div>
+      {{ aiResponseText }}
+    </div>
+  </div>
+
   <!-- Inventory Trend Chart (Full Width) -->
   <div class="panel main-chart-panel mat-elevation-z1">
     <div class="panel-header">
@@ -58,209 +193,43 @@
     </canvas>
   </div>
 
-  <!-- Orders & Top Selling Grid -->
+  <!-- Dashboard Grid Section -->
   <div class="dashboard-grid">
 
-    <!-- Recent Orders -->
-    <div class="panel table-panel mat-elevation-z1">
+    <!-- Category Distribution Pie Chart -->
+    <div class="panel pie-chart-panel mat-elevation-z1">
       <div class="panel-header">
-        <h2>Recent Orders</h2>
+        <h2>Category Distribution</h2>
+        <span class="chip">Live Portfolio</span>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Order No</th>
-            <th>Customer / Supplier</th>
-            <th>Amount</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let order of recentOrders">
-            <td class="font-mono">{{ order.orderNo }}</td>
-            <td>{{ order.customerOrSupplier }}</td>
-            <td class="font-bold">{{ order.amount | currency:'INR':'symbol':'1.0-0' }}</td>
-            <td>
-              <app-status-badge [status]="order.status"></app-status-badge>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="pie-container">
+        <canvas
+          baseChart
+          [data]="pieChartData"
+          [type]="pieChartType">
+        </canvas>
+      </div>
     </div>
 
-    <!-- Top Selling Products -->
-    <div class="panel table-panel mat-elevation-z1">
+    <!-- Live Activity Feed -->
+    <div class="panel activity-panel mat-elevation-z1">
       <div class="panel-header">
-        <h2>Top Selling Products</h2>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>SKU</th>
-            <th>Sales</th>
-            <th>Revenue</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let prod of topSellingProducts">
-            <td>{{ prod.name }}</td>
-            <td>{{ prod.sku }}</td>
-            <td>{{ prod.salesCount }} units</td>
-            <td class="font-bold">{{ prod.revenue | currency:'INR':'symbol':'1.0-0' }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-  </div>
-
-  <!-- Low Stock Alerts & Recent Activities -->
-  <div class="dashboard-grid">
-    <!-- Low Stock Products Table -->
-    <div class="panel table-panel mat-elevation-z1">
-      <div class="panel-header">
-        <h2>Low Stock Alerts</h2>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>SKU</th>
-            <th>Stock</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let product of lowStockProducts">
-            <td>{{ product.name }}</td>
-            <td>{{ product.sku }}</td>
-            <td>{{ product.stock }}</td>
-            <td>
-              <span
-                class="status"
-                [ngClass]="{
-                  'critical': product.status === 'Critical',
-                  'low': product.status === 'Low',
-                  'normal': product.status === 'Normal'
-                }">
-                {{ product.status }}
-              </span>
-            </td>
-            <td>
-              <button mat-raised-button color="primary" class="btn-sm" routerLink="/inventory">
-                View
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Recent Activity Feed -->
-    <div class="panel mat-elevation-z1">
-      <div class="panel-header">
-        <h2>Recent System Activities</h2>
+        <h2>Recent Operations</h2>
+        <span class="chip">Audit Log</span>
       </div>
       <div class="activity-feed">
-        <div class="activity-item" *ngFor="let act of recentActivities">
-          <mat-icon class="act-icon">{{ act.icon }}</mat-icon>
+        <div class="activity-item" *ngFor="let item of recentActivities">
+          <div class="act-icon">
+            <mat-icon>{{ item.icon }}</mat-icon>
+          </div>
           <div class="act-details">
-            <p>{{ act.title }}</p>
-            <small>{{ act.time }}</small>
+            <p>{{ item.title }}</p>
+            <small>{{ item.time }}</small>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- AI Intelligence Hub Section -->
-  <div class="panel ai-hub-panel mat-elevation-z1 animate-fade-in" style="margin-top: 1.5rem; background: linear-gradient(135deg, #0f172a, #1e293b); color: #ffffff; border-radius: 14px; padding: 1.25rem;">
-    <div class="panel-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 16px;">
-      <h2 style="color: #ffffff; display: flex; align-items: center; gap: 8px; margin: 0; font-size: 1.2rem;">
-        <mat-icon style="color: #6366f1;">auto_awesome</mat-icon> StockGuard AI Intelligence Hub
-      </h2>
-      <span class="chip" style="background: rgba(99, 102, 241, 0.25); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); font-size: 0.75rem; padding: 4px 10px; border-radius: 12px;">OpenRouter (Gemini 2.5 Flash)</span>
-    </div>
-
-    <!-- AI Cards Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding-bottom: 0.5rem;">
-
-      <!-- Card 1: Inventory Health Score -->
-      <div style="background: rgba(255,255,255,0.05); padding: 1.1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="margin: 0 0 6px; color: #94a3b8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">HEALTH SCORE</h4>
-        <div style="font-size: 1.5rem; font-weight: 800; color: #10b981;">
-          {{ aiSummary?.inventoryHealthScore || '92/100' }}
-        </div>
-        <p style="margin: 4px 0 0; font-size: 0.78rem; color: #cbd5e1;">
-          Overall catalog safety status
-        </p>
-      </div>
-
-      <!-- Card 2: Risk Indicator -->
-      <div style="background: rgba(255,255,255,0.05); padding: 1.1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="margin: 0 0 6px; color: #94a3b8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">RISK INDICATOR</h4>
-        <div style="font-size: 1.4rem; font-weight: 800;" [style.color]="aiSummary?.riskLevel === 'HIGH' ? '#f87171' : (aiSummary?.riskLevel === 'MEDIUM' ? '#fbbf24' : '#34d399')">
-          {{ aiSummary?.riskLevel || 'LOW' }} RISK
-        </div>
-        <p style="margin: 4px 0 0; font-size: 0.78rem; color: #cbd5e1;">{{ aiInsights?.lowStockItemCount || 0 }} items below safety threshold</p>
-      </div>
-
-      <!-- Card 3: Demand Forecast -->
-      <div style="background: rgba(255,255,255,0.05); padding: 1.1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="margin: 0 0 6px; color: #94a3b8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">30-DAY FORECAST</h4>
-        <div style="font-size: 1.2rem; font-weight: 700; color: #fbbf24;">
-          {{ aiForecast?.forecastModelType || 'HYBRID_RUNRATE_AI' }}
-        </div>
-        <p style="margin: 4px 0 0; font-size: 0.78rem; color: #cbd5e1;">
-          {{ aiForecast?.forecasts?.length || 0 }} catalog velocity predictions
-        </p>
-      </div>
-
-      <!-- Card 4: Suggested Reorders -->
-      <div style="background: rgba(255,255,255,0.05); padding: 1.1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="margin: 0 0 6px; color: #94a3b8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">SUGGESTED REORDERS</h4>
-        <div style="font-size: 1.4rem; font-weight: 800; color: #38bdf8;">
-          {{ aiReorders?.items?.length || 0 }} Priority Items
-        </div>
-        <p style="margin: 4px 0 0; font-size: 0.78rem; color: #cbd5e1;">Automated replenishment order</p>
-      </div>
-
-      <!-- Card 5: Price Recommendations -->
-      <div style="background: rgba(255,255,255,0.05); padding: 1.1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="margin: 0 0 6px; color: #94a3b8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">PRICE OPTIMIZATION</h4>
-        <div style="font-size: 1.4rem; font-weight: 800; color: #c084fc;">
-          {{ aiPricing?.recommendations?.length || 0 }} Recommendations
-        </div>
-        <p style="margin: 4px 0 0; font-size: 0.78rem; color: #cbd5e1;">Gross margin & volume tuning</p>
-      </div>
-
-    </div>
-
-    <!-- AI Executive Summary Banner -->
-    <div style="margin-top: 1rem; background: rgba(15, 23, 42, 0.6); padding: 1rem 1.25rem; border-radius: 10px; border-left: 4px solid #6366f1;">
-      <h5 style="margin: 0 0 4px; color: #818cf8; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">EXECUTIVE SUMMARY</h5>
-      <p style="margin: 0; font-size: 0.9rem; color: #f8fafc; line-height: 1.5;">
-        {{ aiSummary?.executiveSummary || aiInsights?.aiAnalysisSummary || 'StockGuard OpenRouter AI evaluated current stock levels, order velocities, and price elasticity rules.' }}
-      </p>
-    </div>
-  </div>
-
-  <!-- Product Categories Pie Chart (Placed Below Main Dashboard Widgets) -->
-
-  <div class="panel pie-chart-panel mat-elevation-z1">
-    <div class="panel-header">
-      <h2>Product Category Distribution</h2>
-      <span class="chip">Inventory Breakdown</span>
-    </div>
-    <div class="pie-container">
-      <canvas
-        baseChart
-        [data]="pieChartData"
-        [type]="pieChartType">
-      </canvas>
-    </div>
   </div>
 
 </div>

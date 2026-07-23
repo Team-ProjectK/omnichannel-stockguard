@@ -1,0 +1,17 @@
+<div class="message-wrapper" [ngClass]="message.sender">
+  <div class="avatar">
+    <mat-icon *ngIf="message.sender === 'assistant'">auto_awesome</mat-icon>
+    <mat-icon *ngIf="message.sender === 'user'">person</mat-icon>
+  </div>
+  <div class="bubble-container">
+    <div class="sender-title">
+      {{ message.sender === 'user' ? 'You' : 'StockGuard AI Assistant' }}
+    </div>
+    <div class="bubble" [ngClass]="{ 'error-bubble': message.isError }">
+      <div class="text-content">{{ message.text }}</div>
+    </div>
+    <div class="timestamp">
+      {{ message.timestamp | date:'shortTime' }}
+    </div>
+  </div>
+</div>

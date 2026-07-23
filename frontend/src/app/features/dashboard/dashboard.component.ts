@@ -2,7 +2,25 @@ import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { Router } from '@angular/router';
 import { DashboardService, DashboardMetrics } from '../../core/services/dashboard.service';
-import { AiService, DashboardSummary, InventoryInsight, ReorderSuggestion, PriceRecommendation, DemandForecast } from '../ai/services/ai.service';
+interface DashboardSummary {
+  inventoryHealthScore?: string;
+  riskLevel?: string;
+  executiveSummary?: string;
+}
+interface InventoryInsight {
+  lowStockItemCount?: number;
+  aiAnalysisSummary?: string;
+}
+interface ReorderSuggestion {
+  items?: any[];
+}
+interface PriceRecommendation {
+  recommendations?: any[];
+}
+interface DemandForecast {
+  forecastModelType?: string;
+  forecasts?: any[];
+}
 
 interface DashboardCard {
   title: string;
@@ -48,6 +66,8 @@ interface ActivityItem {
   type: string;
 }
 
+import { AssistantService } from '../assistant/services/assistant.service';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -56,6 +76,21 @@ interface ActivityItem {
 export class DashboardComponent implements OnInit {
   greetingMessage = 'Good Day';
   todayDate: Date = new Date();
+
+  aiQueryText: string = '';
+  aiResponseText: string = '';
+  isAiLoading: boolean = false;
+
+  healthScore: number = 88;
+  healthStatus: string = 'Optimal';
+  overstockCount: number = 2;
+  outOfStockCount: number = 0;
+  lastAnalysisTime: Date = new Date();
+  aiRecommendations: string[] = [
+    'Reorder 20 units of Dell XPS 15 Laptop (SKU: ELEC-001) to prevent stockout.',
+    'Overstock detected in Grocery category. Consider promotional pricing.',
+    'Supplier TechSupply Global maintains 98.5% on-time fulfillment rating.'
+  ];
 
   aiSummary: DashboardSummary | null = null;
   aiInsights: InventoryInsight | null = null;
@@ -103,15 +138,33 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dashboardService: DashboardService,
-    private aiService: AiService,
+    private assistantService: AssistantService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.setGreeting();
     this.loadMetrics();
-    this.loadAiData();
   }
+
+  onAskAi(query?: string): void {
+    const text = query || this.aiQueryText;
+    if (!text || !text.trim() || this.isAiLoading) return;
+    this.aiQueryText = text;
+    this.isAiLoading = true;
+    this.aiResponseText = '';
+    this.assistantService.sendMessage(text.trim()).subscribe({
+      next: (res) => {
+        this.aiResponseText = res.response;
+        this.isAiLoading = false;
+      },
+      error: (err) => {
+        this.aiResponseText = err.message || 'Error communicating with AI Assistant.';
+        this.isAiLoading = false;
+      }
+    });
+  }
+
 
   private setGreeting(): void {
     const hours = new Date().getHours();
@@ -131,33 +184,17 @@ export class DashboardComponent implements OnInit {
         this.dashboardCards[2].value = (m.totalInventoryItems || 0).toString();
         this.dashboardCards[3].value = (m.lowStockCount || 0).toString();
         this.dashboardCards[4].value = (m.totalAvailableStock || 0).toString();
+
+        const lowStock = m.lowStockCount || 0;
+        const deduction = (lowStock * 8) + (this.outOfStockCount * 12);
+        this.healthScore = Math.max(0, Math.min(100, 100 - deduction));
+        this.healthStatus = this.healthScore > 80 ? 'Optimal' : (this.healthScore > 60 ? 'Moderate Risk' : 'Critical Attention');
+        this.lastAnalysisTime = new Date();
       },
       error: (err) => console.error('Error fetching dashboard metrics', err)
     });
   }
 
-  private loadAiData(): void {
-    this.aiService.getDashboardSummary().subscribe({
-      next: (res) => this.aiSummary = res,
-      error: (err) => console.error('AI Summary load error', err)
-    });
-    this.aiService.getInventoryInsights().subscribe({
-      next: (res) => this.aiInsights = res,
-      error: (err) => console.error('AI Insights load error', err)
-    });
-    this.aiService.getReorderSuggestions().subscribe({
-      next: (res) => this.aiReorders = res,
-      error: (err) => console.error('AI Reorders load error', err)
-    });
-    this.aiService.getPriceRecommendations().subscribe({
-      next: (res) => this.aiPricing = res,
-      error: (err) => console.error('AI Pricing load error', err)
-    });
-    this.aiService.getDemandForecast().subscribe({
-      next: (res) => this.aiForecast = res,
-      error: (err) => console.error('AI Forecast load error', err)
-    });
-  }
 
 
   public lineChartData: ChartConfiguration<'line'>['data'] = {

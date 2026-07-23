@@ -1,0 +1,181 @@
+<div class="knowledge-page-container">
+  <!-- Header Card -->
+  <div class="page-header-card animate-fade-in">
+    <div class="header-left">
+      <div class="header-icon">
+        <mat-icon>menu_book</mat-icon>
+      </div>
+      <div>
+        <h2 class="page-title">Enterprise Knowledge Base (RAG)</h2>
+        <p class="page-subtitle">Ingest enterprise manuals, policy PDFs, and product guides to augment AI Assistant reasoning</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <label class="upload-btn" [ngClass]="{ 'disabled': isUploading }">
+        <mat-icon *ngIf="!isUploading">cloud_upload</mat-icon>
+        <mat-icon *ngIf="isUploading" class="spin-icon">sync</mat-icon>
+        <span>{{ isUploading ? 'Ingesting Document...' : 'Upload Document' }}</span>
+        <input type="file" (change)="onFileSelected($event)" accept=".pdf,.docx,.txt,.md,.markdown" [disabled]="isUploading" hidden />
+      </label>
+    </div>
+  </div>
+
+  <!-- KPI Stats Summary Cards -->
+  <div class="stats-grid animate-slide-up">
+    <div class="stat-card blue-card">
+      <div class="stat-icon"><mat-icon>folder_open</mat-icon></div>
+      <div class="stat-info">
+        <span class="stat-label">Ingested Documents</span>
+        <h3 class="stat-value">{{ documents.length }}</h3>
+      </div>
+    </div>
+    <div class="stat-card purple-card">
+      <div class="stat-icon"><mat-icon>extension</mat-icon></div>
+      <div class="stat-info">
+        <span class="stat-label">Vector Chunks Created</span>
+        <h3 class="stat-value">{{ totalChunks }}</h3>
+      </div>
+    </div>
+    <div class="stat-card green-card">
+      <div class="stat-icon"><mat-icon>hard_drive</mat-icon></div>
+      <div class="stat-info">
+        <span class="stat-label">Total Text Size</span>
+        <h3 class="stat-value">{{ totalSizeKb }} KB</h3>
+      </div>
+    </div>
+    <div class="stat-card cyan-card">
+      <div class="stat-icon"><mat-icon>bolt</mat-icon></div>
+      <div class="stat-info">
+        <span class="stat-label">Retrieval Latency</span>
+        <h3 class="stat-value">~15 ms</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert Banners -->
+  <div *ngIf="successMessage" class="alert-banner success-banner animate-fade-in">
+    <mat-icon>check_circle</mat-icon>
+    <span>{{ successMessage }}</span>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert-banner error-banner animate-fade-in">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Drag and Drop Upload Zone -->
+  <div
+    class="upload-dropzone"
+    [ngClass]="{ 'dragging': isDragging, 'disabled': isUploading }"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)">
+    
+    <div class="dropzone-content">
+      <div class="dropzone-icon">
+        <mat-icon>cloud_upload</mat-icon>
+      </div>
+      <h3 class="dropzone-title">Drag & Drop Enterprise Documents Here</h3>
+      <p class="dropzone-subtitle">or click <strong>Upload Document</strong> to browse files</p>
+      
+      <div class="file-type-badges">
+        <span class="type-badge pdf">.PDF</span>
+        <span class="type-badge docx">.DOCX</span>
+        <span class="type-badge txt">.TXT</span>
+        <span class="type-badge md">.MD</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Tester Section -->
+  <div class="search-card animate-fade-in">
+    <div class="card-header-row">
+      <div class="card-icon-title">
+        <mat-icon class="card-header-icon">search</mat-icon>
+        <h3 class="card-subtitle">Test Knowledge Base Retrieval</h3>
+      </div>
+      <span class="card-badge">Semantic Vector Similarity</span>
+    </div>
+
+    <div class="search-bar">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Enter a query to test RAG chunk matching (e.g., 'What is the safety stock policy?')..."
+        [(ngModel)]="searchQuery"
+        (keydown.enter)="onSearch()" />
+      <button class="search-btn" (click)="onSearch()" [disabled]="isSearching || !searchQuery.trim()">
+        <mat-icon *ngIf="!isSearching">search</mat-icon>
+        <mat-icon *ngIf="isSearching" class="spin-icon">sync</mat-icon>
+        <span>Search</span>
+      </button>
+    </div>
+
+    <!-- Search Results Preview -->
+    <div *ngIf="searchResults.length > 0" class="search-results-list animate-fade-in">
+      <h4 class="results-heading">Top Matched RAG Chunks ({{ searchResults.length }}):</h4>
+      <div *ngFor="let chunk of searchResults; let i = index" class="chunk-card">
+        <div class="chunk-header">
+          <span class="chunk-badge"><mat-icon class="inline-icon">extension</mat-icon> Chunk #{{ chunk.chunkIndex + 1 }} (Doc ID: {{ chunk.documentId }})</span>
+          <span class="chunk-date">{{ chunk.createdAt | date:'mediumTime' }}</span>
+        </div>
+        <p class="chunk-content">{{ chunk.content }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ingested Documents Table Card -->
+  <div class="documents-card animate-fade-in">
+    <div class="card-header-row">
+      <div class="card-icon-title">
+        <mat-icon class="card-header-icon">library_books</mat-icon>
+        <h3 class="card-subtitle">Ingested Enterprise Documents ({{ documents.length }})</h3>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Document Name</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Chunks Created</th>
+            <th>Uploaded At</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let doc of documents" class="table-row">
+            <td class="filename-cell">
+              <div class="file-type-icon" [ngClass]="doc.fileType.toLowerCase()">
+                <mat-icon>description</mat-icon>
+              </div>
+              <span class="filename-text">{{ doc.filename }}</span>
+            </td>
+            <td>
+              <span class="badge-chip type-chip">{{ doc.fileType }}</span>
+            </td>
+            <td class="size-text">{{ (doc.fileSize / 1024) | number:'1.0-1' }} KB</td>
+            <td>
+              <span class="badge-chip chunk-chip">{{ doc.chunkCount }} chunks</span>
+            </td>
+            <td class="date-text">{{ doc.uploadedAt | date:'medium' }}</td>
+            <td class="text-right">
+              <button class="icon-btn delete-btn" (click)="onDelete(doc)" title="Delete Document">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="documents.length === 0">
+            <td colspan="6" class="empty-state">
+              <mat-icon class="empty-icon">folder_open</mat-icon>
+              <p class="empty-title">No knowledge base documents ingested yet</p>
+              <p class="empty-sub">Upload a PDF, DOCX, TXT, or MD file above to enable RAG documentation context.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

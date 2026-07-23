@@ -1,0 +1,169 @@
+<div class="assistant-page-container">
+  <!-- Left Sidebar (Recent Conversations) -->
+  <div class="assistant-sidebar" [ngClass]="{ 'closed': !isSidebarOpen }">
+    <div class="sidebar-header">
+      <button class="new-chat-btn" (click)="onNewSession()">
+        <mat-icon>add</mat-icon>
+        <span>New Chat</span>
+      </button>
+    </div>
+
+    <div class="recent-conversations-title">Recent Conversations</div>
+
+    <div class="conversations-list">
+      <div
+        *ngFor="let conv of conversations"
+        class="conversation-item"
+        [ngClass]="{ 'active': conv.sessionId === currentSessionId }"
+        (click)="onSelectConversation(conv)">
+        
+        <mat-icon class="conv-icon">chat_bubble_outline</mat-icon>
+        
+        <div class="conv-info" *ngIf="editingSessionId !== conv.sessionId">
+          <span class="conv-title" [title]="conv.title">{{ conv.title }}</span>
+          <span class="conv-date">{{ conv.updatedAt | date:'shortDate' }}</span>
+        </div>
+
+        <!-- Inline Rename Mode -->
+        <div class="inline-edit" *ngIf="editingSessionId === conv.sessionId" (click)="$event.stopPropagation()">
+          <input
+            type="text"
+            class="title-input"
+            [(ngModel)]="editingTitleText"
+            (keydown.enter)="onSaveRename(conv, $event)"
+            (keydown.escape)="onCancelRename($event)"
+            autofocus />
+          <button class="icon-btn save-btn" (click)="onSaveRename(conv, $event)" title="Save">
+            <mat-icon>check</mat-icon>
+          </button>
+          <button class="icon-btn cancel-btn" (click)="onCancelRename($event)" title="Cancel">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <!-- Item Action Buttons -->
+        <div class="conv-actions" *ngIf="editingSessionId !== conv.sessionId">
+          <button class="icon-btn" (click)="onStartRename(conv, $event)" title="Rename Chat">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button class="icon-btn delete-btn" (click)="onDeleteConversation(conv.sessionId, $event)" title="Delete Chat">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="conversations.length === 0" class="no-conversations">
+        No previous chat history found.
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Chat Content Area -->
+  <div class="assistant-content-area">
+    <!-- Header Card -->
+    <div class="assistant-header-card animate-fade-in">
+      <div class="header-left">
+        <button class="sidebar-toggle-btn" (click)="toggleSidebar()" title="Toggle Sidebar">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <div class="header-icon">
+          <mat-icon>auto_awesome</mat-icon>
+        </div>
+        <div>
+          <h2 class="assistant-title">StockGuard AI Assistant</h2>
+          <p class="assistant-subtitle">Powered by LangChain4j & Persistent Knowledge Base</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span *ngIf="currentSessionId" class="session-badge" title="Active Session ID">
+          <mat-icon>link</mat-icon> Session: {{ currentSessionId | slice:0:8 }}...
+        </span>
+        <button class="action-btn new-session-btn" (click)="onNewSession()" title="Start New Session">
+          <mat-icon>add</mat-icon>
+          <span>New Chat</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Chat Container -->
+    <div class="chat-main-card animate-slide-up">
+      <!-- Conversation Scroll Area -->
+      <div class="conversation-scroll-area" #scrollContainer>
+        
+        <!-- Welcome Hero View when conversation is empty -->
+        <div *ngIf="messages.length === 0" class="empty-welcome-hero animate-fade-in">
+          <div class="welcome-badge">
+            <mat-icon>auto_awesome</mat-icon>
+          </div>
+          <h2 class="welcome-title">How can StockGuard AI assist you today?</h2>
+          <p class="welcome-sub">Ask real-time questions about your inventory stock, revenue metrics, reorder suggestions, or uploaded knowledge base docs.</p>
+
+          <div class="prompt-grid">
+            <div class="prompt-card" (click)="onSelectPrompt('Show low stock products in inventory')">
+              <div class="prompt-card-icon blue"><mat-icon>warning</mat-icon></div>
+              <div class="prompt-card-text">
+                <span class="prompt-card-title">Low Stock Alert</span>
+                <span class="prompt-card-sub">Identify items below minimum stock level</span>
+              </div>
+            </div>
+
+            <div class="prompt-card" (click)="onSelectPrompt('Analyze sales revenue metrics')">
+              <div class="prompt-card-icon purple"><mat-icon>payments</mat-icon></div>
+              <div class="prompt-card-text">
+                <span class="prompt-card-title">Revenue Metrics</span>
+                <span class="prompt-card-sub">Review monthly order totals & revenue</span>
+              </div>
+            </div>
+
+            <div class="prompt-card" (click)="onSelectPrompt('Suggest products to reorder')">
+              <div class="prompt-card-icon green"><mat-icon>shopping_cart</mat-icon></div>
+              <div class="prompt-card-text">
+                <span class="prompt-card-title">Reorder Suggestions</span>
+                <span class="prompt-card-sub">Calculate purchase order quantities</span>
+              </div>
+            </div>
+
+            <div class="prompt-card" (click)="onSelectPrompt('Explain safety stock policy from docs')">
+              <div class="prompt-card-icon cyan"><mat-icon>menu_book</mat-icon></div>
+              <div class="prompt-card-text">
+                <span class="prompt-card-title">RAG Documentation</span>
+                <span class="prompt-card-sub">Query company policy & uploaded manuals</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message List -->
+        <app-chat-message
+          *ngFor="let msg of messages"
+          [message]="msg">
+        </app-chat-message>
+
+        <!-- Typing Indicator -->
+        <app-typing-indicator *ngIf="isLoading"></app-typing-indicator>
+      </div>
+
+      <!-- Quick Action Chips (when starting chat) -->
+      <div class="quick-prompts-bar" *ngIf="messages.length > 0 && messages.length <= 2 && !isLoading">
+        <span class="chips-label">Suggested Queries:</span>
+        <div class="chips-list">
+          <button
+            *ngFor="let prompt of quickPrompts"
+            class="prompt-chip"
+            (click)="onSelectPrompt(prompt)">
+            <mat-icon>bolt</mat-icon>
+            <span>{{ prompt }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat Input Bar -->
+      <div class="input-bar-container">
+        <app-chat-input
+          [disabled]="isLoading"
+          (send)="onSend($event)">
+        </app-chat-input>
+      </div>
+    </div>
+  </div>
+</div>
