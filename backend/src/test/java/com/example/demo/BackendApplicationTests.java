@@ -13,7 +13,10 @@ import org.springframework.test.context.TestPropertySource;
     "spring.datasource.driver-class-name=org.h2.Driver",
     "spring.datasource.username=sa",
     "spring.datasource.password=",
-    "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect"
+    "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
+    "app.default-admin-password=TestAdminSecretPass2026!",
+    "application.security.jwt.secret-key=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970",
+    "application.security.jwt.expiration=86400000"
 })
 class BackendApplicationTests {
 
@@ -22,7 +25,7 @@ class BackendApplicationTests {
 
     @Test
     void contextLoads() {
-        Assertions.assertNotNull(applicationContext, "Spring ApplicationContext should fail if context did not load properly");
+        Assertions.assertNotNull(applicationContext, "Spring ApplicationContext should load without errors");
     }
 
 }

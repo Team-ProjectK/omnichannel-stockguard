@@ -27,7 +27,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    @Value("${app.default-admin-password:DefaultAdminSecretPass2026!}")
+    @Value("${app.default-admin-password}")
     private String defaultAdminPassword;
 
     public AuthenticationService(
@@ -44,6 +44,10 @@ public class AuthenticationService {
 
     @PostConstruct
     public void initDefaultAdmin() {
+        if (defaultAdminPassword == null || defaultAdminPassword.isBlank()) {
+            logger.warn("No default admin password configured via app.default-admin-password. Skipping default admin initialization.");
+            return;
+        }
         if (userRepository.count() == 0) {
             logger.info("No users found in database. Initializing default ADMIN user...");
             User admin = new User(
