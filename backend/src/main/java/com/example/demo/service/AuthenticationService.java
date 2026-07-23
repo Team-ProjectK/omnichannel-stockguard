@@ -27,7 +27,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    @Value("${app.default-admin-password}")
+    @Value("${app.default-admin-password:}")
     private String defaultAdminPassword;
 
     public AuthenticationService(
