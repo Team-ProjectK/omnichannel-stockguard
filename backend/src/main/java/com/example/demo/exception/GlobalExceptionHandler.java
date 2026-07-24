@@ -18,6 +18,11 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String TIMESTAMP = "timestamp";
+    private static final String STATUS = "status";
+    private static final String ERROR = "error";
+    private static final String MESSAGE = "message";
+
     // User Already Exists (HTTP 409 Conflict)
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<Map<String, Object>> handleUserAlreadyExists(
@@ -25,10 +30,10 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
 
         Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", HttpStatus.CONFLICT.value());
-        error.put("error", "Conflict");
-        error.put("message", ex.getMessage());
+        error.put(TIMESTAMP, LocalDateTime.now());
+        error.put(STATUS, HttpStatus.CONFLICT.value());
+        error.put(ERROR, "Conflict");
+        error.put(MESSAGE, ex.getMessage());
         error.put("path", request.getRequestURI());
 
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
@@ -41,10 +46,10 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
 
         Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", HttpStatus.UNAUTHORIZED.value());
-        error.put("error", "Unauthorized");
-        error.put("message", "Invalid email or password.");
+        error.put(TIMESTAMP, LocalDateTime.now());
+        error.put(STATUS, HttpStatus.UNAUTHORIZED.value());
+        error.put(ERROR, "Unauthorized");
+        error.put(MESSAGE, "Invalid email or password.");
         error.put("path", request.getRequestURI());
 
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
@@ -57,10 +62,10 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
 
         Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", HttpStatus.NOT_FOUND.value());
-        error.put("error", "Not Found");
-        error.put("message", ex.getMessage());
+        error.put(TIMESTAMP, LocalDateTime.now());
+        error.put(STATUS, HttpStatus.NOT_FOUND.value());
+        error.put(ERROR, "Not Found");
+        error.put(MESSAGE, ex.getMessage());
         error.put("path", request.getRequestURI());
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -73,16 +78,16 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
 
         Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", HttpStatus.BAD_REQUEST.value());
-        error.put("error", "Validation Failed");
+        error.put(TIMESTAMP, LocalDateTime.now());
+        error.put(STATUS, HttpStatus.BAD_REQUEST.value());
+        error.put(ERROR, "Validation Failed");
         error.put("path", request.getRequestURI());
 
         String formattedMessage = ex.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.joining(", "));
 
-        error.put("message", formattedMessage);
+        error.put(MESSAGE, formattedMessage);
 
         Map<String, String> validationErrors = new HashMap<>();
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
@@ -100,10 +105,10 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
 
         Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", HttpStatus.BAD_REQUEST.value());
-        error.put("error", "Constraint Violation");
-        error.put("message", ex.getMessage());
+        error.put(TIMESTAMP, LocalDateTime.now());
+        error.put(STATUS, HttpStatus.BAD_REQUEST.value());
+        error.put(ERROR, "Constraint Violation");
+        error.put(MESSAGE, ex.getMessage());
         error.put("path", request.getRequestURI());
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -116,10 +121,10 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
 
         Map<String, Object> error = new HashMap<>();
-        error.put("timestamp", LocalDateTime.now());
-        error.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        error.put("error", "Internal Server Error");
-        error.put("message", ex.getMessage());
+        error.put(TIMESTAMP, LocalDateTime.now());
+        error.put(STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        error.put(ERROR, "Internal Server Error");
+        error.put(MESSAGE, ex.getMessage());
         error.put("path", request.getRequestURI());
 
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);

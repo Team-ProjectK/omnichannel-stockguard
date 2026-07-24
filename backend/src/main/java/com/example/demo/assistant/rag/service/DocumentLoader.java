@@ -39,9 +39,9 @@ public class DocumentLoader {
                 // Fallback to UTF-8 text parsing
                 return new String(file.getBytes(), StandardCharsets.UTF_8);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Failed extracting text from document '{}'", filename, e);
-            throw new DocumentProcessingException("Error parsing document text: " + e.getMessage(), e);
+            throw new DocumentProcessingException("Failed to extract text from document: " + filename, e);
         }
     }
 

@@ -24,22 +24,28 @@ public class AgentRouter {
     public String routeAndProcess(String sessionId, String message) {
         long startTime = System.currentTimeMillis();
 
-        AIAgent selectedAgent = agents.stream()
-                .filter(agent -> !(agent instanceof GeneralAgent))
-                .filter(agent -> agent.supports(message))
-                .findFirst()
-                .orElse(generalAgent);
+        AIAgent selectedAgent = selectAgent(message);
 
         String agentName = selectedAgent.getClass().getSimpleName();
         log.info("AgentRouter intent classification -> Selected Agent: [{}] [sessionId: {}]", agentName, sessionId);
 
+        return processWithAgent(selectedAgent, sessionId, message, startTime);
+    }
+
+    private AIAgent selectAgent(String message) {
+        return agents.stream()
+                .filter(agent -> !(agent instanceof GeneralAgent))
+                .filter(agent -> agent.supports(message))
+                .findFirst()
+                .orElse(generalAgent);
+    }
+
+    private String processWithAgent(AIAgent selectedAgent, String sessionId, String message, long startTime) {
+        String agentName = selectedAgent.getClass().getSimpleName();
         try {
             String responseText = selectedAgent.process(sessionId, message);
             long executionTime = System.currentTimeMillis() - startTime;
-
-            log.info("Agent [{}] generated response [sessionId: {}, executionTime: {} ms, responseLength: {} chars]",
-                    agentName, sessionId, executionTime, responseText != null ? responseText.length() : 0);
-
+            logResponse(agentName, sessionId, executionTime, responseText);
             return responseText;
         } catch (Exception e) {
             long executionTime = System.currentTimeMillis() - startTime;
@@ -47,5 +53,11 @@ public class AgentRouter {
                     agentName, sessionId, executionTime, e.getMessage());
             throw e;
         }
+    }
+
+    private void logResponse(String agentName, String sessionId, long executionTime, String responseText) {
+        int responseLength = responseText != null ? responseText.length() : 0;
+        log.info("Agent [{}] generated response [sessionId: {}, executionTime: {} ms, responseLength: {} chars]",
+                agentName, sessionId, executionTime, responseLength);
     }
 }
