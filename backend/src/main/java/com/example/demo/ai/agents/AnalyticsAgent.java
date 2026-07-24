@@ -4,11 +4,11 @@ import com.example.demo.assistant.model.ConversationSession;
 import com.example.demo.assistant.service.SessionManager;
 import com.example.demo.ai.prompts.SystemPrompts;
 import com.example.demo.model.Inventory;
+import com.example.demo.model.Product;
 import com.example.demo.model.SalesOrder;
-import com.example.demo.model.product;
 import com.example.demo.service.InventoryService;
+import com.example.demo.service.ProductService;
 import com.example.demo.service.SalesOrderService;
-import com.example.demo.service.productService;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
@@ -37,13 +37,13 @@ public class AnalyticsAgent implements AIAgent {
     private final ChatLanguageModel chatLanguageModel;
     private final SessionManager sessionManager;
     private final SalesOrderService salesOrderService;
-    private final productService productService;
+    private final ProductService productService;
     private final InventoryService inventoryService;
 
     public AnalyticsAgent(ChatLanguageModel chatLanguageModel,
                           SessionManager sessionManager,
                           SalesOrderService salesOrderService,
-                          productService productService,
+                          ProductService productService,
                           InventoryService inventoryService) {
         this.chatLanguageModel = chatLanguageModel;
         this.sessionManager = sessionManager;
@@ -74,11 +74,11 @@ public class AnalyticsAgent implements AIAgent {
     @Override
     public String process(String sessionId, String message) {
         long startTime = System.currentTimeMillis();
-        log.info("AnalyticsAgent selected -> Querying SalesOrderService, productService, and InventoryService [sessionId: {}]", sessionId);
+        log.info("AnalyticsAgent selected -> Querying SalesOrderService, ProductService, and InventoryService [sessionId: {}]", sessionId);
 
         long dbStartTime = System.currentTimeMillis();
         List<SalesOrder> salesOrders = new ArrayList<>();
-        List<product> products = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
         List<Inventory> lowStockItems = new ArrayList<>();
         List<Inventory> allInventory = new ArrayList<>();
 
@@ -103,7 +103,43 @@ public class AnalyticsAgent implements AIAgent {
 
         long dbExecutionTime = System.currentTimeMillis() - dbStartTime;
 
-        // Calculate aggregated metrics & Inventory Health Score
+        String context = buildAnalyticsContext(salesOrders, products, lowStockItems, allInventory, dbExecutionTime);
+        ConversationSession session = sessionManager.getOrCreateSession(sessionId);
+
+        List<ChatMessage> promptMessages = new ArrayList<>();
+        promptMessages.add(SystemMessage.from(SystemPrompts.ANALYTICS_PROMPT));
+
+        synchronized (session.getMessages()) {
+            for (com.example.demo.assistant.model.ChatMessage msg : session.getMessages()) {
+                if ("user".equalsIgnoreCase(msg.getRole())) {
+                    promptMessages.add(UserMessage.from(msg.getContent()));
+                } else if ("assistant".equalsIgnoreCase(msg.getRole())) {
+                    promptMessages.add(AiMessage.from(msg.getContent()));
+                }
+            }
+        }
+
+        String fullUserPrompt = context + System.lineSeparator() + "User Query: " + message;
+        promptMessages.add(UserMessage.from(fullUserPrompt));
+
+        long llmStartTime = System.currentTimeMillis();
+        Response<AiMessage> response = chatLanguageModel.generate(promptMessages);
+        String aiResponseText = response.content().text();
+        long llmExecutionTime = System.currentTimeMillis() - llmStartTime;
+
+        long totalTime = System.currentTimeMillis() - startTime;
+        log.info("AnalyticsAgent completed -> Total Time: {} ms (DB: {} ms, LLM: {} ms) | Orders Analyzed: {}",
+                totalTime, dbExecutionTime, llmExecutionTime, salesOrders.size());
+
+        sessionManager.saveMessage(sessionId, "user", message);
+        sessionManager.saveMessage(sessionId, "assistant", aiResponseText);
+
+        return aiResponseText;
+    }
+
+    private String buildAnalyticsContext(List<SalesOrder> salesOrders, List<Product> products,
+                                         List<Inventory> lowStockItems, List<Inventory> allInventory,
+                                         long dbExecutionTime) {
         BigDecimal totalRevenue = salesOrders.stream()
                 .map(SalesOrder::getTotalAmount)
                 .filter(Objects::nonNull)
@@ -121,14 +157,12 @@ public class AnalyticsAgent implements AIAgent {
                 .filter(i -> i.getAvailableStock() != null && i.getAvailableStock() == 0)
                 .count();
 
-        // Calculate Inventory Health Score (0 to 100)
         int healthDeduction = (int) ((lowStockAlertCount * 5) + (outOfStockCount * 10) + (overstockCount * 3));
         int inventoryHealthScore = Math.max(0, Math.min(100, 100 - healthDeduction));
 
         log.info("Analytics aggregated metrics -> Health Score: {}, Revenue: {}, Sales Count: {}, Catalog Products: {}, Low Stock: {}, Overstock: {} (DB Time: {} ms)",
                 inventoryHealthScore, totalRevenue, totalSalesCount, totalCatalogProducts, lowStockAlertCount, overstockCount, dbExecutionTime);
 
-        // Format structured context with platform-independent line separators
         StringBuilder contextBuilder = new StringBuilder("Real-Time Business Analytics & Executive Dashboard Context:%n".formatted());
         contextBuilder.append(String.format("- Calculated Inventory Health Score: %d/100 (%s)%n",
                 inventoryHealthScore, getHealthStatusLabel(inventoryHealthScore)));
@@ -145,37 +179,6 @@ public class AnalyticsAgent implements AIAgent {
                 contextBuilder.append(String.format("  * SKU: %s (Available: %d)%n", item.getSku(), item.getAvailableStock()));
             }
         }
-
-        ConversationSession session = sessionManager.getOrCreateSession(sessionId);
-
-        List<ChatMessage> promptMessages = new ArrayList<>();
-        promptMessages.add(SystemMessage.from(SystemPrompts.ANALYTICS_PROMPT));
-
-        synchronized (session.getMessages()) {
-            for (com.example.demo.assistant.model.ChatMessage msg : session.getMessages()) {
-                if ("user".equalsIgnoreCase(msg.getRole())) {
-                    promptMessages.add(UserMessage.from(msg.getContent()));
-                } else if ("assistant".equalsIgnoreCase(msg.getRole())) {
-                    promptMessages.add(AiMessage.from(msg.getContent()));
-                }
-            }
-        }
-
-        String fullUserPrompt = contextBuilder.toString() + System.lineSeparator() + "User Query: " + message;
-        promptMessages.add(UserMessage.from(fullUserPrompt));
-
-        long llmStartTime = System.currentTimeMillis();
-        Response<AiMessage> response = chatLanguageModel.generate(promptMessages);
-        String aiResponseText = response.content().text();
-        long llmExecutionTime = System.currentTimeMillis() - llmStartTime;
-
-        long totalTime = System.currentTimeMillis() - startTime;
-        log.info("AnalyticsAgent completed -> Total Time: {} ms (DB: {} ms, LLM: {} ms) | Orders Analyzed: {}",
-                totalTime, dbExecutionTime, llmExecutionTime, totalSalesCount);
-
-        sessionManager.saveMessage(sessionId, "user", message);
-        sessionManager.saveMessage(sessionId, "assistant", aiResponseText);
-
-        return aiResponseText;
+        return contextBuilder.toString();
     }
 }

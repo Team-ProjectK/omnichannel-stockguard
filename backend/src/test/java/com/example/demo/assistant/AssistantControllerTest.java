@@ -13,15 +13,15 @@ import com.example.demo.assistant.service.AssistantService;
 import com.example.demo.assistant.service.ConversationService;
 import com.example.demo.assistant.service.SessionManager;
 import com.example.demo.model.Inventory;
+import com.example.demo.model.Product;
 import com.example.demo.model.PurchaseOrder;
 import com.example.demo.model.SalesOrder;
 import com.example.demo.model.Supplier;
-import com.example.demo.model.product;
 import com.example.demo.service.InventoryService;
+import com.example.demo.service.ProductService;
 import com.example.demo.service.PurchaseOrderService;
 import com.example.demo.service.SalesOrderService;
 import com.example.demo.service.SupplierService;
-import com.example.demo.service.productService;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.output.Response;
@@ -54,7 +54,7 @@ class AssistantControllerTest {
     private ChatLanguageModel chatLanguageModel;
     private SessionManager sessionManager;
     private InventoryService inventoryService;
-    private productService productService;
+    private ProductService productService;
     private SupplierService supplierService;
     private SalesOrderService salesOrderService;
     private PurchaseOrderService purchaseOrderService;
@@ -65,7 +65,7 @@ class AssistantControllerTest {
     void setUp() {
         chatLanguageModel = Mockito.mock(ChatLanguageModel.class);
         inventoryService = Mockito.mock(InventoryService.class);
-        productService = Mockito.mock(productService.class);
+        productService = Mockito.mock(ProductService.class);
         supplierService = Mockito.mock(SupplierService.class);
         salesOrderService = Mockito.mock(SalesOrderService.class);
         purchaseOrderService = Mockito.mock(PurchaseOrderService.class);

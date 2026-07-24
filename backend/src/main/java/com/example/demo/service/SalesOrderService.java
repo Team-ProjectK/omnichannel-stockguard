@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.SalesOrderDto;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ServiceOperationException;
 import com.example.demo.model.Inventory;
 import com.example.demo.model.SalesOrder;
 import com.example.demo.repository.InventoryRepository;
@@ -70,7 +71,7 @@ public class SalesOrderService {
 
             logger.warn("Sales Order already exists. Order No: {}", dto.getSalesOrderNo());
 
-            throw new RuntimeException("Sales Order already exists.");
+            throw new ServiceOperationException("Sales Order already exists.");
         }
 
         Inventory inventory = inventoryRepo
@@ -89,7 +90,7 @@ public class SalesOrderService {
                     inventory.getAvailableStock(),
                     dto.getQuantity());
 
-            throw new RuntimeException("Insufficient stock available.");
+            throw new ServiceOperationException("Insufficient stock available.");
         }
 
         inventory.setAvailableStock(

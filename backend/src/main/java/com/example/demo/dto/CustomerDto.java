@@ -47,6 +47,7 @@ public class CustomerDto {
     private Boolean active;
 
     public CustomerDto() {
+        // Default constructor required for framework serialization
     }
 
     public String getCustomerId() {

@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class KnowledgeService {
@@ -98,7 +100,7 @@ public class KnowledgeService {
                 .sorted(Map.Entry.<KnowledgeChunk, Double>comparingByValue().reversed())
                 .limit(topN)
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+                .toList();
 
         long executionTime = System.currentTimeMillis() - startTime;
         log.info("RAG Knowledge Search finished in {} ms -> Found {} relevant chunk(s)", executionTime, topChunks.size());

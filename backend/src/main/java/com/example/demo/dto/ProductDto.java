@@ -35,6 +35,7 @@ public class ProductDto {
     private String lastUpdatedBy;
 
     public ProductDto() {
+        // Default constructor required for framework serialization
     }
 
     // Getters and Setters

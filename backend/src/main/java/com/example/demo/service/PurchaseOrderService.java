@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.PurchaseOrderDto;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ServiceOperationException;
 import com.example.demo.model.PurchaseOrder;
 import com.example.demo.repository.PurchaseOrderRepository;
 import org.slf4j.Logger;
@@ -63,7 +64,7 @@ public class PurchaseOrderService {
 
             logger.warn("Purchase Order already exists. PO Number: {}", dto.getPurchaseOrderNo());
 
-            throw new RuntimeException("Purchase Order already exists.");
+            throw new ServiceOperationException("Purchase Order already exists.");
         }
 
         PurchaseOrder order = new PurchaseOrder();

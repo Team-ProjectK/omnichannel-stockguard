@@ -44,6 +44,7 @@ public class PurchaseOrderDto {
     private String status;
 
     public PurchaseOrderDto() {
+        // Default constructor required for framework serialization
     }
 
     public String getPurchaseOrderNo() {

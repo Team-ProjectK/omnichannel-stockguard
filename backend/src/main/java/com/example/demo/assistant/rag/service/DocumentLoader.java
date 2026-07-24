@@ -1,5 +1,6 @@
 package com.example.demo.assistant.rag.service;
 
+import com.example.demo.exception.DocumentProcessingException;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -33,26 +35,24 @@ public class DocumentLoader {
                 return extractFromPdf(file.getBytes());
             } else if (lower.endsWith(".docx")) {
                 return extractFromDocx(file.getInputStream());
-            } else if (lower.endsWith(".txt") || lower.endsWith(".md") || lower.endsWith(".markdown")) {
-                return new String(file.getBytes(), StandardCharsets.UTF_8);
             } else {
                 // Fallback to UTF-8 text parsing
                 return new String(file.getBytes(), StandardCharsets.UTF_8);
             }
-        } catch (Exception e) {
-            log.error("Failed extracting text from document '{}': {}", filename, e.getMessage());
-            throw new RuntimeException("Error parsing document text: " + e.getMessage(), e);
+        } catch (IOException e) {
+            log.error("Failed extracting text from document '{}'", filename, e);
+            throw new DocumentProcessingException("Error parsing document text: " + e.getMessage(), e);
         }
     }
 
-    private String extractFromPdf(byte[] pdfBytes) throws Exception {
+    private String extractFromPdf(byte[] pdfBytes) throws IOException {
         try (PDDocument document = Loader.loadPDF(pdfBytes)) {
             PDFTextStripper stripper = new PDFTextStripper();
             return stripper.getText(document);
         }
     }
 
-    private String extractFromDocx(InputStream inputStream) throws Exception {
+    private String extractFromDocx(InputStream inputStream) throws IOException {
         try (XWPFDocument doc = new XWPFDocument(inputStream);
              XWPFWordExtractor extractor = new XWPFWordExtractor(doc)) {
             return extractor.getText();

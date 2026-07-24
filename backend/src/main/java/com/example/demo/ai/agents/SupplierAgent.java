@@ -65,39 +65,9 @@ public class SupplierAgent implements AIAgent {
         long dbExecutionTime = System.currentTimeMillis() - dbStartTime;
         log.info("SupplierService returned {} record(s) in {} ms", supplierList.size(), dbExecutionTime);
 
-        // Format structured context
-        StringBuilder contextBuilder = new StringBuilder("Real-Time Supplier & Vendor Database Context:\n");
-        if (supplierList.isEmpty()) {
-            contextBuilder.append("[No supplier records found in the database.]\n");
-        } else {
-            for (Supplier s : supplierList) {
-                contextBuilder.append(String.format("- Supplier Code: %s | Supplier Name: %s | Contact: %s | Email: %s | Phone: %s | City: %s | Status: %s\n",
-                        s.getSupplierCode(), s.getSupplierName(),
-                        s.getContactPerson() != null ? s.getContactPerson() : "N/A",
-                        s.getEmail() != null ? s.getEmail() : "N/A",
-                        s.getPhone() != null ? s.getPhone() : "N/A",
-                        s.getCity() != null ? s.getCity() : "N/A",
-                        s.getStatus() != null ? s.getStatus() : "ACTIVE"));
-            }
-        }
-
+        String context = buildContext(supplierList);
         ConversationSession session = sessionManager.getOrCreateSession(sessionId);
-
-        List<ChatMessage> promptMessages = new ArrayList<>();
-        promptMessages.add(SystemMessage.from(SystemPrompts.SUPPLIER_PROMPT));
-
-        synchronized (session.getMessages()) {
-            for (com.example.demo.assistant.model.ChatMessage msg : session.getMessages()) {
-                if ("user".equalsIgnoreCase(msg.getRole())) {
-                    promptMessages.add(UserMessage.from(msg.getContent()));
-                } else if ("assistant".equalsIgnoreCase(msg.getRole())) {
-                    promptMessages.add(AiMessage.from(msg.getContent()));
-                }
-            }
-        }
-
-        String fullUserPrompt = contextBuilder.toString() + "\nUser Query: " + message;
-        promptMessages.add(UserMessage.from(fullUserPrompt));
+        List<ChatMessage> promptMessages = buildPromptMessages(session, context, message);
 
         long llmStartTime = System.currentTimeMillis();
         Response<AiMessage> response = chatLanguageModel.generate(promptMessages);
@@ -112,5 +82,42 @@ public class SupplierAgent implements AIAgent {
         sessionManager.saveMessage(sessionId, "assistant", aiResponseText);
 
         return aiResponseText;
+    }
+
+    private String buildContext(List<Supplier> supplierList) {
+        StringBuilder contextBuilder = new StringBuilder("Real-Time Supplier & Vendor Database Context:\n");
+        if (supplierList.isEmpty()) {
+            contextBuilder.append("[No supplier records found in the database.]\n");
+        } else {
+            for (Supplier s : supplierList) {
+                contextBuilder.append(String.format("- Supplier Code: %s | Supplier Name: %s | Contact: %s | Email: %s | Phone: %s | City: %s | Status: %s%n",
+                        s.getSupplierCode(), s.getSupplierName(),
+                        s.getContactPerson() != null ? s.getContactPerson() : "N/A",
+                        s.getEmail() != null ? s.getEmail() : "N/A",
+                        s.getPhone() != null ? s.getPhone() : "N/A",
+                        s.getCity() != null ? s.getCity() : "N/A",
+                        s.getStatus() != null ? s.getStatus() : "ACTIVE"));
+            }
+        }
+        return contextBuilder.toString();
+    }
+
+    private List<ChatMessage> buildPromptMessages(ConversationSession session, String context, String message) {
+        List<ChatMessage> promptMessages = new ArrayList<>();
+        promptMessages.add(SystemMessage.from(SystemPrompts.SUPPLIER_PROMPT));
+
+        synchronized (session.getMessages()) {
+            for (com.example.demo.assistant.model.ChatMessage msg : session.getMessages()) {
+                if ("user".equalsIgnoreCase(msg.getRole())) {
+                    promptMessages.add(UserMessage.from(msg.getContent()));
+                } else if ("assistant".equalsIgnoreCase(msg.getRole())) {
+                    promptMessages.add(AiMessage.from(msg.getContent()));
+                }
+            }
+        }
+
+        String fullUserPrompt = context + "\nUser Query: " + message;
+        promptMessages.add(UserMessage.from(fullUserPrompt));
+        return promptMessages;
     }
 }

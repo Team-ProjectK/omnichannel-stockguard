@@ -76,7 +76,7 @@ public class InventoryAgent implements AIAgent {
             contextBuilder.append("[No inventory records found in the database.]\n");
         } else {
             for (Inventory item : inventoryList) {
-                contextBuilder.append(String.format("- SKU: %s | Store: %s | Available Stock: %d | Reserved Stock: %d | Damaged Stock: %d\n",
+                contextBuilder.append(String.format("- SKU: %s | Store: %s | Available Stock: %d | Reserved Stock: %d | Damaged Stock: %d%n",
                         item.getSku(), item.getStoreId(), item.getAvailableStock(), item.getReservedStock(), item.getDamagedStock()));
             }
         }

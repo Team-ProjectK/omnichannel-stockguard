@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.dto.CustomerDto;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ServiceOperationException;
+import com.example.demo.exception.UserAlreadyExistsException;
 import com.example.demo.model.Customer;
 import com.example.demo.repository.CustomerRepository;
 import org.slf4j.Logger;
@@ -62,14 +64,14 @@ public class CustomerService {
 
             logger.warn("Customer ID already exists: {}", dto.getCustomerId());
 
-            throw new RuntimeException("Customer ID already exists.");
+            throw new ServiceOperationException("Customer ID already exists.");
         }
 
         if (customerRepo.existsByEmail(dto.getEmail())) {
 
             logger.warn("Customer email already exists: {}", dto.getEmail());
 
-            throw new RuntimeException("Email already exists.");
+            throw new UserAlreadyExistsException("Email already exists.");
         }
 
         Customer customer = new Customer();

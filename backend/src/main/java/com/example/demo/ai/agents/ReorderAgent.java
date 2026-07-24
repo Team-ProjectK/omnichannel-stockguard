@@ -88,7 +88,7 @@ public class ReorderAgent implements AIAgent {
             contextBuilder.append("- Low Stock Items Needing Reorder:\n");
             for (Inventory item : lowStockItems) {
                 int suggestedReorderQty = Math.max(20, 50 - item.getAvailableStock());
-                contextBuilder.append(String.format("  * SKU: %s | Store: %s | Current Stock: %d | Suggested Reorder Qty: %d | Priority: HIGH\n",
+                contextBuilder.append(String.format("  * SKU: %s | Store: %s | Current Stock: %d | Suggested Reorder Qty: %d | Priority: HIGH%n",
                         item.getSku(), item.getStoreId(), item.getAvailableStock(), suggestedReorderQty));
             }
         }
@@ -96,7 +96,7 @@ public class ReorderAgent implements AIAgent {
         if (!activeOrders.isEmpty()) {
             contextBuilder.append("- Active Purchase Orders in Pipeline:\n");
             for (PurchaseOrder po : activeOrders) {
-                contextBuilder.append(String.format("  * PO#: %s | SKU: %s | Qty: %d | Status: %s | Supplier: %s\n",
+                contextBuilder.append(String.format("  * PO#: %s | SKU: %s | Qty: %d | Status: %s | Supplier: %s%n",
                         po.getPurchaseOrderNo(), po.getSku(), po.getQuantity(), po.getStatus(), po.getSupplierCode()));
             }
         }

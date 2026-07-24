@@ -3,8 +3,8 @@ package com.example.demo.ai.agents;
 import com.example.demo.assistant.model.ConversationSession;
 import com.example.demo.assistant.service.SessionManager;
 import com.example.demo.ai.prompts.SystemPrompts;
-import com.example.demo.model.product;
-import com.example.demo.service.productService;
+import com.example.demo.model.Product;
+import com.example.demo.service.ProductService;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
@@ -30,11 +30,11 @@ public class ProductAgent implements AIAgent {
 
     private final ChatLanguageModel chatLanguageModel;
     private final SessionManager sessionManager;
-    private final productService productService;
+    private final ProductService productService;
 
     public ProductAgent(ChatLanguageModel chatLanguageModel,
                         SessionManager sessionManager,
-                        productService productService) {
+                        ProductService productService) {
         this.chatLanguageModel = chatLanguageModel;
         this.sessionManager = sessionManager;
         this.productService = productService;
@@ -52,26 +52,26 @@ public class ProductAgent implements AIAgent {
     @Override
     public String process(String sessionId, String message) {
         long startTime = System.currentTimeMillis();
-        log.info("ProductAgent selected -> Querying productService [sessionId: {}]", sessionId);
+        log.info("ProductAgent selected -> Querying ProductService [sessionId: {}]", sessionId);
 
         long dbStartTime = System.currentTimeMillis();
-        List<product> productList;
+        List<Product> productList;
         try {
             productList = productService.getAllProducts();
         } catch (Exception e) {
-            log.error("Failed to retrieve product records from productService: {}", e.getMessage());
+            log.error("Failed to retrieve product records from ProductService: {}", e.getMessage());
             productList = new ArrayList<>();
         }
         long dbExecutionTime = System.currentTimeMillis() - dbStartTime;
-        log.info("productService returned {} record(s) in {} ms", productList.size(), dbExecutionTime);
+        log.info("ProductService returned {} record(s) in {} ms", productList.size(), dbExecutionTime);
 
         // Format structured context
         StringBuilder contextBuilder = new StringBuilder("Real-Time Product Catalog Database Context:\n");
         if (productList.isEmpty()) {
             contextBuilder.append("[No product catalog records found in the database.]\n");
         } else {
-            for (product p : productList) {
-                contextBuilder.append(String.format("- SKU: %s | Product Name: %s | Store: %s | Current Price: %s | Base Price: %s | Current Stock: %d | Reorder Threshold: %d\n",
+            for (Product p : productList) {
+                contextBuilder.append(String.format("- SKU: %s | Product Name: %s | Store: %s | Current Price: %s | Base Price: %s | Current Stock: %d | Reorder Threshold: %d%n",
                         p.getSku(), p.getProductName(), p.getStoreId(),
                         p.getCurrentPrice() != null ? p.getCurrentPrice().toString() : "N/A",
                         p.getBasePrice() != null ? p.getBasePrice().toString() : "N/A",

@@ -2,12 +2,15 @@ package com.example.demo.service;
 
 import com.example.demo.dto.ProductDto;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ServiceOperationException;
+import com.example.demo.model.Inventory;
 import com.example.demo.model.PriceDecision;
+import com.example.demo.model.Product;
 import com.example.demo.model.ReorderRequest;
-import com.example.demo.model.product;
+import com.example.demo.repository.InventoryRepository;
 import com.example.demo.repository.PriceDecisionRepository;
+import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ReorderRequestRepository;
-import com.example.demo.repository.productRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,19 +20,19 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
-public class productService {
+public class ProductService {
 
     private static final String PRODUCT_NOT_FOUND = "Product not found";
 
-    private final productRepository productRepo;
+    private final ProductRepository productRepo;
     private final PriceDecisionRepository priceDecisionRepo;
     private final ReorderRequestRepository reorderRepo;
-    private final com.example.demo.repository.InventoryRepository inventoryRepo;
+    private final InventoryRepository inventoryRepo;
 
-    public productService(productRepository productRepo,
+    public ProductService(ProductRepository productRepo,
                           PriceDecisionRepository priceDecisionRepo,
                           ReorderRequestRepository reorderRepo,
-                          com.example.demo.repository.InventoryRepository inventoryRepo) {
+                          InventoryRepository inventoryRepo) {
         this.productRepo = productRepo;
         this.priceDecisionRepo = priceDecisionRepo;
         this.reorderRepo = reorderRepo;
@@ -37,31 +40,30 @@ public class productService {
     }
 
     // Get all products
-    public List<product> getAllProducts() {
+    public List<Product> getAllProducts() {
         return productRepo.findAll();
     }
 
     // Get Products with Pagination
-    public Page<product> getProducts(Pageable pageable) {
+    public Page<Product> getProducts(Pageable pageable) {
         return productRepo.findAll(pageable);
     }
 
     // Get product by SKU and Store
-    public product getProduct(String sku, String storeId) {
-
+    public Product getProduct(String sku, String storeId) {
         return productRepo.findBySkuAndStoreId(sku, storeId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(PRODUCT_NOT_FOUND));
     }
 
     // Create Product
-    public product createProduct(ProductDto dto) {
+    public Product createProduct(ProductDto dto) {
 
         if (productRepo.existsBySkuAndStoreId(dto.getSku(), dto.getStoreId())) {
-            throw new RuntimeException("Product already exists.");
+            throw new ServiceOperationException("Product already exists.");
         }
 
-        product newProduct = new product();
+        Product newProduct = new Product();
 
         newProduct.setSku(dto.getSku());
         newProduct.setStoreId(dto.getStoreId());
@@ -73,10 +75,10 @@ public class productService {
         newProduct.setLastPriceUpdate(Instant.now());
         newProduct.setLastUpdatedBy(dto.getLastUpdatedBy());
 
-        product savedProduct = productRepo.save(newProduct);
+        Product savedProduct = productRepo.save(newProduct);
 
         if (!inventoryRepo.existsBySkuAndStoreId(savedProduct.getSku(), savedProduct.getStoreId())) {
-            com.example.demo.model.Inventory inv = new com.example.demo.model.Inventory();
+            Inventory inv = new Inventory();
             inv.setSku(savedProduct.getSku());
             inv.setStoreId(savedProduct.getStoreId());
             inv.setAvailableStock(savedProduct.getStock());
@@ -90,11 +92,11 @@ public class productService {
     }
 
     // Update Product
-    public product updateProduct(String sku,
+    public Product updateProduct(String sku,
                                  String storeId,
                                  ProductDto dto) {
 
-        product existing = productRepo.findBySkuAndStoreId(sku, storeId)
+        Product existing = productRepo.findBySkuAndStoreId(sku, storeId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(PRODUCT_NOT_FOUND));
 
@@ -113,7 +115,7 @@ public class productService {
     public void deleteProduct(String sku,
                               String storeId) {
 
-        product existing = productRepo.findBySkuAndStoreId(sku, storeId)
+        Product existing = productRepo.findBySkuAndStoreId(sku, storeId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(PRODUCT_NOT_FOUND));
 
@@ -121,13 +123,12 @@ public class productService {
     }
 
     // Search by Product Name
-    public List<product> searchProducts(String keyword) {
+    public List<Product> searchProducts(String keyword) {
         return productRepo.findByProductNameContainingIgnoreCase(keyword);
     }
 
     // Get Price History
     public List<PriceDecision> getPriceHistory(String sku, String storeId) {
-
         return priceDecisionRepo.findBySkuAndStoreIdOrderByTimestampAsc(sku, storeId);
     }
 
@@ -140,7 +141,7 @@ public class productService {
             String competitorRef,
             String demandSignal) {
 
-        product targetProduct = productRepo.findBySkuAndStoreId(sku, storeId)
+        Product targetProduct = productRepo.findBySkuAndStoreId(sku, storeId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(PRODUCT_NOT_FOUND));
 
@@ -193,7 +194,7 @@ public class productService {
     }
 
     // Check Low Stock
-    public boolean isLowStock(product p) {
+    public boolean isLowStock(Product p) {
         return p.getStock() <= p.getReorderThreshold();
     }
 }

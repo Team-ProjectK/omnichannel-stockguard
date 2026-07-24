@@ -3,7 +3,6 @@ package com.example.demo.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 public class SupplierDto {
 
@@ -46,6 +45,7 @@ public class SupplierDto {
     private String status;
 
     public SupplierDto() {
+        // Default constructor required for framework serialization
     }
 
     public String getSupplierCode() {

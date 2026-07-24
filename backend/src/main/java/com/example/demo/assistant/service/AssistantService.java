@@ -44,7 +44,7 @@ public class AssistantService {
         if (!retrievedChunks.isEmpty()) {
             StringBuilder ragBuilder = new StringBuilder("Retrieved Company Knowledge Base Documentation Context:\n");
             for (int i = 0; i < retrievedChunks.size(); i++) {
-                ragBuilder.append(String.format("- Knowledge Document Snippet %d: %s\n", i + 1, retrievedChunks.get(i).getContent()));
+                ragBuilder.append(String.format("- Knowledge Document Snippet %d: %s%n", i + 1, retrievedChunks.get(i).getContent()));
             }
             augmentedMessageText = ragBuilder.toString() + "\nUser Question: " + userMessageText;
             log.info("Augmented user prompt with {} RAG knowledge chunk(s) [sessionId: {}]", retrievedChunks.size(), sessionId);

@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.InventoryDto;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ServiceOperationException;
 import com.example.demo.model.Inventory;
 import com.example.demo.repository.InventoryRepository;
 import org.slf4j.Logger;
@@ -64,7 +65,7 @@ public class InventoryService {
             logger.warn("Inventory already exists. SKU: {}, Store ID: {}",
                     dto.getSku(), dto.getStoreId());
 
-            throw new RuntimeException("Inventory already exists.");
+            throw new ServiceOperationException("Inventory already exists.");
         }
 
         Inventory inventory = new Inventory();

@@ -50,6 +50,7 @@ public class SalesOrderDto {
     private Instant deliveryDate;
 
     public SalesOrderDto() {
+        // Default constructor required for framework serialization
     }
 
     public String getSalesOrderNo() {

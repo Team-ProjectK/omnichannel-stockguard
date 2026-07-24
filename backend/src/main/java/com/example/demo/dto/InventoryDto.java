@@ -25,6 +25,7 @@ public class InventoryDto {
     private Integer damagedStock;
 
     public InventoryDto() {
+        // Default constructor required for framework serialization
     }
 
     public String getSku() {

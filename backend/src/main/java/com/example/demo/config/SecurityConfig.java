@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.exception.ServiceOperationException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtAuthenticationEntryPoint;
 import com.example.demo.security.JwtAuthenticationFilter;
@@ -52,8 +53,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
+        try {
+            return config.getAuthenticationManager();
+        } catch (Exception e) {
+            throw new ServiceOperationException("Failed to obtain AuthenticationManager", e);
+        }
     }
 
     @Bean
@@ -66,21 +71,25 @@ public class SecurityConfig {
             HttpSecurity http,
             JwtAuthenticationFilter jwtAuthFilter,
             JwtAuthenticationEntryPoint jwtEntryPoint
-    ) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(handling -> handling.authenticationEntryPoint(jwtEntryPoint))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/auth/**", "/register", "/login", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/assistant/**", "/api/knowledge/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    ) {
+        try {
+            http
+                    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                    .csrf(AbstractHttpConfigurer::disable)
+                    .exceptionHandling(handling -> handling.authenticationEntryPoint(jwtEntryPoint))
+                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/api/auth/**", "/auth/**", "/register", "/login", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/assistant/**", "/api/knowledge/**").permitAll()
+                            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                            .anyRequest().authenticated()
+                    )
+                    .authenticationProvider(authenticationProvider())
+                    .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
+            return http.build();
+        } catch (Exception e) {
+            throw new ServiceOperationException("Failed to build SecurityFilterChain", e);
+        }
     }
 
     @Bean

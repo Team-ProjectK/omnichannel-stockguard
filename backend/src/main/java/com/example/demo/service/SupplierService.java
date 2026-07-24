@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.SupplierDto;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ServiceOperationException;
 import com.example.demo.model.Supplier;
 import com.example.demo.repository.SupplierRepository;
 import org.slf4j.Logger;
@@ -62,14 +63,14 @@ public class SupplierService {
 
             logger.warn("Supplier code already exists: {}", dto.getSupplierCode());
 
-            throw new RuntimeException("Supplier code already exists.");
+            throw new ServiceOperationException("Supplier code already exists.");
         }
 
         if (supplierRepo.existsByEmail(dto.getEmail())) {
 
             logger.warn("Supplier email already exists: {}", dto.getEmail());
 
-            throw new RuntimeException("Email already exists.");
+            throw new ServiceOperationException("Email already exists.");
         }
 
         Supplier supplier = new Supplier();

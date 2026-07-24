@@ -1,12 +1,17 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
 @Table(name = "products")
-public class product {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +27,8 @@ public class product {
     private Instant lastPriceUpdate;
     private String lastUpdatedBy;
 
-    public product() {
+    public Product() {
+        // Default constructor for JPA entity instantiation
     }
 
     public Long getId() {

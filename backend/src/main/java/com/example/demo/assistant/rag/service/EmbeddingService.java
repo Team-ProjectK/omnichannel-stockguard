@@ -4,7 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -57,8 +61,7 @@ public class EmbeddingService {
                 .count();
 
         // Jaccard similarity coefficient weighted by query coverage
-        double jaccard = (double) matchCount / queryWords.size();
-        return jaccard;
+        return (double) matchCount / queryWords.size();
     }
 
     private Set<String> tokenize(String text) {

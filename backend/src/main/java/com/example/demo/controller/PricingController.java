@@ -2,17 +2,21 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.PricingDecisionRequest;
 import com.example.demo.model.PriceDecision;
-import com.example.demo.service.productService;
-import org.springframework.web.bind.annotation.*;
+import com.example.demo.service.ProductService;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/pricing")
 @CrossOrigin(origins = "*")
 public class PricingController {
 
-    private final productService productService;
+    private final ProductService productService;
 
-    public PricingController(productService productService) {
+    public PricingController(ProductService productService) {
         this.productService = productService;
     }
 
